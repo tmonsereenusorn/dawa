@@ -7,16 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3892409B29A187260005AA3D /* Three_For_DieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3892409A29A187260005AA3D /* Three_For_DieApp.swift */; };
-		3892409D29A187260005AA3D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3892409C29A187260005AA3D /* ContentView.swift */; };
+		3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3892409A29A187260005AA3D /* ThreeForDieApp.swift */; };
 		3892409F29A187260005AA3D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3892409E29A187260005AA3D /* Assets.xcassets */; };
 		389240A329A187260005AA3D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 389240A229A187260005AA3D /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3892409729A187260005AA3D /* Three For Die.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Three For Die.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3892409A29A187260005AA3D /* Three_For_DieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Three_For_DieApp.swift; sourceTree = "<group>"; };
-		3892409C29A187260005AA3D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3892409A29A187260005AA3D /* ThreeForDieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreeForDieApp.swift; sourceTree = "<group>"; };
 		3892409E29A187260005AA3D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		389240A029A187260005AA3D /* Three_For_Die.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Three_For_Die.entitlements; sourceTree = "<group>"; };
 		389240A229A187260005AA3D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -52,8 +50,7 @@
 		3892409929A187260005AA3D /* Three For Die */ = {
 			isa = PBXGroup;
 			children = (
-				3892409A29A187260005AA3D /* Three_For_DieApp.swift */,
-				3892409C29A187260005AA3D /* ContentView.swift */,
+				3892409A29A187260005AA3D /* ThreeForDieApp.swift */,
 				3892409E29A187260005AA3D /* Assets.xcassets */,
 				389240A029A187260005AA3D /* Three_For_Die.entitlements */,
 				389240A129A187260005AA3D /* Preview Content */,
@@ -139,8 +136,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3892409D29A187260005AA3D /* ContentView.swift in Sources */,
-				3892409B29A187260005AA3D /* Three_For_DieApp.swift in Sources */,
+				3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
