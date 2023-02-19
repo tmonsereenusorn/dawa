@@ -8,9 +8,21 @@ enum TabType {
 
 struct TabView: View {
     @State var selectedTab: TabType = .home
+    @State var addingEvent: Bool = false
 
     var body: some View {
         ZStack {
+            Button () {
+                addingEvent.toggle ()
+            } label: {
+                Image (systemName: "plus.circle.fill")
+                    .resizable ()
+                    .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
+                    .foregroundColor (Color (red: 0.94, green: 0.73, blue: 0.75))
+            }.popover(isPresented: $addingEvent) {
+                AddEventView()
+            }
+            .position (x: UIScreen.main.bounds.width * 0.9, y: UIScreen.main.bounds.height * 0.78)
             VStack {
                 Spacer ()
                 HStack {
