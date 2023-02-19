@@ -12,7 +12,9 @@ struct FeedView: View{
     var body: some View {
         NavigationView {
             ScrollView(.vertical) {
-                
+                ForEach(Event.preview) { event in
+                    
+                }
             }
             .navigationTitle("Feed")
             .navigationBarTitleDisplayMode(.inline)
