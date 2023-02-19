@@ -10,6 +10,11 @@
 		3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3892409A29A187260005AA3D /* ThreeForDieApp.swift */; };
 		3892409F29A187260005AA3D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3892409E29A187260005AA3D /* Assets.xcassets */; };
 		389240A329A187260005AA3D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 389240A229A187260005AA3D /* Preview Assets.xcassets */; };
+		389240AB29A18CD80005AA3D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 389240AA29A18CD80005AA3D /* FirebaseAuth */; };
+		389240AD29A18CD80005AA3D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 389240AC29A18CD80005AA3D /* FirebaseFirestore */; };
+		389240AF29A18CD80005AA3D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 389240AE29A18CD80005AA3D /* FirebaseStorage */; };
+		389240B129A18DC80005AA3D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 389240B029A18DC80005AA3D /* GoogleService-Info.plist */; };
+		389240B529A19D170005AA3D /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389240B429A19D170005AA3D /* TabView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +23,8 @@
 		3892409E29A187260005AA3D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		389240A029A187260005AA3D /* Three_For_Die.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Three_For_Die.entitlements; sourceTree = "<group>"; };
 		389240A229A187260005AA3D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		389240B029A18DC80005AA3D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		389240B429A19D170005AA3D /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -25,6 +32,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				389240AB29A18CD80005AA3D /* FirebaseAuth in Frameworks */,
+				389240AD29A18CD80005AA3D /* FirebaseFirestore in Frameworks */,
+				389240AF29A18CD80005AA3D /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,7 +60,10 @@
 		3892409929A187260005AA3D /* Three For Die */ = {
 			isa = PBXGroup;
 			children = (
+				389240B729A1A8680005AA3D /* API */,
+				389240B029A18DC80005AA3D /* GoogleService-Info.plist */,
 				3892409A29A187260005AA3D /* ThreeForDieApp.swift */,
+				389240B229A19CA80005AA3D /* Views */,
 				3892409E29A187260005AA3D /* Assets.xcassets */,
 				389240A029A187260005AA3D /* Three_For_Die.entitlements */,
 				389240A129A187260005AA3D /* Preview Content */,
@@ -64,6 +77,29 @@
 				389240A229A187260005AA3D /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		389240B229A19CA80005AA3D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				389240B329A19CE70005AA3D /* TabView */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		389240B329A19CE70005AA3D /* TabView */ = {
+			isa = PBXGroup;
+			children = (
+				389240B429A19D170005AA3D /* TabView.swift */,
+			);
+			path = TabView;
+			sourceTree = "<group>";
+		};
+		389240B729A1A8680005AA3D /* API */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -82,6 +118,11 @@
 			dependencies = (
 			);
 			name = "Three For Die";
+			packageProductDependencies = (
+				389240AA29A18CD80005AA3D /* FirebaseAuth */,
+				389240AC29A18CD80005AA3D /* FirebaseFirestore */,
+				389240AE29A18CD80005AA3D /* FirebaseStorage */,
+			);
 			productName = "Three For Die";
 			productReference = 3892409729A187260005AA3D /* Three For Die.app */;
 			productType = "com.apple.product-type.application";
@@ -110,6 +151,9 @@
 				Base,
 			);
 			mainGroup = 3892408E29A187260005AA3D;
+			packageReferences = (
+				389240A929A18CD80005AA3D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 3892409829A187260005AA3D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -126,6 +170,7 @@
 			files = (
 				389240A329A187260005AA3D /* Preview Assets.xcassets in Resources */,
 				3892409F29A187260005AA3D /* Assets.xcassets in Resources */,
+				389240B129A18DC80005AA3D /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,6 +181,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				389240B529A19D170005AA3D /* TabView.swift in Sources */,
 				3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -275,7 +321,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
@@ -313,7 +359,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
@@ -350,6 +396,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		389240A929A18CD80005AA3D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		389240AA29A18CD80005AA3D /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 389240A929A18CD80005AA3D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		389240AC29A18CD80005AA3D /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 389240A929A18CD80005AA3D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		389240AE29A18CD80005AA3D /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 389240A929A18CD80005AA3D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3892408F29A187260005AA3D /* Project object */;
 }
