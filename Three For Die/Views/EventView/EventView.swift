@@ -11,36 +11,47 @@ struct EventView: View {
     let event: Event
     
     var body: some View {
-        VStack(spacing: 20) {
-            HStack(spacing: 100) {
-                Text(event.name)
-                    .font(.title)
-                    .fontWeight(.semibold)
-                
-                HStack {
-                    Image(systemName: "pin")
-                    Text(event.location)
+        HStack(spacing: 80) {
+            VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(event.name)
+                        .font(.title)
+                        .fontWeight(.semibold)
+                    Text(event.description)
+                        .font(.body)
+                        .foregroundColor(CustomColors.gray_2)
                 }
-            }
-            
-            HStack(spacing: 100) {
                 HStack {
                     ForEach(1...event.numPeopleCur, id: \.self) { i in
-                        Image(systemName: "circle")
+                        Image(systemName: "circle.fill")
                             .renderingMode(.template)
                             .foregroundColor(.green)
                     }
                     ForEach(event.numPeopleCur...(event.numPeopleReq - 1), id: \.self) { i in
-                        Image(systemName: "circle")
+                        Image(systemName: "circle.fill")
+                            .foregroundColor(CustomColors.gray_1)
                     }
                 }
-                Text(event.description)
-                    .font(.body)
-                    .foregroundColor(.gray)
+            }
+            VStack(alignment: .trailing, spacing: 6) {
+                HStack {
+                    Image(systemName: "person")
+                        .foregroundColor(CustomColors.secondary)
+                    Text(event.host)
+                }
+                HStack {
+                    Image(systemName: "pin")
+                        .foregroundColor(CustomColors.secondary)
+                    Text(event.location)
+                }
+                
+                Text(event.time.timeAgoDisplay())
+                    .foregroundColor(CustomColors.gray_1)
             }
         }
         .padding()
-        .border(.black)
+        .background(.white)
+        .cornerRadius(15)
     }
 }
 

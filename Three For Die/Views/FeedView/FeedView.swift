@@ -11,20 +11,26 @@ import SwiftUI
 struct FeedView: View{
     var body: some View {
         NavigationView {
-            ScrollView(.vertical) {
-                ForEach(Event.preview) { event in
-                    EventView(event: event)
+            ZStack {
+                CustomColors.primary.ignoresSafeArea()
+                ScrollView(.vertical) {
+                    VStack (spacing: 15) {
+                        ForEach(Event.preview) { event in
+                            EventView(event: event)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .navigationTitle("Feed")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                    }
                 }
             }
-            .navigationTitle("Feed")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Image(systemName: "line.3.horizontal.decrease.circle")
-                }
-            }
+            .accentColor(CustomColors.primary)
         }
-        
     }
 }
 
