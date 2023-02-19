@@ -76,7 +76,16 @@ struct AddEventView: View {
             HStack {
                 Spacer ()
                 Button () {
-                    
+                    Task.init {
+                        let data: [String: Any] = [
+                            "name": title,
+                            "numPeopleReq": Int (numRequired) ?? 0,
+                            "description": notes
+                        ]
+                        let event: Event = UserAPI.createEvent (data: data)
+                        await UserAPI.addEvent (event: event)
+                        
+                    }
                 } label: {
                     Image (systemName: "checkmark.rectangle.fill")
                         .resizable ()
@@ -85,11 +94,5 @@ struct AddEventView: View {
                 }
             }
         }.padding ()
-    }
-}
-
-struct AddEventView_Preview: PreviewProvider {
-    static var previews: some View {
-        AddEventView()
     }
 }
