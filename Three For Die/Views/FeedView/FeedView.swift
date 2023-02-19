@@ -6,3 +6,28 @@
 //
 
 import Foundation
+import SwiftUI
+
+struct FeedView: View{
+    var body: some View {
+        NavigationView {
+            ScrollView(.vertical) {
+                
+            }
+            .navigationTitle("Feed")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Image(systemName: "line.3.horizontal.decrease.circle")
+                }
+            }
+        }
+        
+    }
+}
+
+struct FeedViews_Preview: PreviewProvider {
+    static var previews: some View {
+        FeedView()
+    }
+}
