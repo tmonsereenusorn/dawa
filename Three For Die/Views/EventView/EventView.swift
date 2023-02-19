@@ -14,7 +14,7 @@ struct EventView: View {
         VStack(spacing: 20) {
             HStack(spacing: 100) {
                 Text(event.name)
-                    .font(.title2)
+                    .font(.title)
                     .fontWeight(.semibold)
                 
                 HStack {
@@ -22,20 +22,25 @@ struct EventView: View {
                     Text(event.location)
                 }
             }
-            Text(event.description)
-                .font(.title2)
             
-            HStack {
-                ForEach(1...event.numPeopleCur, id: \.self) { i in
-                    Image(systemName: "circle")
-                        .renderingMode(.template)
-                        .foregroundColor(.green)
+            HStack(spacing: 100) {
+                HStack {
+                    ForEach(1...event.numPeopleCur, id: \.self) { i in
+                        Image(systemName: "circle")
+                            .renderingMode(.template)
+                            .foregroundColor(.green)
+                    }
+                    ForEach(event.numPeopleCur...(event.numPeopleReq - 1), id: \.self) { i in
+                        Image(systemName: "circle")
+                    }
                 }
-                ForEach(event.numPeopleCur...(event.numPeopleReq - 1), id: \.self) { i in
-                    Image(systemName: "circle")
-                }
+                Text(event.description)
+                    .font(.body)
+                    .foregroundColor(.gray)
             }
         }
+        .padding()
+        .border(.black)
     }
 }
 

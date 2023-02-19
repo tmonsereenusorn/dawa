@@ -13,7 +13,7 @@ struct FeedView: View{
         NavigationView {
             ScrollView(.vertical) {
                 ForEach(Event.preview) { event in
-                    
+                    EventView(event: event)
                 }
             }
             .navigationTitle("Feed")

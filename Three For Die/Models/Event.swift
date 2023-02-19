@@ -27,5 +27,5 @@ struct Event: Identifiable {
         self.activity = activity
     }
     
-    static let preview: [Event] = Array(repeating: Event(name: "3 for die", numPeopleReq: 3, numPeopleCur: 1, description: "no noobs plz", host: "Tee", participants: [], location: "Phi Psi Lawn", time: Date.now, activity: "die"), count: 10)
+    static let preview: [Event] = Array(repeating: Event(name: "3 for die", numPeopleReq: 3, numPeopleCur: 1, description: "no noobs plz", host: "Tee", participants: [], location: "Phi Psi Lawn", time: Date.now, activity: "die"), count: 20)
 }
