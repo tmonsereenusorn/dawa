@@ -8,7 +8,7 @@ enum TabType {
 
 struct TabView: View {
     @State var selectedTab: TabType = .home
-    
+
     var body: some View {
         ZStack {
             VStack {
@@ -19,9 +19,9 @@ struct TabView: View {
                         Image (systemName: "house")
                             .resizable ()
                             .frame (width: UIScreen.main.bounds.width / 10, height: UIScreen.main.bounds.height / 30)
-                            .foregroundColor(self.selectedTab == .home ? Color.black : Color.gray.opacity(0.8))
+                            .foregroundColor(self.selectedTab == .home ? Color.primary : Color.gray.opacity(0.8))
                         Text ("Home")
-                            .foregroundColor(self.selectedTab == .home ? Color.black : Color.gray.opacity(0.8))
+                            .foregroundColor(self.selectedTab == .home ? Color.primary : Color.gray.opacity(0.8))
                     }
                     .onTapGesture {
                         withAnimation {
@@ -33,9 +33,9 @@ struct TabView: View {
                         Image (systemName: "figure.walk")
                             .resizable ()
                             .frame (width: UIScreen.main.bounds.width / 20, height: UIScreen.main.bounds.height / 35)
-                            .foregroundColor(self.selectedTab == .activities ? Color.black : Color.gray.opacity(0.8))
+                            .foregroundColor(self.selectedTab == .activities ? Color.primary : Color.gray.opacity(0.8))
                         Text ("Activities")
-                            .foregroundColor(self.selectedTab == .activities ? Color.black : Color.gray.opacity(0.8))
+                            .foregroundColor(self.selectedTab == .activities ? Color.primary : Color.gray.opacity(0.8))
                     }
                     .onTapGesture {
                         withAnimation {
@@ -46,12 +46,5 @@ struct TabView: View {
                 }
             }
         }
-    }
-}
-
-
-struct TabView_Preview: PreviewProvider {
-    static var previews: some View {
-        TabView ()
     }
 }
