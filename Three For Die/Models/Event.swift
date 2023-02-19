@@ -7,12 +7,12 @@ struct Event {
     var description: String
     var host: String
     var participants: [String]
-    var location: Location // need to make location struct
+    var location: String
     var time: Date
     var activity: String
     
     init (name: String = "", numPeopleReq: Int = 0, numPeopleCur: Int = 0, description: String = "", 
-            host: String = "", participants: [String] = [], location: Location = "", time: Date = Date.now, 
+            host: String = "", participants: [String] = [], location: String = "", time: Date = Date.now,
             activity: String = "") {
         self.name = name
         self.numPeopleReq = numPeopleReq
