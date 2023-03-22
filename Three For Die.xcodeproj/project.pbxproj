@@ -17,6 +17,9 @@
 		389240B529A19D170005AA3D /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389240B429A19D170005AA3D /* TabView.swift */; };
 		389240B929A1B2280005AA3D /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389240B829A1B2280005AA3D /* UserAPI.swift */; };
 		389240BC29A1B3960005AA3D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389240BB29A1B3960005AA3D /* User.swift */; };
+		389240C029A1B7F40005AA3D /* AddEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389240BF29A1B7F40005AA3D /* AddEventView.swift */; };
+		389240C329A1EC9D0005AA3D /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389240C129A1EC9D0005AA3D /* Location.swift */; };
+		389240C429A1EC9D0005AA3D /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389240C229A1EC9D0005AA3D /* Event.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +32,9 @@
 		389240B429A19D170005AA3D /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 		389240B829A1B2280005AA3D /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		389240BB29A1B3960005AA3D /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		389240BF29A1B7F40005AA3D /* AddEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventView.swift; sourceTree = "<group>"; };
+		389240C129A1EC9D0005AA3D /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		389240C229A1EC9D0005AA3D /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +70,7 @@
 		3892409929A187260005AA3D /* Three For Die */ = {
 			isa = PBXGroup;
 			children = (
+				389240BD29A1B6D00005AA3D /* Components */,
 				389240BA29A1B3900005AA3D /* Models */,
 				389240B729A1A8680005AA3D /* API */,
 				389240B029A18DC80005AA3D /* GoogleService-Info.plist */,
@@ -112,8 +119,26 @@
 			isa = PBXGroup;
 			children = (
 				389240BB29A1B3960005AA3D /* User.swift */,
+				389240C229A1EC9D0005AA3D /* Event.swift */,
+				389240C129A1EC9D0005AA3D /* Location.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		389240BD29A1B6D00005AA3D /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				389240BE29A1B7E50005AA3D /* AddEvent */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		389240BE29A1B7E50005AA3D /* AddEvent */ = {
+			isa = PBXGroup;
+			children = (
+				389240BF29A1B7F40005AA3D /* AddEventView.swift */,
+			);
+			path = AddEvent;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -195,9 +220,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				389240C029A1B7F40005AA3D /* AddEventView.swift in Sources */,
 				389240BC29A1B3960005AA3D /* User.swift in Sources */,
 				389240B529A19D170005AA3D /* TabView.swift in Sources */,
 				3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */,
+				389240C329A1EC9D0005AA3D /* Location.swift in Sources */,
+				389240C429A1EC9D0005AA3D /* Event.swift in Sources */,
 				389240B929A1B2280005AA3D /* UserAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
