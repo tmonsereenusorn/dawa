@@ -82,7 +82,7 @@ struct AddEventView: View {
                             "numPeopleReq": Int (numRequired) ?? 0,
                             "description": notes
                         ]
-                        let event: Event = UserAPI.createEvent (data: data)
+                        let event: Event = await UserAPI.createEvent (data: data)
                         await UserAPI.addEvent (event: event)
                         
                     }
