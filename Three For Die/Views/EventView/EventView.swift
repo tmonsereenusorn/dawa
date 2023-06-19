@@ -11,16 +11,31 @@ struct EventView: View {
     let event: Event
     
     var body: some View {
-        HStack(spacing: 80) {
-            VStack(alignment: .leading, spacing: 10) {
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(event.name)
-                        .font(.title)
-                        .fontWeight(.semibold)
-                    Text(event.description)
-                        .font(.body)
-                        .foregroundColor(CustomColors.gray_2)
-                }
+        VStack(alignment: .leading) {
+            HStack {
+                Image(systemName: "person")
+                    .foregroundColor(Color.accentColor)
+                Text(event.host)
+                    .foregroundColor(Color.accentColor)
+                Text(event.time.timeAgoDisplay())
+                    .foregroundColor(CustomColors.gray_2)
+            }
+            HStack {
+                Text(event.name)
+                    .font(.title)
+                    .foregroundColor(Color.accentColor)
+                    .fontWeight(.semibold)
+                Spacer()
+                Image(systemName: "pin")
+                    .foregroundColor(Color.accentColor)
+                Text(event.location)
+                    .foregroundColor(Color.accentColor)
+            }
+            HStack {
+                Text(event.description)
+                    .font(.body)
+                    .foregroundColor(CustomColors.gray_2)
+                Spacer()
                 HStack {
                     ForEach(1...event.numPeopleCur, id: \.self) { i in
                         Image(systemName: "circle.fill")
@@ -33,30 +48,15 @@ struct EventView: View {
                     }
                 }
             }
-            VStack(alignment: .trailing, spacing: 6) {
-                HStack {
-                    Image(systemName: "person")
-                        .foregroundColor(CustomColors.secondary)
-                    Text(event.host)
-                }
-                HStack {
-                    Image(systemName: "pin")
-                        .foregroundColor(CustomColors.secondary)
-                    Text(event.location)
-                }
-                
-                Text(event.time.timeAgoDisplay())
-                    .foregroundColor(CustomColors.gray_1)
-            }
         }
         .padding()
-        .background(.white)
-        .cornerRadius(15)
+        .background(CustomColors.post_grey)
+        .accentColor(.white)
     }
 }
 
-struct EventView_Previews: PreviewProvider {
-    static var previews: some View {
-        EventView(event: Event.preview[0])
-    }
-}
+//struct EventView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EventView(event: Event.preview[0])
+//    }
+//}

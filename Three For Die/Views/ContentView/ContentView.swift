@@ -9,6 +9,11 @@ import Foundation
 import SwiftUI
 
 struct ContentView: View {
+    init() {
+        UITableView.appearance().tintColor = UIColor.white
+        UINavigationBar.appearance().tintColor = UIColor.white
+    }
+    
     @State var selectedTab: TabType = .home
     
     var body: some View {

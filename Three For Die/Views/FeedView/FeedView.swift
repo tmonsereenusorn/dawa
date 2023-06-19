@@ -13,7 +13,7 @@ struct FeedView: View{
     
     init() {
         let newNavBarAppearance = customNavBarAppearance()
-                
+        
         let appearance = UINavigationBar.appearance()
         appearance.scrollEdgeAppearance = newNavBarAppearance
         appearance.compactAppearance = newNavBarAppearance
@@ -47,14 +47,25 @@ struct FeedView: View{
                     }
                     .position (x: UIScreen.main.bounds.width * 0.9, y: UIScreen.main.bounds.height * 0.73)
                 }
-                .navigationBarTitle("Stanford").navigationBarHidden(false)
+                .navigationBarTitle(Text("Stanford"))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: {
+                            
+                        }) {
+                            Image(systemName: "line.horizontal.3")
+                        }
+                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Image(systemName: "line.3.horizontal.decrease.circle")
+                        Button(action: {
+                            
+                        }) {
+                            Image(systemName: "slider.horizontal.3")
+                        }
                     }
                 }
-                .accentColor(CustomColors.primary)
+                .accentColor(.white)
             }
         } else {
             // Fallback on earlier versions
@@ -67,7 +78,7 @@ func customNavBarAppearance() -> UINavigationBarAppearance {
     
     // Apply a red background.
     customNavBarAppearance.configureWithOpaqueBackground()
-    customNavBarAppearance.backgroundColor = .systemRed
+    customNavBarAppearance.backgroundColor = UIColor(CustomColors.cardinal_red)
     
     // Apply white colored normal and large titles.
     customNavBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
