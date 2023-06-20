@@ -24,7 +24,6 @@ struct FeedView: View{
         if #available(iOS 16.0, *) {
             NavigationStack {
                 ZStack {
-                    Color.primary.ignoresSafeArea()
                     ScrollView(.vertical) {
                         VStack (spacing: 15) {
                             ForEach(Event.preview) { event in
@@ -33,6 +32,7 @@ struct FeedView: View{
                         }
                         .frame(maxWidth: .infinity)
                     }
+                    Divider()
                     
                     
                     Button () {
@@ -41,12 +41,13 @@ struct FeedView: View{
                         Image (systemName: "plus.circle.fill")
                             .resizable ()
                             .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
-                            .foregroundColor (Color (red: 0.94, green: 0.73, blue: 0.75))
+                            .foregroundColor(CustomColors.cardinal_red)
                     }.popover(isPresented: $addingEvent) {
                         AddEventView()
                     }
                     .position (x: UIScreen.main.bounds.width * 0.9, y: UIScreen.main.bounds.height * 0.73)
                 }
+                .background(Color.primary)
                 .navigationBarTitle(Text("Stanford"))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -98,8 +99,8 @@ func customNavBarAppearance() -> UINavigationBarAppearance {
     return customNavBarAppearance
 }
 
-struct FeedViews_Preview: PreviewProvider {
-    static var previews: some View {
-        FeedView()
-    }
-}
+//struct FeedViews_Preview: PreviewProvider {
+//    static var previews: some View {
+//        FeedView()
+//    }
+//}

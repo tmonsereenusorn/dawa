@@ -51,7 +51,6 @@ struct EventView: View {
         }
         .padding()
         .background(CustomColors.post_grey)
-        .accentColor(.white)
     }
 }
 

@@ -17,14 +17,20 @@ struct ContentView: View {
     @State var selectedTab: TabType = .home
     
     var body: some View {
-        VStack {
+        VStack(spacing:0) {
             if selectedTab == .home {
                 FeedView()
             }
             
-            TabView(selectedTab: $selectedTab)
+            VStack {
+                Divider()
+                    .overlay(.gray)
+                TabView(selectedTab: $selectedTab)
+            }
         }
+        .background(Color.black)
     }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
