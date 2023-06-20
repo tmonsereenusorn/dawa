@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>735004843201-rppr0o3kmise00a0j59lmm0rar7686rs.apps.googleusercontent.com</string>
+	<string>635929962661-l8lojmi6q067i6qt3lr3mtm0i70pmnco.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.735004843201-rppr0o3kmise00a0j59lmm0rar7686rs</string>
+	<string>com.googleusercontent.apps.635929962661-l8lojmi6q067i6qt3lr3mtm0i70pmnco</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBPtziZlY_w94Jdz1cUzu7tGBu0hmocjVQ</string>
+	<string>AIzaSyD-punNy7ABXsNC1G9SDmxfLBISBW2bj2k</string>
 	<key>GCM_SENDER_ID</key>
-	<string>735004843201</string>
+	<string>635929962661</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>threefordie.Three-For-Die</string>
 	<key>PROJECT_ID</key>
-	<string>three-for-die</string>
+	<string>threefordie</string>
 	<key>STORAGE_BUCKET</key>
-	<string>three-for-die.appspot.com</string>
+	<string>threefordie.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:735004843201:ios:6bd26116a89f5a9a798840</string>
+	<string>1:635929962661:ios:065bf34fbd4f4239b2454c</string>
 </dict>
 </plist>
