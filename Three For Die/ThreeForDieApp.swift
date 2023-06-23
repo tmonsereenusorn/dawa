@@ -1,5 +1,7 @@
 import SwiftUI
 import FirebaseCore
+import FirebaseFirestore
+import FirebaseAuth
 
 @main
 struct Three_For_DieApp: App {
