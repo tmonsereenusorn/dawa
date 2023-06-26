@@ -1,19 +1,21 @@
 import Foundation
 
-struct User {
-    var uid: String
-    var username: String
-    var flakeScore: Int
-    var numAttended: Int
-    var numFlakes: Int
-    var bio: String
+struct User: Identifiable, Codable {
+    let id: String
+    let fullname: String
+    let email: String
     
-    init (uid: String = "", username: String = "", flakeScore: Int = 0, numAttended: Int = 0, numFlakes: Int = 0, bio: String = "") {
-        self.uid = uid
-        self.username = username
-        self.flakeScore = flakeScore
-        self.numAttended = numAttended
-        self.numFlakes = numFlakes
-        self.bio = bio
+    var initials: String {
+        let formatter = PersonNameComponentsFormatter()
+        if let components = formatter.personNameComponents(from: fullname) {
+            formatter.style = .abbreviated
+            return formatter.string(from: components)
+        }
+        
+        return ""
     }
+}
+
+extension User {
+    static var MOCK_USER = User(id: NSUUID().uuidString, fullname: "Kobe Bryant", email: "test@gmail.com")
 }

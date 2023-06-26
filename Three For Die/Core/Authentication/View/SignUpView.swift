@@ -13,10 +13,11 @@ import FirebaseAuth
 
 struct SignUpView: View {
     @State private var email = ""
-    @State private var fullName = ""
+    @State private var fullname = ""
     @State private var password = ""
     @State private var confirmPassword = ""
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var viewModel: AuthViewModel
 
     var body: some View {
         VStack {
@@ -31,7 +32,7 @@ struct SignUpView: View {
                           placeholder: "name@example.com")
                 .autocapitalization(.none)
                 
-                InputView(text: $fullName,
+                InputView(text: $fullname,
                           title: "Full Name",
                           placeholder: "Enter your name")
                 
@@ -48,9 +49,11 @@ struct SignUpView: View {
             .padding(.horizontal)
             .padding(.top, 12)
             
-            // Login button
+            // Sign Up button
             Button {
-                print("Sign user up...")
+                Task {
+                    try await viewModel.createUser(withEmail:email, password:password, fullname: fullname)
+                }
             } label: {
                 HStack {
                     Text("SIGN UP")
