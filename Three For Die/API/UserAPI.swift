@@ -66,7 +66,7 @@ class UserAPI: NSObject, ObservableObject {
                 "time": event.time,
                 "activity": event.activity
             ]
-            db.collection("events").addDocument(data: data)
+            try await db.collection("events").addDocument(data: data)
         } catch {
             print (error.localizedDescription)
         }
