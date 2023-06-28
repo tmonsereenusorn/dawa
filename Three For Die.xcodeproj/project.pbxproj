@@ -47,6 +47,7 @@
 		85C854CE2A4167B00057F55F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 85C854CD2A4167B00057F55F /* GoogleService-Info.plist */; };
 		85C854D12A418EBF0057F55F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D02A418EBF0057F55F /* ContentView.swift */; };
 		85C854D42A418F290057F55F /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D32A418F290057F55F /* SignUpView.swift */; };
+		85CD14D42A4C25F200E74434 /* VerifyEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CD14D32A4C25F200E74434 /* VerifyEmailView.swift */; };
 		85D5DD8B2A42E4C000D61F12 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8A2A42E4C000D61F12 /* LoginView.swift */; };
 		85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8F2A42EAC500D61F12 /* InputView.swift */; };
 		85D778242A45F6160052D5F9 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D778232A45F6160052D5F9 /* ProfileView.swift */; };
@@ -73,6 +74,7 @@
 		85C854CD2A4167B00057F55F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		85C854D02A418EBF0057F55F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		85C854D32A418F290057F55F /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		85CD14D32A4C25F200E74434 /* VerifyEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailView.swift; sourceTree = "<group>"; };
 		85D5DD8A2A42E4C000D61F12 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		85D5DD8F2A42EAC500D61F12 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		85D778232A45F6160052D5F9 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 			children = (
 				85C854D32A418F290057F55F /* SignUpView.swift */,
 				85D5DD8A2A42E4C000D61F12 /* LoginView.swift */,
+				85CD14D32A4C25F200E74434 /* VerifyEmailView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -365,6 +368,7 @@
 				3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */,
 				85B3C1C42A4962E50041B3FF /* AuthViewModel.swift in Sources */,
 				85D9BAF32A3AC2F100E11652 /* DateExtension.swift in Sources */,
+				85CD14D42A4C25F200E74434 /* VerifyEmailView.swift in Sources */,
 				389240C329A1EC9D0005AA3D /* Location.swift in Sources */,
 				85D778262A45FE680052D5F9 /* SettingsRowView.swift in Sources */,
 				389240C429A1EC9D0005AA3D /* Event.swift in Sources */,

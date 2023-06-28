@@ -64,4 +64,21 @@ class AuthViewModel: ObservableObject {
         guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
         self.currentUser = try? snapshot.data(as: User.self)
     }
+    
+    func sendVerificationEmail() async throws {
+        do {
+            try await self.userSession?.sendEmailVerification()
+        } catch {
+            print("DEBUG: Sending email failed with error \(error.localizedDescription)")
+        }
+    }
+    
+    func refreshUser() async throws {
+        do {
+            try await self.userSession?.reload()
+            self.userSession = Auth.auth().currentUser
+        } catch {
+            print("DEBUG: Error refreshing user: \(error.localizedDescription)")
+        }
+    }
 }

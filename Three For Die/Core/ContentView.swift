@@ -13,10 +13,15 @@ import FirebaseAuth
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: AuthViewModel
+    
     var body: some View {
         Group {
-            if viewModel.userSession != nil {
-                ProfileView()
+            if let userSession = viewModel.userSession {
+                if userSession.isEmailVerified {
+                    FeedView()
+                } else {
+                    VerifyEmailView()
+                }
             } else {
                 LoginView()
             }
