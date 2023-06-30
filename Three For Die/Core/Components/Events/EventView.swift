@@ -14,22 +14,22 @@ struct EventView: View {
         VStack(alignment: .leading) {
             HStack {
                 Image(systemName: "person")
-                    .foregroundColor(Color.accentColor)
+                    .foregroundColor(.black)
                 Text(event.host)
-                    .foregroundColor(Color.accentColor)
+                    .foregroundColor(.black)
                 Text(event.time.timeAgoDisplay())
                     .foregroundColor(CustomColors.gray_2)
             }
             HStack {
                 Text(event.name)
                     .font(.title)
-                    .foregroundColor(Color.accentColor)
+                    .foregroundColor(.black)
                     .fontWeight(.semibold)
                 Spacer()
                 Image(systemName: "pin")
-                    .foregroundColor(Color.accentColor)
+                    .foregroundColor(.black)
                 Text(event.location)
-                    .foregroundColor(Color.accentColor)
+                    .foregroundColor(.black)
             }
             HStack {
                 Text(event.description)
@@ -50,7 +50,8 @@ struct EventView: View {
             }
         }
         .padding()
-        .background(CustomColors.post_grey)
+        .background(.white)
+        .cornerRadius(12)
     }
 }
 

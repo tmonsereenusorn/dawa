@@ -25,7 +25,7 @@ struct FeedView: View{
             NavigationStack {
                 ZStack {
                     ScrollView(.vertical) {
-                        VStack (spacing: 15) {
+                        LazyVStack (spacing: 15) {
                             ForEach(Event.preview) { event in
                                 EventView(event: event)
                             }

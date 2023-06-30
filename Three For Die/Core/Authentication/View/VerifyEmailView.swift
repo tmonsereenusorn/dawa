@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct VerifyEmailView: View {
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
     @EnvironmentObject var viewModel: AuthViewModel
     
     var body: some View {
@@ -23,7 +23,7 @@ struct VerifyEmailView: View {
                 Text("Verify your email")
                     .font(.largeTitle)
                 
-                Text("A verification link has been sent to \(viewModel.currentUser?.email ?? "your email")")
+                Text("A verification link has been sent to \(viewModel.currentUser?.email ?? "your email").")
                     .font(.footnote)
             }
             
@@ -35,6 +35,22 @@ struct VerifyEmailView: View {
                 } label: {
                     HStack {
                         Text("Resend Email")
+                            .fontWeight(.semibold)
+                    }
+                    .foregroundColor(.white)
+                    .frame(width: UIScreen.main.bounds.width - 32, height: 48)
+                }
+                .background(Color(.systemBlue))
+                .cornerRadius(10)
+                .padding(.top, 24)
+            }
+            
+            VStack {
+                Button {
+                    viewModel.signOut()
+                } label: {
+                    HStack {
+                        Text("Sign out")
                             .fontWeight(.semibold)
                     }
                     .foregroundColor(.white)
