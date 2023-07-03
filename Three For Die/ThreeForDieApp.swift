@@ -7,12 +7,14 @@ import FirebaseAuth
 struct Three_For_DieApp: App {
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @StateObject var viewModel = AuthViewModel()
+    @StateObject var authViewModel = AuthViewModel()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(viewModel)
+            NavigationStack {
+                ContentView()
+                    .environmentObject(authViewModel)
+            }
         }
     }
 }

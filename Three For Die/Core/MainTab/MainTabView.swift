@@ -26,6 +26,14 @@ struct MainTabView: View {
                 .tabItem {
                     Image(systemName: "figure.walk")
                 }.tag(1)
+            
+            ProfileView()
+                .onTapGesture {
+                    self.selectedIndex = 2
+                }
+                .tabItem {
+                    Image(systemName: "person")
+                }.tag(2)
         }
         .background(Color.black)
         .accentColor(.white)
