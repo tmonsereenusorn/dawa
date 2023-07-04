@@ -13,8 +13,8 @@ struct ActivitiesView: View {
     }
 }
 
-struct ActivitiesView_Previews: PreviewProvider {
-    static var previews: some View {
-        ActivitiesView()
-    }
-}
+//struct ActivitiesView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ActivitiesView()
+//    }
+//}

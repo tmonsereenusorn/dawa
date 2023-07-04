@@ -42,7 +42,7 @@ struct FeedView: View{
             .clipShape(Circle())
             .padding()
             .popover(isPresented: $addingEvent) {
-                AddEventView()
+                AddActivityView()
             }
         }
         .background(.black)
