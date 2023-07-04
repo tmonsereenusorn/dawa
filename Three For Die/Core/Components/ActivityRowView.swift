@@ -7,42 +7,40 @@
 
 import SwiftUI
 
-struct EventView: View {
-    let event: Event
-    
+struct ActivityRowView: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
                 Image(systemName: "person")
                     .foregroundColor(.black)
-                Text(event.host)
+                Text("Tee")
                     .foregroundColor(.black)
-                Text(event.time.timeAgoDisplay())
+                Text("2m")
                     .foregroundColor(CustomColors.gray_2)
             }
             HStack {
-                Text(event.name)
+                Text("3 For Die")
                     .font(.title)
                     .foregroundColor(.black)
                     .fontWeight(.semibold)
                 Spacer()
                 Image(systemName: "pin")
                     .foregroundColor(.black)
-                Text(event.location)
+                Text("Phi Psi Lawn")
                     .foregroundColor(.black)
             }
             HStack {
-                Text(event.description)
+                Text("No noobs plz")
                     .font(.body)
                     .foregroundColor(CustomColors.gray_2)
                 Spacer()
                 HStack {
-                    ForEach(1...event.numPeopleCur, id: \.self) { i in
+                    ForEach(1...1, id: \.self) { i in
                         Image(systemName: "circle.fill")
                             .renderingMode(.template)
                             .foregroundColor(.green)
                     }
-                    ForEach(event.numPeopleCur...(event.numPeopleReq - 1), id: \.self) { i in
+                    ForEach(1...(3 - 1), id: \.self) { i in
                         Image(systemName: "circle.fill")
                             .foregroundColor(CustomColors.gray_1)
                     }
@@ -55,8 +53,8 @@ struct EventView: View {
     }
 }
 
-//struct EventView_Previews: PreviewProvider {
+//struct ActivityRowView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        EventView(event: Event.preview[0])
+//        ActivityRowView()
 //    }
 //}

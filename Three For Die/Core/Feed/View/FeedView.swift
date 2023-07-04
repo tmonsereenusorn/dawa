@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct FeedView: View{
-    @State var addingEvent: Bool = false
+    @State private var addingEvent: Bool = false
     
     init() {
         let newNavBarAppearance = customNavBarAppearance()
@@ -21,56 +21,31 @@ struct FeedView: View{
     }
     
     var body: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                ZStack {
-                    ScrollView(.vertical) {
-                        LazyVStack (spacing: 15) {
-                            ForEach(Event.preview) { event in
-                                EventView(event: event)
-                            }
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    Divider()
-                    
-                    
-                    Button () {
-                        addingEvent.toggle ()
-                    } label: {
-                        Image (systemName: "plus.circle.fill")
-                            .resizable ()
-                            .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
-                            .foregroundColor(CustomColors.cardinal_red)
-                    }.popover(isPresented: $addingEvent) {
-                        AddEventView()
-                    }
-                    .position (x: UIScreen.main.bounds.width * 0.9, y: UIScreen.main.bounds.height * 0.73)
-                }
-                .background(Color.primary)
-                .navigationBarTitle(Text("Stanford"))
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: {
-                            
-                        }) {
-                            Image(systemName: "line.horizontal.3")
-                        }
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            
-                        }) {
-                            Image(systemName: "slider.horizontal.3")
-                        }
+        ZStack(alignment: .bottomTrailing) {
+            ScrollView {
+                LazyVStack {
+                    ForEach(0 ... 20, id: \.self) { _ in
+                        ActivityRowView()
                     }
                 }
-                .accentColor(.white)
             }
-        } else {
-            // Fallback on earlier versions
+            Button () {
+                addingEvent.toggle ()
+            } label: {
+                Image (systemName: "plus.circle.fill")
+                    .resizable ()
+                    .renderingMode(.template)
+                    .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
+                    .foregroundColor(CustomColors.cardinal_red)
+            }
+            .background(.white)
+            .clipShape(Circle())
+            .padding()
+            .popover(isPresented: $addingEvent) {
+                AddEventView()
+            }
         }
+        .background(.black)
     }
 }
 
