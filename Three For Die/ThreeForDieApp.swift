@@ -11,10 +11,8 @@ struct Three_For_DieApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                ContentView()
-                    .environmentObject(authViewModel)
-            }
+            ContentView()
+                .environmentObject(authViewModel)
         }
     }
 }
