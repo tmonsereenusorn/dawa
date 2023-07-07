@@ -16,10 +16,13 @@
 		389240C029A1B7F40005AA3D /* AddActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389240BF29A1B7F40005AA3D /* AddActivityView.swift */; };
 		389240C329A1EC9D0005AA3D /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389240C129A1EC9D0005AA3D /* Location.swift */; };
 		389240C429A1EC9D0005AA3D /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389240C229A1EC9D0005AA3D /* Event.swift */; };
-		8503FCFC2A52D8A60024F98B /* SideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8503FCFB2A52D8A60024F98B /* SideMenuView.swift */; };
-		8503FCFE2A52D95D0024F98B /* SideMenuRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8503FCFD2A52D95D0024F98B /* SideMenuRowView.swift */; };
+		8503FCFC2A52D8A60024F98B /* LeftSideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8503FCFB2A52D8A60024F98B /* LeftSideMenuView.swift */; };
+		8503FCFE2A52D95D0024F98B /* LeftSideMenuRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8503FCFD2A52D95D0024F98B /* LeftSideMenuRowView.swift */; };
 		85A4171B2A56D99100A9096A /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A4171A2A56D99100A9096A /* UserService.swift */; };
 		85A9F85E2A54366800D04715 /* AddActivityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A9F85D2A54366800D04715 /* AddActivityViewModel.swift */; };
+		85AF06512A58297400599107 /* RightSideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AF06502A58297400599107 /* RightSideMenuView.swift */; };
+		85AF06532A582BCA00599107 /* RightSideMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AF06522A582BCA00599107 /* RightSideMenuViewModel.swift */; };
+		85AF06552A582E3300599107 /* RightSideMenuRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AF06542A582E3300599107 /* RightSideMenuRowView.swift */; };
 		85B273432A4EF69400D5A358 /* ActivitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B273422A4EF69400D5A358 /* ActivitiesView.swift */; };
 		85B3C1C42A4962E50041B3FF /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3C1C32A4962E50041B3FF /* AuthViewModel.swift */; };
 		85B3C1C72A4987AB0041B3FF /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 85B3C1C62A4987AB0041B3FF /* FirebaseAnalytics */; };
@@ -75,10 +78,13 @@
 		389240BF29A1B7F40005AA3D /* AddActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityView.swift; sourceTree = "<group>"; };
 		389240C129A1EC9D0005AA3D /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		389240C229A1EC9D0005AA3D /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
-		8503FCFB2A52D8A60024F98B /* SideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuView.swift; sourceTree = "<group>"; };
-		8503FCFD2A52D95D0024F98B /* SideMenuRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuRowView.swift; sourceTree = "<group>"; };
+		8503FCFB2A52D8A60024F98B /* LeftSideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftSideMenuView.swift; sourceTree = "<group>"; };
+		8503FCFD2A52D95D0024F98B /* LeftSideMenuRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftSideMenuRowView.swift; sourceTree = "<group>"; };
 		85A4171A2A56D99100A9096A /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		85A9F85D2A54366800D04715 /* AddActivityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityViewModel.swift; sourceTree = "<group>"; };
+		85AF06502A58297400599107 /* RightSideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSideMenuView.swift; sourceTree = "<group>"; };
+		85AF06522A582BCA00599107 /* RightSideMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSideMenuViewModel.swift; sourceTree = "<group>"; };
+		85AF06542A582E3300599107 /* RightSideMenuRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSideMenuRowView.swift; sourceTree = "<group>"; };
 		85B273422A4EF69400D5A358 /* ActivitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesView.swift; sourceTree = "<group>"; };
 		85B3C1C32A4962E50041B3FF /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		85C854CD2A4167B00057F55F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -179,7 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				389240BD29A1B6D00005AA3D /* Components */,
-				8503FCF62A52D8490024F98B /* SideMenu */,
+				8503FCF62A52D8490024F98B /* SideMenus */,
 				85B273412A4EF47700D5A358 /* Activities */,
 				85B273402A4EF31D00D5A358 /* MainTab */,
 				851F600E2A4EE38600188285 /* Feed */,
@@ -214,7 +220,6 @@
 				85D9BAE82A3AC0A700E11652 /* ActivityRowView.swift */,
 				85D5DD8F2A42EAC500D61F12 /* InputView.swift */,
 				85D778252A45FE680052D5F9 /* SettingsRowView.swift */,
-				8503FCFD2A52D95D0024F98B /* SideMenuRowView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -233,19 +238,22 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		8503FCF62A52D8490024F98B /* SideMenu */ = {
+		8503FCF62A52D8490024F98B /* SideMenus */ = {
 			isa = PBXGroup;
 			children = (
 				8503FCFA2A52D89A0024F98B /* ViewModels */,
 				8503FCF92A52D8960024F98B /* Views */,
 			);
-			path = SideMenu;
+			path = SideMenus;
 			sourceTree = "<group>";
 		};
 		8503FCF92A52D8960024F98B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				8503FCFB2A52D8A60024F98B /* SideMenuView.swift */,
+				8503FCFD2A52D95D0024F98B /* LeftSideMenuRowView.swift */,
+				8503FCFB2A52D8A60024F98B /* LeftSideMenuView.swift */,
+				85AF06502A58297400599107 /* RightSideMenuView.swift */,
+				85AF06542A582E3300599107 /* RightSideMenuRowView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -253,6 +261,7 @@
 		8503FCFA2A52D89A0024F98B /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				85AF06522A582BCA00599107 /* RightSideMenuViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -468,19 +477,22 @@
 				85D9BAEC2A3AC0A800E11652 /* FeedView.swift in Sources */,
 				389240BC29A1B3960005AA3D /* User.swift in Sources */,
 				389240B529A19D170005AA3D /* MainTabView.swift in Sources */,
+				85AF06532A582BCA00599107 /* RightSideMenuViewModel.swift in Sources */,
 				85A9F85E2A54366800D04715 /* AddActivityViewModel.swift in Sources */,
 				3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */,
 				85B3C1C42A4962E50041B3FF /* AuthViewModel.swift in Sources */,
 				85D9BAF32A3AC2F100E11652 /* DateExtension.swift in Sources */,
 				85CD14D42A4C25F200E74434 /* VerifyEmailView.swift in Sources */,
-				8503FCFE2A52D95D0024F98B /* SideMenuRowView.swift in Sources */,
+				8503FCFE2A52D95D0024F98B /* LeftSideMenuRowView.swift in Sources */,
 				389240C329A1EC9D0005AA3D /* Location.swift in Sources */,
 				85D778262A45FE680052D5F9 /* SettingsRowView.swift in Sources */,
+				85AF06512A58297400599107 /* RightSideMenuView.swift in Sources */,
 				389240C429A1EC9D0005AA3D /* Event.swift in Sources */,
 				85D778242A45F6160052D5F9 /* ProfileView.swift in Sources */,
 				85C854D42A418F290057F55F /* SignUpView.swift in Sources */,
+				85AF06552A582E3300599107 /* RightSideMenuRowView.swift in Sources */,
 				85C854D12A418EBF0057F55F /* ContentView.swift in Sources */,
-				8503FCFC2A52D8A60024F98B /* SideMenuView.swift in Sources */,
+				8503FCFC2A52D8A60024F98B /* LeftSideMenuView.swift in Sources */,
 				389240B929A1B2280005AA3D /* UserAPI.swift in Sources */,
 				85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */,
 				85A4171B2A56D99100A9096A /* UserService.swift in Sources */,

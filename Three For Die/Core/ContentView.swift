@@ -13,7 +13,8 @@ import FirebaseAuth
 
 struct ContentView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
-    @State private var showMenu = false
+    @State private var showLeftMenu = false
+    @State private var showRightMenu = false
     
     var body: some View {
         Group {
@@ -41,24 +42,39 @@ extension ContentView {
         NavigationStack {
             ZStack(alignment: .topLeading) {
                 MainTabView()
-                    .navigationBarHidden(showMenu)
+                    .navigationBarHidden(showLeftMenu || showRightMenu)
                 
-                if showMenu {
+                if showLeftMenu {
                     ZStack {
                         Color(.black)
-                            .opacity(showMenu ? 0.25 : 0.0)
+                            .opacity(showLeftMenu ? 0.25 : 0.0)
                     }.onTapGesture {
                         withAnimation(.easeInOut) {
-                            showMenu = false
+                            showLeftMenu = false
+                        }
+                    }
+                    .ignoresSafeArea()
+                } else if showRightMenu {
+                    ZStack {
+                        Color(.black)
+                            .opacity(showRightMenu ? 0.25 : 0.0)
+                    }.onTapGesture {
+                        withAnimation(.easeInOut) {
+                            showRightMenu = false
                         }
                     }
                     .ignoresSafeArea()
                 }
                 
-                SideMenuView()
+                LeftSideMenuView()
                     .frame(width: 300)
-                    .background(showMenu ? Color.white : Color.clear)
-                    .offset(x: showMenu ? 0 : -300, y: 0)
+                    .background(showLeftMenu ? Color.white : Color.clear)
+                    .offset(x: showLeftMenu ? 0 : -300, y: 0)
+                
+                RightSideMenuView()
+                    .frame(width: 300)
+                    .background(showRightMenu ? Color.white : Color.clear)
+                    .offset(x: showRightMenu ? 100 : 500, y: 0)
             }
             .navigationTitle("Stanford")
             .navigationBarTitleDisplayMode(.inline)
@@ -66,7 +82,7 @@ extension ContentView {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
                         withAnimation(.easeInOut) {
-                            showMenu.toggle()
+                            showLeftMenu.toggle()
                         }
                     } label: {
                         Circle()
@@ -75,9 +91,9 @@ extension ContentView {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink {
-                        if let user = authViewModel.currentUser {
-                            ProfileView(user: user)
+                    Button {
+                        withAnimation(.easeInOut) {
+                            showRightMenu.toggle()
                         }
                     } label: {
                         Circle()

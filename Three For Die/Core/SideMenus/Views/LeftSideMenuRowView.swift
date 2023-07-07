@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SideMenuRowView: View {
+struct LeftSideMenuRowView: View {
     var body: some View {
         HStack {
             RoundedRectangle(cornerRadius: 5)
@@ -23,8 +23,8 @@ struct SideMenuRowView: View {
     }
 }
 
-//struct SideMenuRowView_Previews: PreviewProvider {
+//struct LeftSideMenuRowView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        SideMenuRowView()
+//        LeftSideMenuRowView()
 //    }
 //}

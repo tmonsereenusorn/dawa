@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SideMenuView: View {
+struct LeftSideMenuView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
@@ -20,7 +20,7 @@ struct SideMenuView: View {
             ScrollView {
                 LazyVStack {
                     ForEach(0 ... 2, id: \.self) { _ in
-                        SideMenuRowView()
+                        LeftSideMenuRowView()
                     }
                 }
             }
@@ -28,8 +28,8 @@ struct SideMenuView: View {
     }
 }
 
-//struct SideMenuView_Previews: PreviewProvider {
+//struct LeftSideMenuView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        SideMenuView()
+//        LeftSideMenuView()
 //    }
 //}

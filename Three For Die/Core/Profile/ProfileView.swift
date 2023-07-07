@@ -25,6 +25,7 @@ struct ProfileView: View {
             
             Spacer()
         }
+        .navigationBarHidden(true)
         
 //        if let user = viewModel.currentUser {
 //            List {
