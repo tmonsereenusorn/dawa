@@ -22,11 +22,9 @@ struct ContentView: View {
                     mainInterfaceView
                 } else {
                     VerifyEmailView()
-                        .environmentObject(authViewModel)
                 }
             } else {
                 LoginView()
-                    .environmentObject(authViewModel)
             }
         }
     }
@@ -78,7 +76,9 @@ extension ContentView {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
-                        ProfileView()
+                        if let user = authViewModel.currentUser {
+                            ProfileView(user: user)
+                        }
                     } label: {
                         Circle()
                             .frame(width: 32, height: 32)
@@ -86,5 +86,6 @@ extension ContentView {
                 }
             }
         }
+        .environmentObject(authViewModel)
     }
 }

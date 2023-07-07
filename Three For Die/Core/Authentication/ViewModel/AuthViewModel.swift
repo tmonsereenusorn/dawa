@@ -19,6 +19,7 @@ protocol AuthenticationFormProtocol {
 class AuthViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User?
     @Published var currentUser: User?
+    private let userService = UserService()
     
     init() {
         self.userSession = Auth.auth().currentUser
@@ -62,8 +63,9 @@ class AuthViewModel: ObservableObject {
     
     func fetchUser() async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
-        self.currentUser = try? snapshot.data(as: User.self)
+        await userService.fetchUser(withUid: uid) { user in
+            self.currentUser = user
+        }
     }
     
     func sendVerificationEmail() async throws {

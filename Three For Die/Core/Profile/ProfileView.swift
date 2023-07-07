@@ -9,6 +9,12 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var viewModel: AuthViewModel
+    private let user: User
+    
+    init(user: User) {
+        self.user = user
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             headerView
@@ -126,10 +132,10 @@ extension ProfileView {
     
     var userInfoDetails: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Sample Name")
+            Text(user.fullname)
                 .font(.title2).bold()
             
-            Text("@username")
+            Text("@\(user.username)")
                 .font(.subheadline)
                 .foregroundColor(.gray)
             
