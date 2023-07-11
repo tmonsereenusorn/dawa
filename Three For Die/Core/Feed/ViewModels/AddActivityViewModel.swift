@@ -2,27 +2,19 @@
 //  AddActivityViewModel.swift
 //  Three For Die
 //
-//  Created by Tee Monsereenusorn on 7/4/23.
+//  Created by Tee Monsereenusorn on 7/12/23.
 //
 
 import Foundation
-import SwiftUI
 
-enum AddActivityViewModel: Int, CaseIterable {
-    case sport
-    case game
+class AddActivityViewModel: ObservableObject {
+    let service = ActivityService()
     
-    var label: String {
-        switch self {
-        case .sport: return "Sport"
-        case .game: return "Game"
-        }
-    }
-    
-    var color: Color {
-        switch self {
-        case .sport: return Color.blue
-        case .game: return Color.red
+    func addActivity(title: String, location: String, notes: String, numRequired: String, category: String) async throws {
+        do {
+            try await service.uploadActivity(title: title, location: location, notes: notes, numRequired: numRequired, category: category)
+        } catch {
+            print("DEBUG: Failed to upload activity with error \(error.localizedDescription)")
         }
     }
 }

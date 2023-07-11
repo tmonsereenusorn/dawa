@@ -11,6 +11,7 @@ import SwiftUI
 struct FeedView: View{
     @State private var addingEvent: Bool = false
     @State private var searchText = ""
+    @EnvironmentObject var authViewModel: AuthViewModel
     
     init() {
         let newNavBarAppearance = customNavBarAppearance()
@@ -22,37 +23,39 @@ struct FeedView: View{
     }
     
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            VStack {
-                SearchBar(text: $searchText)
-                    .padding()
-                
-                ScrollView() {
-                    LazyVStack(spacing: 16) {
-                        ForEach(0 ... 20, id: \.self) { _ in
-                            ActivityRowView()
+        if let user = authViewModel.currentUser {
+            ZStack(alignment: .bottomTrailing) {
+                VStack {
+                    SearchBar(text: $searchText)
+                        .padding()
+                    
+                    ScrollView() {
+                        LazyVStack(spacing: 16) {
+                            ForEach(0 ... 20, id: \.self) { _ in
+                                ActivityRowView()
+                            }
                         }
+                        .padding(.horizontal, 18)
                     }
-                    .padding(.horizontal, 18)
+                }
+                Button () {
+                    addingEvent.toggle ()
+                } label: {
+                    Image (systemName: "plus.circle.fill")
+                        .resizable ()
+                        .renderingMode(.template)
+                        .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
+                        .foregroundColor(CustomColors.cardinal_red)
+                }
+                .background(.white)
+                .clipShape(Circle())
+                .padding()
+                .popover(isPresented: $addingEvent) {
+                    AddActivityView(user: user)
                 }
             }
-            Button () {
-                addingEvent.toggle ()
-            } label: {
-                Image (systemName: "plus.circle.fill")
-                    .resizable ()
-                    .renderingMode(.template)
-                    .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
-                    .foregroundColor(CustomColors.cardinal_red)
-            }
-            .background(.white)
-            .clipShape(Circle())
-            .padding()
-            .popover(isPresented: $addingEvent) {
-                AddActivityView()
-            }
+            .background(.black)
         }
-        .background(.black)
     }
 }
 

@@ -4,12 +4,18 @@ import Combine
 
 struct AddActivityView: View {
     @State private var title = ""
-    @State private var numPeople = ""
+    @State private var numRequired = ""
     @State private var notes = ""
     @State private var location = ""
     @State private var showWarningMessage = false
     @State private var selectedTag = ""
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var viewModel = AddActivityViewModel()
+    private let user: User
+    
+    init(user: User) {
+        self.user = user
+    }
     
     var body: some View {
         VStack {
@@ -35,17 +41,17 @@ struct AddActivityView: View {
             
             // Number of people needed
             HStack {
-                InputView(text: $numPeople,
+                InputView(text: $numRequired,
                           title: "How many more people?",
                           placeholder: "Number of additional people needed")
                     .keyboardType(.numberPad)
-                    .onReceive(Just(numPeople)) { newValue in
+                    .onReceive(Just(numRequired)) { newValue in
                         let filtered = newValue.filter { "0123456789".contains($0) }
                         if filtered != newValue {
-                            self.numPeople = filtered
+                            self.numRequired = filtered
                         }
                         if Int(filtered) ?? 0 > 30 {
-                            self.numPeople = "30"
+                            self.numRequired = "30"
                             self.showWarningMessage = true
                         }
                     }
@@ -66,7 +72,7 @@ struct AddActivityView: View {
                     .font(.footnote)
                 ScrollView() {
                     LazyHStack() {
-                        ForEach(AddActivityViewModel.allCases, id: \.rawValue) { option in
+                        ForEach(ActivityFilters.allCases, id: \.rawValue) { option in
                             Button {
                                 selectedTag = option.label
                             } label: {
@@ -100,7 +106,10 @@ struct AddActivityView: View {
                 Spacer ()
                 
                 Button {
-                    
+                    Task {
+                        try await viewModel.addActivity(title: title, location: location, notes: notes, numRequired: numRequired, category: selectedTag)
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 } label: {
                     HStack {
                         Text("Create")
