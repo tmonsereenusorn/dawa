@@ -10,6 +10,7 @@ import SwiftUI
 
 struct FeedView: View{
     @State private var addingEvent: Bool = false
+    @State private var searchText = ""
     
     init() {
         let newNavBarAppearance = customNavBarAppearance()
@@ -22,11 +23,17 @@ struct FeedView: View{
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            ScrollView {
-                LazyVStack {
-                    ForEach(0 ... 20, id: \.self) { _ in
-                        ActivityRowView()
+            VStack {
+                SearchBar(text: $searchText)
+                    .padding()
+                
+                ScrollView() {
+                    LazyVStack(spacing: 16) {
+                        ForEach(0 ... 20, id: \.self) { _ in
+                            ActivityRowView()
+                        }
                     }
+                    .padding(.horizontal, 18)
                 }
             }
             Button () {
