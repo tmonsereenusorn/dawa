@@ -12,13 +12,16 @@ protocol AddActivityFormProtocol {
 }
 
 class AddActivityViewModel: ObservableObject {
+    @Published var didUploadActivity = false
     let service = ActivityService()
     
-    func addActivity(title: String, location: String, notes: String, numRequired: String, category: String) async throws {
+    func addActivity(title: String, location: String, notes: String, numRequired: Int, category: String) async throws {
         do {
             try await service.uploadActivity(title: title, location: location, notes: notes, numRequired: numRequired, category: category)
+            self.didUploadActivity = true
         } catch {
             print("DEBUG: Failed to upload activity with error \(error.localizedDescription)")
+            self.didUploadActivity = false
         }
     }
 }

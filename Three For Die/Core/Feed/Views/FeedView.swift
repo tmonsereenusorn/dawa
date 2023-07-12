@@ -12,6 +12,7 @@ struct FeedView: View{
     @State private var addingEvent: Bool = false
     @State private var searchText = ""
     @EnvironmentObject var authViewModel: AuthViewModel
+    @ObservedObject var viewModel = FeedViewModel()
     
     init() {
         let newNavBarAppearance = customNavBarAppearance()
@@ -31,8 +32,8 @@ struct FeedView: View{
                     
                     ScrollView() {
                         LazyVStack(spacing: 16) {
-                            ForEach(0 ... 20, id: \.self) { _ in
-                                ActivityRowView()
+                            ForEach(viewModel.activities) { activity in
+                                ActivityRowView(activity: activity)
                             }
                         }
                         .padding(.horizontal, 18)

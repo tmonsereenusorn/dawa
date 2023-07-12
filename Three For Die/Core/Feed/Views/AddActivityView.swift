@@ -113,8 +113,7 @@ struct AddActivityView: View {
                 
                 Button {
                     Task {
-                        try await viewModel.addActivity(title: title, location: location, notes: notes, numRequired: numRequired, category: selectedTag)
-                        presentationMode.wrappedValue.dismiss()
+                        try await viewModel.addActivity(title: title, location: location, notes: notes, numRequired: Int(numRequired)!, category: selectedTag)
                     }
                 } label: {
                     HStack {
@@ -134,6 +133,11 @@ struct AddActivityView: View {
             
             Spacer()
             
+        }
+        .onReceive(viewModel.$didUploadActivity) { success in
+            if success {
+                presentationMode.wrappedValue.dismiss()
+            }
         }
         .padding(.horizontal)
         .padding(.top, 12)
