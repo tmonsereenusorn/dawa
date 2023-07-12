@@ -2,6 +2,8 @@ import Foundation
 import SwiftUI
 import Combine
 
+
+
 struct AddActivityView: View {
     @State private var title = ""
     @State private var numRequired = ""
@@ -74,7 +76,11 @@ struct AddActivityView: View {
                     LazyHStack() {
                         ForEach(ActivityFilters.allCases, id: \.rawValue) { option in
                             Button {
-                                selectedTag = option.label
+                                if (selectedTag != option.label) {
+                                    selectedTag = option.label
+                                } else {
+                                    selectedTag = ""
+                                }
                             } label: {
                                 Text(option.label)
                                     .padding(.vertical, 8) // Adjust vertical padding
@@ -121,6 +127,8 @@ struct AddActivityView: View {
                             .clipShape(Capsule())
                     }
                 }
+                .disabled(!formIsValid)
+                .opacity(formIsValid ? 1.0 : 0.5)
             }
             .padding()
             
@@ -137,3 +145,11 @@ struct AddActivityView: View {
 //        AddActivityView()
 //    }
 //}
+
+extension AddActivityView: AddActivityFormProtocol {
+    var formIsValid: Bool {
+        return !title.isEmpty
+        && !location.isEmpty
+        && !numRequired.isEmpty
+    }
+}

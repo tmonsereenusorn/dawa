@@ -7,6 +7,10 @@
 
 import Foundation
 
+protocol AddActivityFormProtocol {
+    var formIsValid: Bool { get }
+}
+
 class AddActivityViewModel: ObservableObject {
     let service = ActivityService()
     
