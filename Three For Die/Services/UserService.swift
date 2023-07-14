@@ -8,9 +8,10 @@
 import Firebase
 import FirebaseFirestoreSwift
 
-@MainActor
+
 struct UserService {
     
+    @MainActor
     func fetchUser(withUid uid: String, completion: @escaping(User) -> Void) async {
         guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
         guard let user = try? snapshot.data(as: User.self) else { return }

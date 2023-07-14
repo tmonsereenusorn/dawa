@@ -7,10 +7,11 @@
 
 import Foundation
 
-@MainActor
+
 class FeedViewModel: ObservableObject {
     @Published var activities = [Activity]()
     let service = ActivityService()
+    let userService = UserService()
     
     init() {
         Task {
@@ -18,10 +19,19 @@ class FeedViewModel: ObservableObject {
         }
     }
     
+    @MainActor
     func fetchActivities() async {
         await service.fetchActivities { activities in
             self.activities = activities
-            print("Fetched activities")
+            
+            for i in 0 ..< activities.count {
+                let uid = activities[i].userId
+                Task {
+                    await self.userService.fetchUser(withUid: uid) { user in
+                        self.activities[i].user = user
+                    }
+                }
+            }
         }
     }
 }

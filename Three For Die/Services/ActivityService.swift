@@ -27,8 +27,8 @@ struct ActivityService {
         }
     }
     
+    @MainActor
     func fetchActivities(completion: @escaping([Activity]) -> Void) async {
-        
         guard let snapshot = try? await Firestore.firestore().collection("activities").getDocuments() else { return }
         var activities: [Activity] = []
         for document in snapshot.documents {
