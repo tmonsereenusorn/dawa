@@ -21,6 +21,7 @@ struct Activity: Identifiable, Codable {
     var numCurrent: Int
     
     var user: User?
+    var didJoin: Bool? = false
 }
 
 extension Activity {

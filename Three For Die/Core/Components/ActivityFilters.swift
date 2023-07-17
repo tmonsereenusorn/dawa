@@ -25,4 +25,11 @@ enum ActivityFilters: Int, CaseIterable {
         case .game: return Color.red
         }
     }
+    
+    static func color(forLabel label: String) -> Color? {
+        guard let filter = ActivityFilters.allCases.first(where: { $0.label == label }) else {
+            return nil
+        }
+        return filter.color
+    }
 }
