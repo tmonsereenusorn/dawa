@@ -27,13 +27,15 @@ struct ActivityRowView: View {
                     
                     Spacer()
                     
-                    if viewModel.activity.didJoin ?? false {
+                    if viewModel.activity.didJoin ?? false { // If user already joined activity
                         Button {
-                            
+                            Task {
+                                try await viewModel.leaveActivity()
+                            }
                         } label: {
                             Text("Leave activity")
-                                .padding(.vertical, 8) // Adjust vertical padding
-                                .padding(.horizontal, 12) // Adjust horizontal padding
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 12)
                                 .foregroundColor(.white)
                                 .background(.red)
                                 .cornerRadius(15)
@@ -46,8 +48,8 @@ struct ActivityRowView: View {
                             }
                         } label: {
                             Text("Join Activity")
-                                .padding(.vertical, 8) // Adjust vertical padding
-                                .padding(.horizontal, 12) // Adjust horizontal padding
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 12)
                                 .foregroundColor(.white)
                                 .background(.green)
                                 .cornerRadius(15)
@@ -81,16 +83,20 @@ struct ActivityRowView: View {
                         .foregroundColor(CustomColors.gray_2)
                     Spacer()
                     HStack {
-                        ForEach(0..<viewModel.activity.numCurrent, id: \.self) { i in
-                            Image(systemName: "circle.fill")
-                                .renderingMode(.template)
-                                .foregroundColor(.green)
-                        }
-                        if viewModel.activity.numCurrent < viewModel.activity.numRequired {
-                            ForEach(viewModel.activity.numCurrent...(viewModel.activity.numRequired - 1),   id: \.self) { i in
+                        if viewModel.activity.numRequired <= 5 {
+                            ForEach(0..<viewModel.activity.numCurrent, id: \.self) { i in
                                 Image(systemName: "circle.fill")
-                                    .foregroundColor(CustomColors.gray_1)
+                                    .renderingMode(.template)
+                                    .foregroundColor(.green)
                             }
+                            if viewModel.activity.numCurrent < viewModel.activity.numRequired {
+                                ForEach(viewModel.activity.numCurrent...(viewModel.activity.numRequired - 1),   id: \.self) { i in
+                                    Image(systemName: "circle.fill")
+                                        .foregroundColor(CustomColors.gray_1)
+                                }
+                            }
+                        } else {
+                            Text("\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired)")
                         }
                     }
                 }

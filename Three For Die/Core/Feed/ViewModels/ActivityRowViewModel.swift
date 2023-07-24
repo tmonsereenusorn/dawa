@@ -22,6 +22,7 @@ class ActivityRowViewModel: ObservableObject {
     func joinActivity() async throws{
         do {
             try await service.joinActivity(activity: self.activity) {
+                self.activity.numCurrent += 1
                 self.activity.didJoin = true
             }
         } catch {
@@ -32,9 +33,19 @@ class ActivityRowViewModel: ObservableObject {
     @MainActor
     func checkIfUserJoinedActivity() async {
         await service.checkIfUserJoinedActivity(activity: activity) { didJoin in
-            if didJoin {
-                self.activity.didJoin = true
+            self.activity.didJoin = didJoin
+        }
+    }
+    
+    @MainActor
+    func leaveActivity() async throws {
+        do {
+            try await service.leaveActivity(activity: self.activity) {
+                self.activity.didJoin = false
+                self.activity.numCurrent -= 1
             }
+        } catch {
+            print("DEBUG: Failed to leave activity with error \(error.localizedDescription)")
         }
     }
 }

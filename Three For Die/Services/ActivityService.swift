@@ -65,4 +65,20 @@ struct ActivityService {
         
         completion(snapshot.exists)
     }
+    
+    @MainActor
+    func leaveActivity(activity: Activity, completion: @escaping() -> Void) async throws {
+        do {
+            guard activity.numCurrent > 0 else { return }
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            guard let activityId = activity.id else { return }
+            let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
+            
+            try await Firestore.firestore().collection("activities").document(activityId).updateData(["numCurrent": activity.numCurrent - 1])
+            try await userActivitiesRef.document(activityId).delete()
+            completion()
+        } catch {
+            print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
+        }
+    }
 }
