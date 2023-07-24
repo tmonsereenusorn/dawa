@@ -21,10 +21,11 @@
 		857353BB2A6522BF00329BB3 /* ActivityRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857353BA2A6522BF00329BB3 /* ActivityRowViewModel.swift */; };
 		85A4171B2A56D99100A9096A /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A4171A2A56D99100A9096A /* UserService.swift */; };
 		85A9F85E2A54366800D04715 /* ActivityFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A9F85D2A54366800D04715 /* ActivityFilters.swift */; };
+		85ACFF912A6E89790050D7D5 /* MessagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ACFF902A6E89790050D7D5 /* MessagesViewModel.swift */; };
 		85AF06512A58297400599107 /* RightSideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AF06502A58297400599107 /* RightSideMenuView.swift */; };
 		85AF06532A582BCA00599107 /* RightSideMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AF06522A582BCA00599107 /* RightSideMenuViewModel.swift */; };
 		85AF06552A582E3300599107 /* RightSideMenuRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AF06542A582E3300599107 /* RightSideMenuRowView.swift */; };
-		85B273432A4EF69400D5A358 /* ActivitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B273422A4EF69400D5A358 /* ActivitiesView.swift */; };
+		85B273432A4EF69400D5A358 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B273422A4EF69400D5A358 /* MessagesView.swift */; };
 		85B3C1C42A4962E50041B3FF /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3C1C32A4962E50041B3FF /* AuthViewModel.swift */; };
 		85B3C1C72A4987AB0041B3FF /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 85B3C1C62A4987AB0041B3FF /* FirebaseAnalytics */; };
 		85B3C1C92A4987AB0041B3FF /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 85B3C1C82A4987AB0041B3FF /* FirebaseAnalyticsOnDeviceConversion */; };
@@ -89,10 +90,11 @@
 		857353BA2A6522BF00329BB3 /* ActivityRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRowViewModel.swift; sourceTree = "<group>"; };
 		85A4171A2A56D99100A9096A /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		85A9F85D2A54366800D04715 /* ActivityFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityFilters.swift; sourceTree = "<group>"; };
+		85ACFF902A6E89790050D7D5 /* MessagesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewModel.swift; sourceTree = "<group>"; };
 		85AF06502A58297400599107 /* RightSideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSideMenuView.swift; sourceTree = "<group>"; };
 		85AF06522A582BCA00599107 /* RightSideMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSideMenuViewModel.swift; sourceTree = "<group>"; };
 		85AF06542A582E3300599107 /* RightSideMenuRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSideMenuRowView.swift; sourceTree = "<group>"; };
-		85B273422A4EF69400D5A358 /* ActivitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesView.swift; sourceTree = "<group>"; };
+		85B273422A4EF69400D5A358 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		85B3C1C32A4962E50041B3FF /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		85B3F7EF2A5D5142004734E8 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		85B3F7F12A5DEED8004734E8 /* ActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityService.swift; sourceTree = "<group>"; };
@@ -198,7 +200,7 @@
 			children = (
 				389240BD29A1B6D00005AA3D /* Components */,
 				8503FCF62A52D8490024F98B /* SideMenus */,
-				85B273412A4EF47700D5A358 /* Activities */,
+				85B273412A4EF47700D5A358 /* Messages */,
 				85B273402A4EF31D00D5A358 /* MainTab */,
 				851F600E2A4EE38600188285 /* Feed */,
 				85D778222A45F6010052D5F9 /* Profile */,
@@ -328,6 +330,22 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		85ACFF8E2A6E89580050D7D5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				85B273422A4EF69400D5A358 /* MessagesView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		85ACFF8F2A6E89600050D7D5 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				85ACFF902A6E89790050D7D5 /* MessagesViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		85B273402A4EF31D00D5A358 /* MainTab */ = {
 			isa = PBXGroup;
 			children = (
@@ -336,12 +354,13 @@
 			path = MainTab;
 			sourceTree = "<group>";
 		};
-		85B273412A4EF47700D5A358 /* Activities */ = {
+		85B273412A4EF47700D5A358 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
-				85B273422A4EF69400D5A358 /* ActivitiesView.swift */,
+				85ACFF8F2A6E89600050D7D5 /* ViewModels */,
+				85ACFF8E2A6E89580050D7D5 /* Views */,
 			);
-			path = Activities;
+			path = Messages;
 			sourceTree = "<group>";
 		};
 		85B3C1C12A4962BB0041B3FF /* Views */ = {
@@ -510,6 +529,7 @@
 				85D778262A45FE680052D5F9 /* SettingsRowView.swift in Sources */,
 				85AF06512A58297400599107 /* RightSideMenuView.swift in Sources */,
 				389240C429A1EC9D0005AA3D /* Event.swift in Sources */,
+				85ACFF912A6E89790050D7D5 /* MessagesViewModel.swift in Sources */,
 				85D778242A45F6160052D5F9 /* ProfileView.swift in Sources */,
 				85C854D42A418F290057F55F /* SignUpView.swift in Sources */,
 				857353BB2A6522BF00329BB3 /* ActivityRowViewModel.swift in Sources */,
@@ -522,7 +542,7 @@
 				85A4171B2A56D99100A9096A /* UserService.swift in Sources */,
 				85D5DD8B2A42E4C000D61F12 /* LoginView.swift in Sources */,
 				85D9BAEB2A3AC0A800E11652 /* ActivityRowView.swift in Sources */,
-				85B273432A4EF69400D5A358 /* ActivitiesView.swift in Sources */,
+				85B273432A4EF69400D5A358 /* MessagesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

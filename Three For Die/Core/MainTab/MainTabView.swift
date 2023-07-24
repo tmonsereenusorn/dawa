@@ -19,7 +19,7 @@ struct MainTabView: View {
                     Image(systemName: "house")
                 }.tag(0)
             
-            ActivitiesView()
+            MessagesView()
                 .onTapGesture {
                     self.selectedIndex = 1
                 }

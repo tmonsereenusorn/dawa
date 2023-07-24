@@ -81,4 +81,19 @@ struct ActivityService {
             print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
         }
     }
+    
+    @MainActor
+    func fetchUserActivities(completion: @escaping([Activity]) -> Void) async {
+        var activities: [Activity] = []
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let userActivitiesSnapshot = try? await Firestore.firestore().collection("users").document(uid).collection("user-activities").getDocuments() else { return }
+        for doc in userActivitiesSnapshot.documents {
+            let activityId = doc.documentID
+            guard let activitySnapshot = try? await Firestore.firestore().collection("activities").document(activityId).getDocument() else { return }
+            guard let activity = try? activitySnapshot.data(as: Activity.self) else { return }
+            activities.append(activity)
+        }
+        completion(activities)
+    }
 }

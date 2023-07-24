@@ -38,6 +38,11 @@ struct FeedView: View{
                         }
                         .padding(.horizontal, 18)
                     }
+                    .refreshable {
+                        Task {
+                            await viewModel.fetchActivities()
+                        }
+                    }
                 }
                 Button () {
                     addingEvent.toggle ()
