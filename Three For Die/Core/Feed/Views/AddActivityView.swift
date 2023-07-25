@@ -13,6 +13,7 @@ struct AddActivityView: View {
     @State private var selectedTag = ""
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel = AddActivityViewModel()
+    @ObservedObject var feedViewModel = FeedViewModel()
     private let user: User
     
     init(user: User) {
@@ -114,6 +115,7 @@ struct AddActivityView: View {
                 Button {
                     Task {
                         try await viewModel.addActivity(title: title, location: location, notes: notes, numRequired: Int(numRequired)!, category: selectedTag)
+                        await feedViewModel.fetchActivities()
                     }
                 } label: {
                     HStack {

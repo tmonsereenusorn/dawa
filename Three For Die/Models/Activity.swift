@@ -19,11 +19,12 @@ struct Activity: Identifiable, Codable {
     let category: String
     let timestamp: Timestamp
     var numCurrent: Int
+    var status: String
     
     var user: User?
     var didJoin: Bool? = false
 }
 
 extension Activity {
-    static var MOCK_ACTIVITY = Activity(id: NSUUID().uuidString, userId: "j2jCvaZ7zGQ1g7LFlYUdJR9D9m82", title: "3 for die", notes: "no noobs plz", location: "Phi Psi Lawn", numRequired: 3, category: "Sports", timestamp: Timestamp(date: Date()), numCurrent: 1)
+    static var MOCK_ACTIVITY = Activity(id: NSUUID().uuidString, userId: "j2jCvaZ7zGQ1g7LFlYUdJR9D9m82", title: "3 for die", notes: "no noobs plz", location: "Phi Psi Lawn", numRequired: 3, category: "Sports", timestamp: Timestamp(date: Date()), numCurrent: 1, status: "Open")
 }

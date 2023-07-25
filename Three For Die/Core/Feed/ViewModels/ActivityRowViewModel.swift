@@ -48,4 +48,13 @@ class ActivityRowViewModel: ObservableObject {
             print("DEBUG: Failed to leave activity with error \(error.localizedDescription)")
         }
     }
+    
+    @MainActor
+    func closeActivity() async throws {
+        do {
+            try await service.closeActivity(activity: self.activity)
+        } catch {
+            print("DEBUG: Failed to close activity with error \(error.localizedDescription)")
+        }
+    }
 }

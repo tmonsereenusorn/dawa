@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ActivityRowView: View {
     @ObservedObject var viewModel: ActivityRowViewModel
+    @ObservedObject var feedViewModel = FeedViewModel()
     
     init(activity: Activity) {
         self.viewModel = ActivityRowViewModel(activity: activity)
@@ -27,13 +28,14 @@ struct ActivityRowView: View {
                     
                     Spacer()
                     
-                    if viewModel.activity.didJoin ?? false { // If user already joined activity
+                    if user.isCurrentUser {
                         Button {
                             Task {
-                                try await viewModel.leaveActivity()
+                                try await viewModel.closeActivity()
+                                await feedViewModel.fetchActivities()
                             }
                         } label: {
-                            Text("Leave activity")
+                            Text("Close activity")
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 12)
                                 .foregroundColor(.white)
@@ -42,18 +44,34 @@ struct ActivityRowView: View {
                                 .font(.caption).bold()
                         }
                     } else {
-                        Button {
-                            Task {
-                                try await viewModel.joinActivity()
+                        if viewModel.activity.didJoin ?? false { // If user already joined activity
+                            Button {
+                                Task {
+                                    try await viewModel.leaveActivity()
+                                }
+                            } label: {
+                                Text("Leave activity")
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 12)
+                                    .foregroundColor(.white)
+                                    .background(.red)
+                                    .cornerRadius(15)
+                                    .font(.caption).bold()
                             }
-                        } label: {
-                            Text("Join Activity")
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 12)
-                                .foregroundColor(.white)
-                                .background(.green)
-                                .cornerRadius(15)
-                                .font(.caption).bold()
+                        } else {
+                            Button {
+                                Task {
+                                    try await viewModel.joinActivity()
+                                }
+                            } label: {
+                                Text("Join Activity")
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 12)
+                                    .foregroundColor(.white)
+                                    .background(.green)
+                                    .cornerRadius(15)
+                                    .font(.caption).bold()
+                            }
                         }
                     }
                 }

@@ -1,10 +1,14 @@
 import Foundation
+import Firebase
+import FirebaseFirestoreSwift
 
 struct User: Identifiable, Codable {
     let id: String
     let fullname: String
     let email: String
     let username: String
+    
+    var isCurrentUser: Bool { return Auth.auth().currentUser?.uid == id }
     
 //    var initials: String {
 //        let formatter = PersonNameComponentsFormatter()

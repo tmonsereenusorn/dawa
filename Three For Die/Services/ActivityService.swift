@@ -9,8 +9,10 @@ import Firebase
 
 struct ActivityService {
     
+    @MainActor
     func uploadActivity(title: String, location: String, notes: String, numRequired: Int, category: String) async throws {
         do {
+            // Upload activity to firestore
             guard let uid = Auth.auth().currentUser?.uid else { return }
             let activity = Activity(userId: uid,
                                     title: title,
@@ -19,17 +21,39 @@ struct ActivityService {
                                     numRequired: numRequired,
                                     category: category,
                                     timestamp: Timestamp(date: Date()),
-                                    numCurrent: 0)
+                                    numCurrent: 0,
+                                    status: "Open")
             let encodedActivity = try Firestore.Encoder().encode(activity)
-            let _ = try await Firestore.firestore().collection("activities").addDocument(data: encodedActivity)
+            let activityRef = try await Firestore.firestore().collection("activities").addDocument(data: encodedActivity)
+            
+            // Add activity to user's activity list
+            let activityId = activityRef.documentID
+            let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
+            try await userActivitiesRef.document(activityId).setData([:])
+            
         } catch {
             print("DEBUG: Failed to upload activity with error \(error.localizedDescription)")
         }
     }
     
+    func closeActivity(activity: Activity) async throws {
+        do {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            guard uid == activity.userId else { return } // Only host can close activity
+            guard let activityId = activity.id else { return }
+            try await Firestore.firestore().collection("activities").document(activityId).updateData(["status": "Closed"])
+        } catch {
+            print("DEBUG: Failed to close activity with error \(error.localizedDescription)")
+        }
+    }
+    
     @MainActor
     func fetchActivities(completion: @escaping([Activity]) -> Void) async {
-        guard let snapshot = try? await Firestore.firestore().collection("activities").order(by: "timestamp", descending: true).getDocuments() else { return }
+        guard let snapshot = try? await Firestore.firestore().collection("activities")
+                                                            .whereField("status", isEqualTo: "Open")
+                                                            .order(by: "timestamp", descending: true)
+                                                            .limit(to: 100)
+                                                            .getDocuments() else { return }
         var activities: [Activity] = []
         for document in snapshot.documents {
             guard let activity = try? document.data(as: Activity.self) else { return }
@@ -43,6 +67,7 @@ struct ActivityService {
         do {
             guard activity.numCurrent < activity.numRequired else { return }
             guard let uid = Auth.auth().currentUser?.uid else { return }
+            guard uid != activity.userId else { return } // Host of activity is already in activity
             guard let activityId = activity.id else { return }
             let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
             
@@ -71,6 +96,7 @@ struct ActivityService {
         do {
             guard activity.numCurrent > 0 else { return }
             guard let uid = Auth.auth().currentUser?.uid else { return }
+            guard uid != activity.userId else { return } // Host of activity cannot leave
             guard let activityId = activity.id else { return }
             let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
             
