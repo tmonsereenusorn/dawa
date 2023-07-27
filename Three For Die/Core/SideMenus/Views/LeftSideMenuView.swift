@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LeftSideMenuView: View {
+    @State private var creatingGroup: Bool = false
     @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
@@ -24,7 +25,25 @@ struct LeftSideMenuView: View {
                     }
                 }
             }
+            
+            Spacer()
+            
+            Divider()
+            
+            Button {
+                creatingGroup.toggle()
+            } label: {
+                HStack {
+                    Image(systemName: "plus.app")
+                    Text("Create Group")
+                    Spacer()
+                }
+            }
+            .popover(isPresented: $creatingGroup) {
+                CreateGroupView()
+            }
         }
+        .background(.black)
     }
 }
 

@@ -61,6 +61,10 @@
 		85C854CE2A4167B00057F55F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 85C854CD2A4167B00057F55F /* GoogleService-Info.plist */; };
 		85C854D12A418EBF0057F55F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D02A418EBF0057F55F /* ContentView.swift */; };
 		85C854D42A418F290057F55F /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D32A418F290057F55F /* SignUpView.swift */; };
+		85C8BDCE2A7251190059932C /* GroupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C8BDCD2A7251190059932C /* GroupService.swift */; };
+		85C8BDD02A7251730059932C /* Groups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C8BDCF2A7251730059932C /* Groups.swift */; };
+		85C8BDD22A7254230059932C /* LeftSideMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C8BDD12A7254230059932C /* LeftSideMenuViewModel.swift */; };
+		85C8BDD62A7256350059932C /* CreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C8BDD52A7256350059932C /* CreateGroupView.swift */; };
 		85CD14D42A4C25F200E74434 /* VerifyEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CD14D32A4C25F200E74434 /* VerifyEmailView.swift */; };
 		85D5DD8B2A42E4C000D61F12 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8A2A42E4C000D61F12 /* LoginView.swift */; };
 		85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8F2A42EAC500D61F12 /* InputView.swift */; };
@@ -103,6 +107,10 @@
 		85C854CD2A4167B00057F55F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		85C854D02A418EBF0057F55F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		85C854D32A418F290057F55F /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		85C8BDCD2A7251190059932C /* GroupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupService.swift; sourceTree = "<group>"; };
+		85C8BDCF2A7251730059932C /* Groups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Groups.swift; sourceTree = "<group>"; };
+		85C8BDD12A7254230059932C /* LeftSideMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftSideMenuViewModel.swift; sourceTree = "<group>"; };
+		85C8BDD52A7256350059932C /* CreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupView.swift; sourceTree = "<group>"; };
 		85CD14D32A4C25F200E74434 /* VerifyEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailView.swift; sourceTree = "<group>"; };
 		85D5DD8A2A42E4C000D61F12 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		85D5DD8F2A42EAC500D61F12 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
@@ -225,6 +233,7 @@
 				389240C229A1EC9D0005AA3D /* Event.swift */,
 				389240C129A1EC9D0005AA3D /* Location.swift */,
 				85B3F7F32A5DF1CF004734E8 /* Activity.swift */,
+				85C8BDCF2A7251730059932C /* Groups.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -271,6 +280,7 @@
 				8503FCFB2A52D8A60024F98B /* LeftSideMenuView.swift */,
 				85AF06502A58297400599107 /* RightSideMenuView.swift */,
 				85AF06542A582E3300599107 /* RightSideMenuRowView.swift */,
+				85C8BDD52A7256350059932C /* CreateGroupView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -279,6 +289,7 @@
 			isa = PBXGroup;
 			children = (
 				85AF06522A582BCA00599107 /* RightSideMenuViewModel.swift */,
+				85C8BDD12A7254230059932C /* LeftSideMenuViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -326,6 +337,7 @@
 			children = (
 				85A4171A2A56D99100A9096A /* UserService.swift */,
 				85B3F7F12A5DEED8004734E8 /* ActivityService.swift */,
+				85C8BDCD2A7251190059932C /* GroupService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -515,6 +527,7 @@
 				85D9BAEC2A3AC0A800E11652 /* FeedView.swift in Sources */,
 				389240BC29A1B3960005AA3D /* User.swift in Sources */,
 				389240B529A19D170005AA3D /* MainTabView.swift in Sources */,
+				85C8BDCE2A7251190059932C /* GroupService.swift in Sources */,
 				85AF06532A582BCA00599107 /* RightSideMenuViewModel.swift in Sources */,
 				85A9F85E2A54366800D04715 /* ActivityFilters.swift in Sources */,
 				3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */,
@@ -534,10 +547,13 @@
 				85C854D42A418F290057F55F /* SignUpView.swift in Sources */,
 				857353BB2A6522BF00329BB3 /* ActivityRowViewModel.swift in Sources */,
 				85AF06552A582E3300599107 /* RightSideMenuRowView.swift in Sources */,
+				85C8BDD22A7254230059932C /* LeftSideMenuViewModel.swift in Sources */,
 				85C854D12A418EBF0057F55F /* ContentView.swift in Sources */,
+				85C8BDD02A7251730059932C /* Groups.swift in Sources */,
 				8503FCFC2A52D8A60024F98B /* LeftSideMenuView.swift in Sources */,
 				85B3F7F02A5D5142004734E8 /* SearchBar.swift in Sources */,
 				389240B929A1B2280005AA3D /* UserAPI.swift in Sources */,
+				85C8BDD62A7256350059932C /* CreateGroupView.swift in Sources */,
 				85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */,
 				85A4171B2A56D99100A9096A /* UserService.swift in Sources */,
 				85D5DD8B2A42E4C000D61F12 /* LoginView.swift in Sources */,
