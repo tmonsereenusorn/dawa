@@ -12,6 +12,7 @@ struct Activity: Identifiable, Codable {
     @DocumentID var id: String?
     
     let userId: String
+    let groupId: String
     let title: String
     let notes: String
     let location: String
@@ -25,6 +26,6 @@ struct Activity: Identifiable, Codable {
     var didJoin: Bool? = false
 }
 
-extension Activity {
-    static var MOCK_ACTIVITY = Activity(id: NSUUID().uuidString, userId: "j2jCvaZ7zGQ1g7LFlYUdJR9D9m82", title: "3 for die", notes: "no noobs plz", location: "Phi Psi Lawn", numRequired: 3, category: "Sports", timestamp: Timestamp(date: Date()), numCurrent: 1, status: "Open")
-}
+//extension Activity {
+//    static var MOCK_ACTIVITY = Activity(id: NSUUID().uuidString, userId: "j2jCvaZ7zGQ1g7LFlYUdJR9D9m82", groupId: "j2jCvaZ7zGQ1g7LFlYUdJR9D9m82", title: "3 for die", notes: "no noobs plz", location: "Phi Psi Lawn", numRequired: 3, category: "Sports", timestamp: Timestamp(date: Date()), numCurrent: 1, status: "Open")
+//}

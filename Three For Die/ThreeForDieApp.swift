@@ -8,11 +8,13 @@ struct Three_For_DieApp: App {
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var authViewModel = AuthViewModel()
+    @StateObject var groupsViewModel = GroupsViewModel()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                     .environmentObject(authViewModel)
+                    .environmentObject(groupsViewModel)
         }
     }
 }

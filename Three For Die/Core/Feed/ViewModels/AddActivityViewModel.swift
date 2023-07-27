@@ -16,9 +16,9 @@ class AddActivityViewModel: ObservableObject {
     let service = ActivityService()
     
     @MainActor
-    func addActivity(title: String, location: String, notes: String, numRequired: Int, category: String) async throws {
+    func addActivity(groupId: String, title: String, location: String, notes: String, numRequired: Int, category: String) async throws {
         do {
-            try await service.uploadActivity(title: title, location: location, notes: notes, numRequired: numRequired, category: category)
+            try await service.uploadActivity(groupId: groupId, title: title, location: location, notes: notes, numRequired: numRequired, category: category)
             self.didUploadActivity = true
         } catch {
             print("DEBUG: Failed to upload activity with error \(error.localizedDescription)")

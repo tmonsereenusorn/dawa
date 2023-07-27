@@ -1,5 +1,5 @@
 //
-//  SideMenuView.swift
+//  GroupsView.swift
 //  Three For Die
 //
 //  Created by Tee Monsereenusorn on 7/3/23.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct LeftSideMenuView: View {
+struct GroupsView: View {
     @State private var creatingGroup: Bool = false
     @EnvironmentObject var authViewModel: AuthViewModel
-    @ObservedObject var viewModel = LeftSideMenuViewModel()
+    @EnvironmentObject var viewModel: GroupsViewModel
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -22,7 +22,12 @@ struct LeftSideMenuView: View {
             ScrollView {
                 LazyVStack {
                     ForEach(viewModel.groups) { group in
-                        GroupRowView(group: group)
+                        Button {
+                            viewModel.currSelectedGroup = group.id!
+                        } label: {
+                            GroupRowView(group: group)
+                                .foregroundColor(.black)
+                        }
                     }
                 }
             }

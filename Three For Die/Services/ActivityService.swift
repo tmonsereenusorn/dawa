@@ -10,11 +10,12 @@ import Firebase
 struct ActivityService {
     
     @MainActor
-    func uploadActivity(title: String, location: String, notes: String, numRequired: Int, category: String) async throws {
+    func uploadActivity(groupId: String, title: String, location: String, notes: String, numRequired: Int, category: String) async throws {
         do {
             // Upload activity to firestore
             guard let uid = Auth.auth().currentUser?.uid else { return }
             let activity = Activity(userId: uid,
+                                    groupId: groupId,
                                     title: title,
                                     notes: notes,
                                     location: location,

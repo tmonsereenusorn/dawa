@@ -13,6 +13,7 @@ import FirebaseAuth
 
 struct ContentView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var groupsViewModel: GroupsViewModel
     @State private var showLeftMenu = false
     @State private var showRightMenu = false
     
@@ -66,7 +67,7 @@ extension ContentView {
                     .ignoresSafeArea()
                 }
                 
-                LeftSideMenuView()
+                GroupsView()
                     .frame(width: 300)
                     .background(showLeftMenu ? Color.white : Color.clear)
                     .offset(x: showLeftMenu ? 0 : -300, y: 0)
@@ -103,5 +104,6 @@ extension ContentView {
             }
         }
         .environmentObject(authViewModel)
+        .environmentObject(groupsViewModel)
     }
 }
