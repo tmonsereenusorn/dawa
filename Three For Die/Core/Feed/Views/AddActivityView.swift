@@ -13,7 +13,7 @@ struct AddActivityView: View {
     @State private var selectedTag = ""
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel = AddActivityViewModel()
-    @ObservedObject var feedViewModel = FeedViewModel()
+    @EnvironmentObject var feedViewModel: FeedViewModel
     @EnvironmentObject var groupsViewModel: GroupsViewModel
     private let user: User
     

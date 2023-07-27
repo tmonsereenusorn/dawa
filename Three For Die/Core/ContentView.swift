@@ -14,6 +14,7 @@ import FirebaseAuth
 struct ContentView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var groupsViewModel: GroupsViewModel
+    @EnvironmentObject var feedViewModel: FeedViewModel
     @State private var showLeftMenu = false
     @State private var showRightMenu = false
     
@@ -105,5 +106,6 @@ extension ContentView {
         }
         .environmentObject(authViewModel)
         .environmentObject(groupsViewModel)
+        .environmentObject(feedViewModel)
     }
 }

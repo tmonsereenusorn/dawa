@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ActivityRowView: View {
     @ObservedObject var viewModel: ActivityRowViewModel
-    @ObservedObject var feedViewModel = FeedViewModel()
+    @EnvironmentObject var feedViewModel: FeedViewModel
     
     init(activity: Activity) {
         self.viewModel = ActivityRowViewModel(activity: activity)

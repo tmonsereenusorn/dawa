@@ -9,12 +9,14 @@ struct Three_For_DieApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var groupsViewModel = GroupsViewModel()
+    @StateObject var feedViewModel = FeedViewModel()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                     .environmentObject(authViewModel)
                     .environmentObject(groupsViewModel)
+                    .environmentObject(feedViewModel)
         }
     }
 }

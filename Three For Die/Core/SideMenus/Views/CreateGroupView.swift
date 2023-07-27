@@ -10,6 +10,7 @@ import SwiftUI
 struct CreateGroupView: View {
     @State private var groupName = ""
     @ObservedObject var viewModel = CreateGroupViewModel()
+    @EnvironmentObject var groupsViewModel: GroupsViewModel
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
@@ -40,6 +41,7 @@ struct CreateGroupView: View {
                 Button {
                     Task {
                         try await viewModel.createGroup(name: groupName)
+                        await groupsViewModel.fetchUserGroups()
                     }
                 } label: {
                     HStack {

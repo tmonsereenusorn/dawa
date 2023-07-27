@@ -12,7 +12,7 @@ struct FeedView: View{
     @State private var addingEvent: Bool = false
     @State private var searchText = ""
     @EnvironmentObject var authViewModel: AuthViewModel
-    @ObservedObject var viewModel = FeedViewModel()
+    @EnvironmentObject var viewModel: FeedViewModel
     
     init() {
         let newNavBarAppearance = customNavBarAppearance()

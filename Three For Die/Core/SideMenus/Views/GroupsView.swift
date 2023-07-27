@@ -27,6 +27,7 @@ struct GroupsView: View {
                         } label: {
                             GroupRowView(group: group)
                                 .foregroundColor(.black)
+                                .background(viewModel.currSelectedGroup == group.id ? .gray : .white)
                         }
                     }
                 }
