@@ -38,12 +38,12 @@ struct LeftSideMenuView: View {
                     Text("Create Group")
                     Spacer()
                 }
+                .foregroundColor(.black)
             }
             .popover(isPresented: $creatingGroup) {
                 CreateGroupView()
             }
         }
-        .background(.black)
     }
 }
 
