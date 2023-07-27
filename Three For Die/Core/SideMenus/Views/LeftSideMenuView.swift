@@ -10,6 +10,7 @@ import SwiftUI
 struct LeftSideMenuView: View {
     @State private var creatingGroup: Bool = false
     @EnvironmentObject var authViewModel: AuthViewModel
+    @ObservedObject var viewModel = LeftSideMenuViewModel()
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -20,9 +21,14 @@ struct LeftSideMenuView: View {
             
             ScrollView {
                 LazyVStack {
-                    ForEach(0 ... 2, id: \.self) { _ in
-                        LeftSideMenuRowView()
+                    ForEach(viewModel.groups) { group in
+                        GroupRowView(group: group)
                     }
+                }
+            }
+            .refreshable {
+                Task {
+                    await viewModel.fetchUserGroups()
                 }
             }
             
@@ -44,6 +50,7 @@ struct LeftSideMenuView: View {
                 CreateGroupView()
             }
         }
+        .padding(10)
     }
 }
 
