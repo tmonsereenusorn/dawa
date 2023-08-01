@@ -14,9 +14,9 @@ struct Three_For_DieApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                    .environmentObject(authViewModel)
-                    .environmentObject(groupsViewModel)
-                    .environmentObject(feedViewModel)
+                .environmentObject(authViewModel)
+                .environmentObject(groupsViewModel)
+                .environmentObject(feedViewModel)
         }
     }
 }

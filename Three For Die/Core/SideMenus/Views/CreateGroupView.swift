@@ -11,6 +11,7 @@ struct CreateGroupView: View {
     @State private var groupName = ""
     @ObservedObject var viewModel = CreateGroupViewModel()
     @EnvironmentObject var groupsViewModel: GroupsViewModel
+    @EnvironmentObject var feedViewModel: FeedViewModel
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
@@ -35,13 +36,15 @@ struct CreateGroupView: View {
                             .foregroundColor(.red)
                     }
                 }
-                
                 Spacer ()
                 
                 Button {
                     Task {
-                        try await viewModel.createGroup(name: groupName)
+                        try await viewModel.createGroup(name: groupName) { groupId in
+                            groupsViewModel.currSelectedGroup = groupId
+                        }
                         await groupsViewModel.fetchUserGroups()
+                        await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
                     }
                 } label: {
                     HStack {

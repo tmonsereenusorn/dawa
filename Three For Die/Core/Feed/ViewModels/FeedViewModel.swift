@@ -15,13 +15,13 @@ class FeedViewModel: ObservableObject {
     
     init() {
         Task {
-            await fetchActivities()
+            await fetchActivities(groupId: "iYBzqoXOHI3rSwl4y1aW")
         }
     }
     
     @MainActor
-    func fetchActivities() async {
-        await service.fetchActivities { activities in
+    func fetchActivities(groupId: String) async {
+        await service.fetchActivities(groupId: groupId) { activities in
             self.activities = activities
             
             for i in 0 ..< activities.count {

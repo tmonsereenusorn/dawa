@@ -10,7 +10,8 @@ import Firebase
 
 struct GroupService {
     
-    func createGroup(groupName: String) async throws {
+    @MainActor
+    func createGroup(groupName: String, completion: @escaping(String) -> Void) async throws {
         do {
             // Upload group to firestore
             guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -27,6 +28,8 @@ struct GroupService {
             // Add group to user's groups list
             let groupsRef = Firestore.firestore().collection("users").document(uid).collection("user-groups")
             try await groupsRef.document(groupId).setData([:])
+            
+            completion(groupId)
             
         } catch {
             print("DEBUG: Failed to create group with error \(error.localizedDescription)")

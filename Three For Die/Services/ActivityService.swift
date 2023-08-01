@@ -49,9 +49,10 @@ struct ActivityService {
     }
     
     @MainActor
-    func fetchActivities(completion: @escaping([Activity]) -> Void) async {
+    func fetchActivities(groupId: String, completion: @escaping([Activity]) -> Void) async {
         guard let snapshot = try? await Firestore.firestore().collection("activities")
                                                             .whereField("status", isEqualTo: "Open")
+                                                            .whereField("groupId", isEqualTo: groupId)
                                                             .order(by: "timestamp", descending: true)
                                                             .limit(to: 100)
                                                             .getDocuments() else { return }

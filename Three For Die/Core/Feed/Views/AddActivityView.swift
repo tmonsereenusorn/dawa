@@ -122,7 +122,7 @@ struct AddActivityView: View {
                                                         notes: notes,
                                                         numRequired: Int(numRequired)!,
                                                         category: selectedTag)
-                        await feedViewModel.fetchActivities()
+                        await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
                     }
                 } label: {
                     HStack {

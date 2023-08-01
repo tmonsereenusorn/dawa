@@ -16,10 +16,12 @@ class CreateGroupViewModel: ObservableObject {
     let service = GroupService()
     
     @MainActor
-    func createGroup(name: String) async throws {
+    func createGroup(name: String, completion: @escaping(String) -> Void) async throws {
         do {
-            try await service.createGroup(groupName: name)
-            self.didCreateGroup = true
+            try await service.createGroup(groupName: name) { groupId in
+                self.didCreateGroup = true
+                completion(groupId)
+            }
         } catch {
             print("DEBUG: Failed to create group with error \(error.localizedDescription)")
             self.didCreateGroup = false

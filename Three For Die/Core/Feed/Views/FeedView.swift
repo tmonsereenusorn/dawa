@@ -13,6 +13,7 @@ struct FeedView: View{
     @State private var searchText = ""
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var viewModel: FeedViewModel
+    @EnvironmentObject var groupsViewModel: GroupsViewModel
     
     init() {
         let newNavBarAppearance = customNavBarAppearance()
@@ -40,7 +41,7 @@ struct FeedView: View{
                     }
                     .refreshable {
                         Task {
-                            await viewModel.fetchActivities()
+                            await viewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
                         }
                     }
                 }

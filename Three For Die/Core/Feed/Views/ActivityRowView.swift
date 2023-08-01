@@ -10,6 +10,7 @@ import SwiftUI
 struct ActivityRowView: View {
     @ObservedObject var viewModel: ActivityRowViewModel
     @EnvironmentObject var feedViewModel: FeedViewModel
+    @EnvironmentObject var groupsViewModel: GroupsViewModel
     
     init(activity: Activity) {
         self.viewModel = ActivityRowViewModel(activity: activity)
@@ -32,7 +33,7 @@ struct ActivityRowView: View {
                         Button {
                             Task {
                                 try await viewModel.closeActivity()
-                                await feedViewModel.fetchActivities()
+                                await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
                             }
                         } label: {
                             Text("Close activity")

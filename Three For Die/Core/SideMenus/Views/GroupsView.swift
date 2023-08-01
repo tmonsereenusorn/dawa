@@ -10,6 +10,7 @@ import SwiftUI
 struct GroupsView: View {
     @State private var creatingGroup: Bool = false
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var feedViewModel: FeedViewModel
     @EnvironmentObject var viewModel: GroupsViewModel
     
     var body: some View {
@@ -24,6 +25,9 @@ struct GroupsView: View {
                     ForEach(viewModel.groups) { group in
                         Button {
                             viewModel.currSelectedGroup = group.id!
+                            Task {
+                                await feedViewModel.fetchActivities(groupId: group.id!)
+                            }
                         } label: {
                             GroupRowView(group: group)
                                 .foregroundColor(.black)
