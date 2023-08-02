@@ -155,7 +155,7 @@ struct AddActivityView: View {
 
 //struct Previews_AddActivityView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        AddActivityView()
+//        AddActivityView(user: User.MOCK_USER)
 //    }
 //}
 

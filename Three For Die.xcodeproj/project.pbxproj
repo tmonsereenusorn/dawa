@@ -66,6 +66,7 @@
 		85C8BDD62A7256350059932C /* CreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C8BDD52A7256350059932C /* CreateGroupView.swift */; };
 		85C8BDD82A7286120059932C /* GroupRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C8BDD72A7286120059932C /* GroupRowViewModel.swift */; };
 		85C8BDDA2A72879B0059932C /* GroupsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C8BDD92A72879B0059932C /* GroupsViewModel.swift */; };
+		85CB69882A7A6FAF008BCE7E /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CB69872A7A6FAF008BCE7E /* EditProfileView.swift */; };
 		85CD14D42A4C25F200E74434 /* VerifyEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CD14D32A4C25F200E74434 /* VerifyEmailView.swift */; };
 		85D5DD8B2A42E4C000D61F12 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8A2A42E4C000D61F12 /* LoginView.swift */; };
 		85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8F2A42EAC500D61F12 /* InputView.swift */; };
@@ -113,6 +114,7 @@
 		85C8BDD52A7256350059932C /* CreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupView.swift; sourceTree = "<group>"; };
 		85C8BDD72A7286120059932C /* GroupRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRowViewModel.swift; sourceTree = "<group>"; };
 		85C8BDD92A72879B0059932C /* GroupsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsViewModel.swift; sourceTree = "<group>"; };
+		85CB69872A7A6FAF008BCE7E /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		85CD14D32A4C25F200E74434 /* VerifyEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailView.swift; sourceTree = "<group>"; };
 		85D5DD8A2A42E4C000D61F12 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		85D5DD8F2A42EAC500D61F12 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
@@ -242,17 +244,11 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
-		8503FCF42A52CCAA0024F98B /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
 		8503FCF52A52CCB90024F98B /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				85D778232A45F6160052D5F9 /* ProfileView.swift */,
+				85CB69872A7A6FAF008BCE7E /* EditProfileView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -391,7 +387,6 @@
 		85D778222A45F6010052D5F9 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				8503FCF42A52CCAA0024F98B /* ViewModels */,
 				8503FCF52A52CCB90024F98B /* Views */,
 			);
 			path = Profile;
@@ -526,6 +521,7 @@
 				85AF06532A582BCA00599107 /* RightSideMenuViewModel.swift in Sources */,
 				85A9F85E2A54366800D04715 /* ActivityFilters.swift in Sources */,
 				3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */,
+				85CB69882A7A6FAF008BCE7E /* EditProfileView.swift in Sources */,
 				85B3C1C42A4962E50041B3FF /* AuthViewModel.swift in Sources */,
 				85B3F7F62A5DFD7D004734E8 /* AddActivityViewModel.swift in Sources */,
 				85B3F7F22A5DEED8004734E8 /* ActivityService.swift in Sources */,

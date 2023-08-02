@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @EnvironmentObject var viewModel: AuthViewModel
+    @Environment(\.presentationMode) var mode
     private let user: User
+    @State private var editingProfile: Bool = false
     
     init(user: User) {
         self.user = user
@@ -18,20 +19,24 @@ struct ProfileView: View {
     var body: some View {
         VStack(alignment: .leading) {
             headerView
-            
-            actionButtons
-            
+
+            userProfile
+
             userInfoDetails
-            
+
             Spacer()
         }
         .navigationBarHidden(true)
+        .background(.black)
+        .popover(isPresented: $editingProfile) {
+            EditProfileView(user: self.user)
+        }
         
 //        if let user = viewModel.currentUser {
 //            List {
 //                Section {
 //                    HStack {
-//                        Text(user.initials)
+//                        Text("hi")
 //                            .font(.title)
 //                            .fontWeight(.semibold)
 //                            .foregroundColor(.white)
@@ -82,68 +87,94 @@ struct ProfileView: View {
 //        }
     }
 }
-
+//
 //struct ProfileView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        ProfileView()
+//        ProfileView(user: User.MOCK_USER)
 //    }
 //}
 
 extension ProfileView {
-    var headerView: some View {
-        ZStack(alignment: .bottomLeading) {
-            Color(.systemBlue)
-                .ignoresSafeArea()
-                
-            VStack {
-                Button {
-                    
-                } label: {
-                    Image(systemName: "arrow.left")
-                        .resizable()
-                        .frame(width: 20, height: 16)
-                        .foregroundColor(.white)
-                        .offset(x: 16, y: 12)
-                }
-                
-                Circle()
-                    .frame(width: 72, height: 72)
-                .offset(x: 16, y: 24)
-            }
-        }
-        .frame(height: 96)
-    }
+//    var headerView: some View {
+//            ZStack(alignment: .bottomLeading) {
+//                Color(.systemBlue)
+//                    .ignoresSafeArea()
+//
+//                VStack {
+//                    Button {
+//
+//                    } label: {
+//                        Image(systemName: "arrow.left")
+//                            .resizable()
+//                            .frame(width: 20, height: 16)
+//                            .foregroundColor(.white)
+//                            .offset(x: 16, y: 12)
+//                    }
+//
+//                    Circle()
+//                        .frame(width: 72, height: 72)
+//                    .offset(x: 16, y: 24)
+//                }
+//            }
+//            .frame(height: 96)
+//        }
     
-    var actionButtons: some View {
-        HStack(spacing: 12) {
+    var headerView: some View {
+        HStack(alignment: .top) {
+            Button {
+                mode.wrappedValue.dismiss()
+            } label: {
+                Image(systemName: "arrow.left")
+                    .resizable()
+                    .frame(width: 20, height: 16)
+                    .foregroundColor(.white)
+                    .offset(x: 16, y: 12)
+            }
+            
             Spacer()
             
             Button {
-                
+                editingProfile.toggle()
             } label: {
                 Text("Edit Profile")
                     .font(.subheadline).bold()
                     .frame(width: 120, height: 32)
                     .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
-                    .foregroundColor(.black)
+                    .foregroundColor(.white)
             }
         }
-        .padding(.trailing)
+        .padding(10)
+    }
+    
+    var userProfile: some View {
+        HStack {
+            Spacer()
+            
+            VStack {
+                Circle()
+                    .frame(width: 100, height: 100)
+                    .foregroundColor(.white)
+                
+                Text("@\(user.username)")
+                    .foregroundColor(.white)
+            }
+            
+            Spacer()
+        }
     }
     
     var userInfoDetails: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(user.fullname)
-                .font(.title2).bold()
-            
-            Text("@\(user.username)")
-                .font(.subheadline)
-                .foregroundColor(.gray)
+        VStack {
+            Text("About")
+                .font(.headline)
+                .foregroundColor(.white)
             
             Text("Bio here")
-                .font(.subheadline)
-                .padding(.vertical)
+                .font(.caption)
+                .padding(.vertical, 4)
+                .foregroundColor(.white)
         }
-        .padding(.horizontal)
+        .padding(12)
+        
     }
 }

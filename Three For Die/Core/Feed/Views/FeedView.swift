@@ -46,7 +46,7 @@ struct FeedView: View{
                     }
                 }
                 Button () {
-                    addingEvent.toggle ()
+                    addingEvent.toggle()
                 } label: {
                     Image (systemName: "plus.circle.fill")
                         .resizable ()
