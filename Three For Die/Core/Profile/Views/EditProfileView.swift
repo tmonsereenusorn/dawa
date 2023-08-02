@@ -9,12 +9,9 @@ import SwiftUI
 
 struct EditProfileView: View {
     @State private var username = ""
-    private let user: User
+    @Binding var user: User
     @Environment(\.presentationMode) var mode
-    
-    init(user: User) {
-        self.user = user
-    }
+    @ObservedObject var viewModel = EditProfileViewModel()
     
     var body: some View {
         VStack {
@@ -56,10 +53,21 @@ extension EditProfileView {
             Spacer()
             
             Button {
-                
+                Task {
+                    try await viewModel.editUser(withUid: self.user.id,
+                                                 username: username,
+                                                 bio: "Sample bio") {
+                        user.username = username
+                    }
+                }
             } label: {
                 Text("Save")
                     .font(.caption)
+            }
+        }
+        .onReceive(viewModel.$didEditProfile) { success in
+            if success {
+                mode.wrappedValue.dismiss()
             }
         }
         .padding(10)

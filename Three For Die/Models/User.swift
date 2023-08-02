@@ -6,7 +6,8 @@ struct User: Identifiable, Codable {
     let id: String
     let fullname: String
     let email: String
-    let username: String
+    var username: String
+    let bio: String
     
     var isCurrentUser: Bool { return Auth.auth().currentUser?.uid == id }
     
@@ -22,5 +23,5 @@ struct User: Identifiable, Codable {
 }
 
 extension User {
-    static var MOCK_USER = User(id: NSUUID().uuidString, fullname: "Kobe Bryant", email: "test@gmail.com", username: "username")
+    static var MOCK_USER = User(id: NSUUID().uuidString, fullname: "Kobe Bryant", email: "test@gmail.com", username: "username", bio: "Sample bio")
 }

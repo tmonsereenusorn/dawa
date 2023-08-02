@@ -9,11 +9,11 @@ import SwiftUI
 
 struct ProfileView: View {
     @Environment(\.presentationMode) var mode
-    private let user: User
+    @State private var user: User
     @State private var editingProfile: Bool = false
     
     init(user: User) {
-        self.user = user
+        _user = State(initialValue: user)
     }
     
     var body: some View {
@@ -29,7 +29,7 @@ struct ProfileView: View {
         .navigationBarHidden(true)
         .background(.black)
         .popover(isPresented: $editingProfile) {
-            EditProfileView(user: self.user)
+            EditProfileView(user: $user)
         }
         
 //        if let user = viewModel.currentUser {
