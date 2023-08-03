@@ -32,13 +32,13 @@ struct UserService {
     func createUser(withEmail email: String, password: String, fullname: String, username: String, completion: @escaping(FirebaseAuth.User) -> Void) async throws {
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
-            let user = User(id: result.user.uid,
-                            fullname: fullname,
+            let user = User(fullname: fullname,
                             email: email,
                             username: username,
-                            bio: "")
+                            bio: "",
+                            profileImageUrl: nil)
             let encodedUser = try Firestore.Encoder().encode(user)
-            try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+            try await Firestore.firestore().collection("users").document(result.user.uid).setData(encodedUser)
             completion(result.user)
         } catch {
             print("DEBUG: Failed to create user with error \(error.localizedDescription)")
@@ -52,8 +52,7 @@ struct UserService {
             guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
             guard let oldUserProfile = try? snapshot.data(as: User.self) else { return }
             
-            let newUserProfile = User(id: uid,
-                                      fullname: oldUserProfile.fullname,
+            let newUserProfile = User(fullname: oldUserProfile.fullname,
                                       email: oldUserProfile.email,
                                       username: username,
                                       bio: bio)

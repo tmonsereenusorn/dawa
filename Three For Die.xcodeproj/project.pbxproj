@@ -77,6 +77,7 @@
 		85D9BAEC2A3AC0A800E11652 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D9BAEA2A3AC0A700E11652 /* FeedView.swift */; };
 		85D9BAF02A3AC1AD00E11652 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D9BAEF2A3AC1AD00E11652 /* Colors.swift */; };
 		85D9BAF32A3AC2F100E11652 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D9BAF22A3AC2F100E11652 /* DateExtension.swift */; };
+		85EAF1AA2A7BC16C0035CF17 /* ImageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EAF1A92A7BC16B0035CF17 /* ImageUploader.swift */; };
 		85EE632C2A5EC39400F8AF64 /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EE632B2A5EC39400F8AF64 /* FeedViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -126,6 +127,7 @@
 		85D9BAEA2A3AC0A700E11652 /* FeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		85D9BAEF2A3AC1AD00E11652 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		85D9BAF22A3AC2F100E11652 /* DateExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		85EAF1A92A7BC16B0035CF17 /* ImageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploader.swift; sourceTree = "<group>"; };
 		85EE632B2A5EC39400F8AF64 /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -309,9 +311,9 @@
 		851F60102A4EE39C00188285 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				85D9BAE82A3AC0A700E11652 /* ActivityRowView.swift */,
 				389240BF29A1B7F40005AA3D /* AddActivityView.swift */,
 				85D9BAEA2A3AC0A700E11652 /* FeedView.swift */,
+				85D9BAE82A3AC0A700E11652 /* ActivityRowView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -331,6 +333,7 @@
 				85A4171A2A56D99100A9096A /* UserService.swift */,
 				85B3F7F12A5DEED8004734E8 /* ActivityService.swift */,
 				85C8BDCD2A7251190059932C /* GroupService.swift */,
+				85EAF1A92A7BC16B0035CF17 /* ImageUploader.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -533,6 +536,7 @@
 				85A9F85E2A54366800D04715 /* ActivityFilters.swift in Sources */,
 				3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */,
 				85CB69882A7A6FAF008BCE7E /* EditProfileView.swift in Sources */,
+				85EAF1AA2A7BC16C0035CF17 /* ImageUploader.swift in Sources */,
 				85B3C1C42A4962E50041B3FF /* AuthViewModel.swift in Sources */,
 				85B3F7F62A5DFD7D004734E8 /* AddActivityViewModel.swift in Sources */,
 				85B3F7F22A5DEED8004734E8 /* ActivityService.swift in Sources */,

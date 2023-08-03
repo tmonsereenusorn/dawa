@@ -151,9 +151,9 @@ extension ProfileView {
             Spacer()
             
             VStack {
-                Circle()
-                    .frame(width: 100, height: 100)
-                    .foregroundColor(.white)
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .modifier(ProfileImageModifier())
                 
                 Text("@\(user.username)")
                     .foregroundColor(.white)
