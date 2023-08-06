@@ -9,15 +9,16 @@ import SwiftUI
 
 struct RightSideMenuRowView: View {
     let option: RightSideMenuViewModel
+    let color: Color
     
     var body: some View {
         HStack(spacing: 16) {
             Image(systemName: option.imageName)
-                .foregroundColor(.gray)
+                .foregroundColor(color)
             
             Text(option.title)
                 .font(.subheadline)
-                .foregroundColor(.gray)
+                .foregroundColor(color)
             
             Spacer()
         }

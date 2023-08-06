@@ -33,14 +33,13 @@ struct RightSideMenuView: View {
                         NavigationLink {
                             ProfileView(user: user)
                         } label: {
-                            RightSideMenuRowView(option: option)
+                            RightSideMenuRowView(option: option, color: .gray)
                         }
                     } else if option == .logout {
                         Button {
                             authViewModel.signOut()
                         } label: {
-                            RightSideMenuRowView(option: option)
-                                .foregroundColor(.red)
+                            RightSideMenuRowView(option: option, color: .red)
                         }
                     } else if option == .delete {
                         Button {
@@ -48,8 +47,7 @@ struct RightSideMenuView: View {
                                 try await authViewModel.deleteAccount()
                             }
                         } label: {
-                            RightSideMenuRowView(option: option)
-                                .foregroundColor(.red)
+                            RightSideMenuRowView(option: option, color: .red)
                         }
                     } else {
                         
