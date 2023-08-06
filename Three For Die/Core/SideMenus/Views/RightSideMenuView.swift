@@ -40,6 +40,16 @@ struct RightSideMenuView: View {
                             authViewModel.signOut()
                         } label: {
                             RightSideMenuRowView(option: option)
+                                .foregroundColor(.red)
+                        }
+                    } else if option == .delete {
+                        Button {
+                            Task {
+                                try await authViewModel.deleteAccount()
+                            }
+                        } label: {
+                            RightSideMenuRowView(option: option)
+                                .foregroundColor(.red)
                         }
                     } else {
                         

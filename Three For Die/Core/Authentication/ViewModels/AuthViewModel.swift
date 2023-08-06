@@ -52,6 +52,7 @@ class AuthViewModel: ObservableObject {
         }
     }
     
+    @MainActor
     func signOut() {
         do {
             try Auth.auth().signOut()
@@ -62,8 +63,17 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    func deleteAccount() {
-        
+    @MainActor
+    func deleteAccount() async throws {
+        do {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            try await Firestore.firestore().collection("users").document(uid).delete()
+            try await Auth.auth().currentUser?.delete()
+            self.userSession = nil
+            self.currentUser = nil
+        } catch {
+            print("DEBUG: Failed to delete user with error \(error.localizedDescription)")
+        }
     }
     
     func fetchUser() async {

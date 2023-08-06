@@ -10,11 +10,13 @@ import Foundation
 enum RightSideMenuViewModel: Int, CaseIterable {
     case profile
     case logout
+    case delete
     
     var title: String {
         switch self {
         case .profile: return "Profile"
         case .logout: return "Logout"
+        case .delete: return "Delete Account"
         }
     }
     
@@ -22,6 +24,7 @@ enum RightSideMenuViewModel: Int, CaseIterable {
         switch self {
         case .profile: return "person"
         case .logout: return "arrow.left.square"
+        case .delete: return "trash"
         }
     }
 }
