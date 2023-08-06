@@ -21,10 +21,10 @@ struct InputView: View {
                 .font(.footnote)
             if isSecureField {
                 SecureField(placeholder, text: $text)
-                    .font(.system(size: 14))
+                    .font(.system(size: 10))
             } else {
                 TextField(placeholder, text: $text)
-                    .font(.system(size: 14))
+                    .font(.system(size: 10))
             }
             
             Divider()

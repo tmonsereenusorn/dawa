@@ -23,43 +23,100 @@ struct AddActivityView: View {
     
     var body: some View {
         VStack {
+            HStack(alignment: .bottom) {
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    Text("Cancel")
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+                
+                Spacer()
+                
+                Text("Create New Activity")
+                    .foregroundColor(.white)
+                    .font(.headline)
+                
+                Spacer()
+                
+                Button {
+                    Task {
+                        try await viewModel.addActivity(groupId: groupsViewModel.currSelectedGroup,
+                                                        title: title,
+                                                        location: location,
+                                                        notes: notes,
+                                                        numRequired: Int(numRequired)!,
+                                                        category: selectedTag)
+                        await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                    }
+                } label: {
+                    Text("Create")
+                        .font(.caption)
+                        .foregroundColor(formIsValid ? .green : .gray)
+                }
+                .disabled(!formIsValid)
+                .opacity(formIsValid ? 1.0 : 0.5)
+            }
+            .onReceive(viewModel.$didUploadActivity) { success in
+                if success {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
+            .padding(10)
+            
             Text("Create a new activity")
                 .font(.title2)
             // Title, notes, location for activity
             VStack {
-                InputView(text: $title,
+                FormInputView(text: $title,
                           title: "Title",
                           placeholder: "Enter a title for your activity")
                 .padding()
+                .onReceive(Just(title)) { newTitle in
+                    if newTitle.count > 25 {
+                        self.title = String(newTitle.prefix(25))
+                    }
+                }
                 
-                InputView(text: $location,
+                FormInputView(text: $location,
                           title: "Location",
                           placeholder: "Enter a location for your activity")
                 .padding()
+                .onReceive(Just(location)) { newLocation in
+                    if newLocation.count > 15 {
+                        self.location = String(newLocation.prefix(15))
+                    }
+                }
                 
-                InputView(text: $notes,
+                FormInputView(text: $notes,
                           title: "Details (optional)",
                           placeholder: "Activity details (level, time required etc.)")
                 .padding()
+                .onReceive(Just(notes)) { newNotes in
+                    if newNotes.count > 50 {
+                        self.notes = String(newNotes.prefix(50))
+                    }
+                }
             }
             
             // Number of people needed
             HStack {
-                InputView(text: $numRequired,
+                FormInputView(text: $numRequired,
                           title: "How many more people?",
                           placeholder: "Number of additional people needed")
-                    .keyboardType(.numberPad)
-                    .onReceive(Just(numRequired)) { newValue in
-                        let filtered = newValue.filter { "0123456789".contains($0) }
-                        if filtered != newValue {
-                            self.numRequired = filtered
-                        }
-                        if Int(filtered) ?? 0 > 30 {
-                            self.numRequired = "30"
-                            self.showWarningMessage = true
-                        }
+                .keyboardType(.numberPad)
+                .onReceive(Just(numRequired)) { newValue in
+                    let filtered = newValue.filter { "0123456789".contains($0) }
+                    if filtered != newValue {
+                        self.numRequired = filtered
                     }
-                    .padding()
+                    if Int(filtered) ?? 0 > 30 {
+                        self.numRequired = "30"
+                        self.showWarningMessage = true
+                    }
+                }
+                .padding()
                 if self.showWarningMessage {
                     Text("Warning: Max number of people is 30")
                         .font(.caption)
@@ -99,58 +156,10 @@ struct AddActivityView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding()
-            
-            // Cancel and Submit button
-            HStack {
-                Button {
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    HStack {
-                        Text("Cancel")
-                            .foregroundColor(.red)
-                    }
-                }
-                
-                Spacer ()
-                
-                Button {
-                    Task {
-                        print(groupsViewModel.currSelectedGroup)
-                        try await viewModel.addActivity(groupId: groupsViewModel.currSelectedGroup,
-                                                        title: title,
-                                                        location: location,
-                                                        notes: notes,
-                                                        numRequired: Int(numRequired)!,
-                                                        category: selectedTag)
-                        await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
-                    }
-                } label: {
-                    HStack {
-                        Text("Create")
-                            .bold()
-                            .padding(.horizontal)
-                            .padding(.vertical, 8)
-                            .background(.green)
-                            .foregroundColor(.white)
-                            .clipShape(Capsule())
-                    }
-                }
-                .disabled(!formIsValid)
-                .opacity(formIsValid ? 1.0 : 0.5)
-            }
-            .padding()
-            
-            Spacer()
-            
         }
-        .onReceive(viewModel.$didUploadActivity) { success in
-            if success {
-                presentationMode.wrappedValue.dismiss()
-            }
-        }
-        .padding(.horizontal)
-        .padding(.top, 12)
+        .background(.black)
     }
+
 }
 
 //struct Previews_AddActivityView_Previews: PreviewProvider {
