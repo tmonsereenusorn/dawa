@@ -57,8 +57,8 @@ extension EditProfileView {
                 Task {
                     try await viewModel.editUser(withUid: self.user.id,
                                                  username: username,
-                                                 bio: bio) {
-                        user.username = username
+                                                 bio: bio) { newUser in
+                        user = newUser
                     }
                 }
             } label: {
@@ -77,14 +77,26 @@ extension EditProfileView {
     var profileImageInput: some View {
         HStack {
             PhotosPicker(selection: $viewModel.selectedItem) {
-                if let profileImage = viewModel.profileImage {
-                    profileImage
-                        .resizable()
-                        .modifier(ProfileImageModifier())
-                } else {
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .modifier(ProfileImageModifier())
+                ZStack(alignment: .bottomTrailing) {
+                    if let image = viewModel.profileImage {
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: ProfileImageSize.xLarge.dimension, height: ProfileImageSize.xLarge.dimension)
+                            .clipShape(Circle())
+                    } else {
+                        CircularProfileImageView(user: user, size: .xLarge)
+                    }
+                    
+                    ZStack {
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 24, height: 24)
+                        
+                        Image(systemName: "camera.circle.fill")
+                            .foregroundColor(.black)
+                            .frame(width: 18, height: 18)
+                    }
                 }
             }
         }

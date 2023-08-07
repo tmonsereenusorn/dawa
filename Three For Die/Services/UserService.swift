@@ -7,6 +7,8 @@
 
 import Firebase
 import FirebaseFirestoreSwift
+import PhotosUI
+import SwiftUI
 
 
 struct UserService {
@@ -46,19 +48,32 @@ struct UserService {
     }
     
     @MainActor
-    func editUser(withUid uid: String, username: String, bio: String, completion: @escaping() -> Void) async throws {
+    func editUser(withUid uid: String, username: String, bio: String, uiImage: UIImage?, completion: @escaping(User) -> Void) async throws {
         do {
             guard uid == Auth.auth().currentUser?.uid else { return } // Only current user can edit their information
+            
             guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
             guard let oldUserProfile = try? snapshot.data(as: User.self) else { return }
             
-            let newUserProfile = User(fullname: oldUserProfile.fullname,
+            var newUserProfile = User(fullname: oldUserProfile.fullname,
                                       email: oldUserProfile.email,
                                       username: username,
-                                      bio: bio)
+                                      bio: bio,
+                                      profileImageUrl: oldUserProfile.profileImageUrl)
+            
+            // Upload new profile image if provided
+            if let image = uiImage {
+                if let imageUrl = try? await ImageUploader.uploadImage(image: image, type: .profile) {
+                    newUserProfile.profileImageUrl = imageUrl
+                } else {
+                    print("DEBUG: Failed to upload profile image")
+                    return
+                }
+            }
+            
             let encodedUser = try Firestore.Encoder().encode(newUserProfile)
             try await Firestore.firestore().collection("users").document(uid).setData(encodedUser)
-            completion()
+            completion(newUserProfile)
         } catch {
             print("DEBUG: Failed to edit user with error \(error.localizedDescription)")
         }

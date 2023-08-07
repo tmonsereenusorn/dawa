@@ -18,14 +18,15 @@ struct ActivityRowView: View {
     
     var body: some View {
         if let user = viewModel.activity.user {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Image(systemName: "person")
-                        .foregroundColor(.black)
+                    Image(systemName: "person.circle.fill")
                     Text(user.username)
                         .foregroundColor(.black)
-                    Text("2m")
+                        .font(.system(size: 10))
+                    Text(viewModel.activity.timestamp.dateValue().timeAgoDisplay())
                         .foregroundColor(CustomColors.gray_2)
+                        .font(.system(size: 10))
                     
                     Spacer()
                     
@@ -37,12 +38,12 @@ struct ActivityRowView: View {
                             }
                         } label: {
                             Text("Close activity")
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 9)
                                 .foregroundColor(.white)
                                 .background(.red)
                                 .cornerRadius(15)
-                                .font(.caption).bold()
+                                .font(.system(size: 10)).bold()
                         }
                     } else {
                         if viewModel.activity.didJoin ?? false { // If user already joined activity
@@ -52,12 +53,12 @@ struct ActivityRowView: View {
                                 }
                             } label: {
                                 Text("Leave activity")
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 6)
+                                    .padding(.horizontal, 9)
                                     .foregroundColor(.white)
                                     .background(.red)
                                     .cornerRadius(15)
-                                    .font(.caption).bold()
+                                    .font(.system(size: 10)).bold()
                             }
                         } else {
                             Button {
@@ -66,40 +67,45 @@ struct ActivityRowView: View {
                                 }
                             } label: {
                                 Text("Join Activity")
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 6)
+                                    .padding(.horizontal, 9)
                                     .foregroundColor(.white)
                                     .background(.green)
                                     .cornerRadius(15)
-                                    .font(.caption).bold()
+                                    .font(.system(size: 10)).bold()
                             }
                         }
                     }
                 }
                 HStack {
                     Text(viewModel.activity.title)
-                        .font(.title)
+                        .font(.headline)
                         .foregroundColor(.black)
                         .fontWeight(.semibold)
                     if let filterColor = ActivityFilters.color(forLabel: viewModel.activity.category) {
                         Text(viewModel.activity.category)
-                            .padding(.vertical, 8) // Adjust vertical padding
-                            .padding(.horizontal, 12) // Adjust horizontal padding
+                            .padding(.vertical, 6) // Adjust vertical padding
+                            .padding(.horizontal, 9) // Adjust horizontal padding
                             .foregroundColor(.white)
                             .background(filterColor)
                             .cornerRadius(15)
-                            .font(.caption).bold()
+                            .font(.system(size: 10)).bold()
                     }
                     Spacer()
-                    Image(systemName: "pin")
-                        .foregroundColor(.black)
-                    Text(viewModel.activity.location)
-                        .foregroundColor(.black)
                 }
                 HStack {
                     Text(viewModel.activity.notes)
-                        .font(.body)
+                        .font(.system(size: 10))
                         .foregroundColor(CustomColors.gray_2)
+                    Spacer()
+                    Image(systemName: "pin")
+                        .foregroundColor(CustomColors.gray_2)
+                    Text(viewModel.activity.location)
+                        .font(.system(size: 10))
+                        .foregroundColor(CustomColors.gray_2)
+                }
+                
+                HStack {
                     Spacer()
                     HStack {
                         if viewModel.activity.numRequired <= 5 {
@@ -118,6 +124,7 @@ struct ActivityRowView: View {
                             Text("\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired)")
                         }
                     }
+                    Spacer()
                 }
             }
             .padding()
