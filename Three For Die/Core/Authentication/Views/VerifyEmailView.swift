@@ -9,7 +9,8 @@ import SwiftUI
 
 struct VerifyEmailView: View {
     let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
-    @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var contentViewModel: ContentViewModel
+    @StateObject var viewModel = VerifyEmailViewModel()
     
     var body: some View {
         VStack {
@@ -23,15 +24,13 @@ struct VerifyEmailView: View {
                 Text("Verify your email")
                     .font(.largeTitle)
                 
-                Text("A verification link has been sent to \(authViewModel.currentUser?.email ?? "your email").")
+                Text("A verification link has been sent to \(contentViewModel.currentUser?.email ?? "your email").")
                     .font(.footnote)
             }
             
             VStack {
                 Button {
-                    Task {
-                        try await authViewModel.sendVerificationEmail()
-                    }
+                    Task { try await viewModel.sendVerificationEmail() }
                 } label: {
                     HStack {
                         Text("Resend Email")
@@ -47,7 +46,7 @@ struct VerifyEmailView: View {
             
             VStack {
                 Button {
-                    authViewModel.signOut()
+                    viewModel.signOut()
                 } label: {
                     HStack {
                         Text("Sign out")
@@ -65,14 +64,14 @@ struct VerifyEmailView: View {
         }
         .task {
             do {
-                try await authViewModel.sendVerificationEmail()
+                try await viewModel.sendVerificationEmail()
             } catch {
                 print("Failed to send verification email")
             }
         }
         .onReceive(timer) { time in
             Task {
-                try await authViewModel.refreshUser()
+                try await viewModel.refreshUser()
             }
         }
     }

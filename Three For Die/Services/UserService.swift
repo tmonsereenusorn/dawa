@@ -11,39 +11,33 @@ import PhotosUI
 import SwiftUI
 
 
-struct UserService {
+class UserService {
+    @Published var currentUser: User?
+    static let shared = UserService()
     
-    @MainActor
-    func fetchUser(withUid uid: String, completion: @escaping(User) -> Void) async {
-        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
-        guard let user = try? snapshot.data(as: User.self) else { return }
-        completion(user)
+    init() {
+        Task { try await fetchCurrentUser() }
     }
     
     @MainActor
-    func signIn(withEmail email: String, password: String, completion: @escaping(FirebaseAuth.User) -> Void) async throws {
-        do {
-            let result = try await Auth.auth().signIn(withEmail: email, password: password)
-            completion(result.user)
-        } catch {
-            print("DEBUG: Failed to log in user with error \(error.localizedDescription)")
-        }
+    func fetchCurrentUser() async throws {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
+        self.currentUser = try snapshot.data(as: User.self)
     }
     
-    @MainActor
-    func createUser(withEmail email: String, password: String, fullname: String, username: String, completion: @escaping(FirebaseAuth.User) -> Void) async throws {
-        do {
-            let result = try await Auth.auth().createUser(withEmail: email, password: password)
-            let user = User(fullname: fullname,
-                            email: email,
-                            username: username,
-                            bio: "",
-                            profileImageUrl: nil)
-            let encodedUser = try Firestore.Encoder().encode(user)
-            try await Firestore.firestore().collection("users").document(result.user.uid).setData(encodedUser)
-            completion(result.user)
-        } catch {
-            print("DEBUG: Failed to create user with error \(error.localizedDescription)")
+    static func fetchUser(uid: String) async throws -> User {
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
+        return try snapshot.data(as: User.self)
+    }
+    
+    static func fetchUser(withUid uid: String, completion: @escaping(User) -> Void) {
+        Firestore.firestore().collection("users").document(uid).getDocument { snapshot, _ in
+            guard let user = try? snapshot?.data(as: User.self) else {
+                print("DEBUG: Failed to map user")
+                return
+            }
+            completion(user)
         }
     }
     
@@ -54,6 +48,7 @@ struct UserService {
             
             guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
             guard let oldUserProfile = try? snapshot.data(as: User.self) else { return }
+            
             
             var newUserProfile = User(fullname: oldUserProfile.fullname,
                                       email: oldUserProfile.email,

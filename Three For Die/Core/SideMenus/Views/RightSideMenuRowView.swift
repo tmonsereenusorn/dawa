@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RightSideMenuRowView: View {
-    let option: RightSideMenuViewModel
+    let option: RightSideMenuRow
     let color: Color
     
     var body: some View {

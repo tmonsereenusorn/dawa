@@ -9,9 +9,7 @@ import Foundation
 import SwiftUI
 
 struct LoginView: View {
-    @State private var email = ""
-    @State private var password = ""
-    @EnvironmentObject var authViewModel: AuthViewModel
+    @StateObject var viewModel = LoginViewModel()
     
     var body: some View {
         NavigationStack {
@@ -22,12 +20,12 @@ struct LoginView: View {
                 
                 // Form fields
                 VStack(spacing: 24) {
-                    InputView(text: $email,
+                    InputView(text: $viewModel.email,
                               title: "Email Address",
                               placeholder: "name@example.com")
                     .autocapitalization(.none)
                     
-                    InputView(text: $password,
+                    InputView(text: $viewModel.password,
                               title: "Password",
                               placeholder: "Enter your password",
                               isSecureField: true)
@@ -37,8 +35,8 @@ struct LoginView: View {
                 
                 // Login button
                 Button {
-                    Task {
-                        try await authViewModel.signIn(withEmail: email, password: password)
+                    if viewModel.formIsValid {
+                        Task { try await viewModel.login() }
                     }
                 } label: {
                     HStack {
@@ -50,8 +48,8 @@ struct LoginView: View {
                     .frame(width: UIScreen.main.bounds.width - 32, height: 48)
                 }
                 .background(Color(.systemBlue))
-                .disabled(!formIsValid)
-                .opacity(formIsValid ? 1.0 : 0.5)
+                .disabled(!viewModel.formIsValid)
+                .opacity(viewModel.formIsValid ? 1.0 : 0.5)
                 .cornerRadius(10)
                 .padding(.top, 24)
                 
@@ -61,7 +59,6 @@ struct LoginView: View {
                 NavigationLink {
                     SignUpView()
                         .navigationBarBackButtonHidden(true)
-                        .environmentObject(authViewModel)
                 } label: {
                     HStack(spacing: 3) {
                         Text("Don't have an account?")
@@ -74,15 +71,6 @@ struct LoginView: View {
             }
         }
         
-    }
-}
-
-extension LoginView: AuthenticationFormProtocol {
-    var formIsValid: Bool {
-        return !email.isEmpty
-        && email.contains("@")
-        && !password.isEmpty
-        && password.count > 5
     }
 }
 

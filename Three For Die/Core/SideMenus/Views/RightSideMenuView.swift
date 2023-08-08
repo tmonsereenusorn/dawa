@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct RightSideMenuView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var contentViewModel: ContentViewModel
+    @StateObject var viewModel = RightSideMenuViewModel()
     
     var body: some View {
-        if let user = authViewModel.currentUser {
+        if let user = contentViewModel.currentUser {
             VStack (alignment: .leading) {
                 VStack(alignment: .leading) {
                     Circle()
@@ -28,7 +29,7 @@ struct RightSideMenuView: View {
                 }
                 .padding()
                 
-                ForEach(RightSideMenuViewModel.allCases, id: \.rawValue) { option in
+                ForEach(RightSideMenuRow.allCases, id: \.rawValue) { option in
                     if option == .profile {
                         NavigationLink {
                             ProfileView(user: user)
@@ -37,14 +38,14 @@ struct RightSideMenuView: View {
                         }
                     } else if option == .logout {
                         Button {
-                            authViewModel.signOut()
+                            viewModel.signOut()
                         } label: {
                             RightSideMenuRowView(option: option, color: .red)
                         }
                     } else if option == .delete {
                         Button {
                             Task {
-                                try await authViewModel.deleteAccount()
+                                try await viewModel.deleteAccount()
                             }
                         } label: {
                             RightSideMenuRowView(option: option, color: .red)
@@ -59,9 +60,9 @@ struct RightSideMenuView: View {
         }
     }
 }
-
-struct RightSideMenuView_Previews: PreviewProvider {
-    static var previews: some View {
-        RightSideMenuView()
-    }
-}
+//
+//struct RightSideMenuView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        RightSideMenuView()
+//    }
+//}

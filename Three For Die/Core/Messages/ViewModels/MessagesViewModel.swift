@@ -26,7 +26,7 @@ class MessagesViewModel: ObservableObject {
             for i in 0 ..< activities.count {
                 let uid = activities[i].userId
                 Task {
-                    await self.userService.fetchUser(withUid: uid) { user in
+                    UserService.fetchUser(withUid: uid) { user in
                         self.userActivities[i].user = user
                     }
                 }

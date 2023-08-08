@@ -9,7 +9,6 @@ import SwiftUI
 
 struct GroupsView: View {
     @State private var creatingGroup: Bool = false
-    @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var feedViewModel: FeedViewModel
     @EnvironmentObject var viewModel: GroupsViewModel
     

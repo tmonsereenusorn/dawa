@@ -12,7 +12,7 @@ import FirebaseFirestore
 import FirebaseAuth
 
 struct ContentView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
+    @StateObject var contentViewModel = ContentViewModel()
     @EnvironmentObject var groupsViewModel: GroupsViewModel
     @EnvironmentObject var feedViewModel: FeedViewModel
     @State private var showLeftMenu = false
@@ -20,22 +20,17 @@ struct ContentView: View {
     
     var body: some View {
         Group {
-            if let userSession = authViewModel.userSession {
+            if let userSession = contentViewModel.userSession {
                 if userSession.isEmailVerified {
                     mainInterfaceView
                 } else {
                     VerifyEmailView()
+                        .environmentObject(contentViewModel)
                 }
             } else {
                 LoginView()
             }
         }
-    }
-}
-
-struct Previews_ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
     }
 }
 
@@ -104,8 +99,14 @@ extension ContentView {
                 }
             }
         }
-        .environmentObject(authViewModel)
+        .environmentObject(contentViewModel)
         .environmentObject(groupsViewModel)
         .environmentObject(feedViewModel)
     }
 }
+//
+//struct Previews_ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView()
+//    }
+//}

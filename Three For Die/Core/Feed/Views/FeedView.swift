@@ -11,7 +11,7 @@ import SwiftUI
 struct FeedView: View{
     @State private var addingEvent: Bool = false
     @State private var searchText = ""
-    @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var contentViewModel: ContentViewModel
     @EnvironmentObject var viewModel: FeedViewModel
     @EnvironmentObject var groupsViewModel: GroupsViewModel
     
@@ -25,7 +25,7 @@ struct FeedView: View{
     }
     
     var body: some View {
-        if let user = authViewModel.currentUser {
+        if let user = contentViewModel.currentUser {
             ZStack(alignment: .bottomTrailing) {
                 VStack {
                     SearchBar(text: $searchText)

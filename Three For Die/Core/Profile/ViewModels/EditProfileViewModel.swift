@@ -32,6 +32,7 @@ class EditProfileViewModel: ObservableObject {
     @MainActor
     func editUser(withUid uid: String, username: String, bio: String, completion: @escaping(User) -> Void) async throws {
         do {
+            print("User id: \(uid)")
             try await userService.editUser(withUid: uid, username: username, bio: bio, uiImage: profileUIImage ?? nil) { newUser in
                 self.didEditProfile = true
                 completion(newUser)

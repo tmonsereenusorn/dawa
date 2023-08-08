@@ -2,29 +2,24 @@
 //  RightSideMenuViewModel.swift
 //  Three For Die
 //
-//  Created by Tee Monsereenusorn on 7/7/23.
+//  Created by Tee Monsereenusorn on 8/8/23.
 //
 
 import Foundation
 
-enum RightSideMenuViewModel: Int, CaseIterable {
-    case profile
-    case logout
-    case delete
+class RightSideMenuViewModel: ObservableObject {
     
-    var title: String {
-        switch self {
-        case .profile: return "Profile"
-        case .logout: return "Logout"
-        case .delete: return "Delete Account"
-        }
+    @MainActor
+    func signOut() {
+        AuthService.shared.signOut()
     }
     
-    var imageName: String {
-        switch self {
-        case .profile: return "person"
-        case .logout: return "arrow.left.square"
-        case .delete: return "trash"
+    @MainActor
+    func deleteAccount() async throws {
+        do {
+            try await AuthService.shared.deleteAccount()
+        } catch {
+            print("DEBUG: Failed to delete user with error \(error.localizedDescription)")
         }
     }
 }

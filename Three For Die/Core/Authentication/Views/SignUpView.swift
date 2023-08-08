@@ -12,15 +12,9 @@ import FirebaseFirestore
 import FirebaseAuth
 
 struct SignUpView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
-    @State private var email = ""
-    @State private var fullname = ""
-    @State private var password = ""
-    @State private var confirmPassword = ""
-    @State private var username = ""
+    @StateObject var viewModel = SignUpViewModel()
     @Environment(\.dismiss) var dismiss
     
-
     var body: some View {
         VStack {
             // Logo (Placeholder title for now)
@@ -29,27 +23,27 @@ struct SignUpView: View {
             
             // Form fields
             VStack(spacing: 24) {
-                InputView(text: $email,
+                InputView(text: $viewModel.email,
                           title: "Email Address",
                           placeholder: "name@example.com")
                 .autocapitalization(.none)
                 
-                InputView(text: $username,
+                InputView(text: $viewModel.username,
                           title: "Username",
                           placeholder: "Enter your username")
                 .autocapitalization(.none)
                 
-                InputView(text: $fullname,
+                InputView(text: $viewModel.fullname,
                           title: "Full Name",
                           placeholder: "Enter your name")
                 
-                InputView(text: $password,
+                InputView(text: $viewModel.password,
                           title: "Password",
                           placeholder: "Enter your password",
                           isSecureField: true)
                 
-                InputView(text: $confirmPassword,
-                          title: "Password",
+                InputView(text: $viewModel.confirmPassword,
+                          title: "Confirm Password",
                           placeholder: "Confirm your password",
                           isSecureField: true)
             }
@@ -58,8 +52,8 @@ struct SignUpView: View {
             
             // Sign Up button
             Button {
-                Task {
-                    try await authViewModel.createUser(withEmail:email, password:password, fullname: fullname, username: username)
+                if viewModel.formIsValid {
+                    Task { try await viewModel.createUser() }
                 }
             } label: {
                 HStack {
@@ -73,6 +67,8 @@ struct SignUpView: View {
             .background(Color(.systemBlue))
             .cornerRadius(10)
             .padding(.top, 24)
+            .disabled(!viewModel.formIsValid)
+            .opacity(viewModel.formIsValid ? 1.0 : 0.5)
             
             Spacer()
             
@@ -89,17 +85,5 @@ struct SignUpView: View {
             }
 
         }
-    }
-}
-
-
-extension SignUpView: AuthenticationFormProtocol {
-    var formIsValid: Bool {
-        return !email.isEmpty
-        && email.contains("@")
-        && !password.isEmpty
-        && password.count > 5
-        && confirmPassword == password
-        && !fullname.isEmpty
     }
 }
