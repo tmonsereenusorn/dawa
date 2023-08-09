@@ -34,7 +34,11 @@ struct FeedView: View{
                     ScrollView() {
                         LazyVStack(spacing: 16) {
                             ForEach(viewModel.activities) { activity in
-                                ActivityRowView(activity: activity)
+                                NavigationLink {
+                                    ActivityView(activity: activity)
+                                } label: {
+                                    ActivityRowView(activity: activity)
+                                }
                             }
                         }
                         .padding(.horizontal, 18)

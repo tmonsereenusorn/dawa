@@ -19,10 +19,10 @@ class ActivityService {
                                     title: title,
                                     notes: notes,
                                     location: location,
-                                    numRequired: numRequired,
+                                    numRequired: numRequired + 1,
                                     category: category,
                                     timestamp: Timestamp(date: Date()),
-                                    numCurrent: 0,
+                                    numCurrent: 1,
                                     status: "Open")
             let encodedActivity = try Firestore.Encoder().encode(activity)
             let activityRef = try await Firestore.firestore().collection("activities").addDocument(data: encodedActivity)
@@ -31,6 +31,10 @@ class ActivityService {
             let activityId = activityRef.documentID
             let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
             try await userActivitiesRef.document(activityId).setData([:])
+            
+            // Add user to activity's participants list
+            let activityParticipantsRef = Firestore.firestore().collection("activities").document(activityId).collection("participants")
+            try await activityParticipantsRef.document(uid).setData([:])
             
         } catch {
             print("DEBUG: Failed to upload activity with error \(error.localizedDescription)")
@@ -71,10 +75,18 @@ class ActivityService {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             guard uid != activity.userId else { return } // Host of activity is already in activity
             guard let activityId = activity.id else { return }
-            let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
             
+            // Update activity by incrementing numCurrent
             try await Firestore.firestore().collection("activities").document(activityId).updateData(["numCurrent": activity.numCurrent + 1])
+            
+            // Update user's activities subcollection by adding activity ID to it
+            let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
             try await userActivitiesRef.document(activityId).setData([:])
+            
+            // Update activity's participants subcollection by adding user ID to it
+            let activityParticipantsRef = Firestore.firestore().collection("activities").document(activityId).collection("participants")
+            try await activityParticipantsRef.document(uid).setData([:])
+            
             completion()
         } catch {
             print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
@@ -100,13 +112,21 @@ class ActivityService {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             guard uid != activity.userId else { return } // Host of activity cannot leave
             guard let activityId = activity.id else { return }
-            let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
             
+            // Update activity by decrementing numCurrent
             try await Firestore.firestore().collection("activities").document(activityId).updateData(["numCurrent": activity.numCurrent - 1])
+            
+            // Update user's activities subcollection by removing activity ID from it
+            let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
             try await userActivitiesRef.document(activityId).delete()
+            
+            // Update activity's participants subcollection by removing user ID from it
+            let activityParticipantsRef = Firestore.firestore().collection("activities").document(activityId).collection("participants")
+            try await activityParticipantsRef.document(uid).delete()
+            
             completion()
         } catch {
-            print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
+            print("DEBUG: Failed to leave activity with error \(error.localizedDescription)")
         }
     }
     
@@ -123,5 +143,21 @@ class ActivityService {
             activities.append(activity)
         }
         completion(activities)
+    }
+    
+    @MainActor
+    func fetchActivityParticipants(activity: Activity, completion: @escaping([User]) -> Void) async {
+        var users: [User] = []
+        
+        guard let activityId = activity.id else { return }
+        guard let activityParticipantsSnapshot = try? await Firestore.firestore().collection("activities").document(activityId).collection("participants").getDocuments() else { return }
+        
+        for doc in activityParticipantsSnapshot.documents {
+            let uid = doc.documentID
+            guard let userSnapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
+            guard let user = try? userSnapshot.data(as: User.self) else { return }
+            users.append(user)
+        }
+        completion(users)
     }
 }

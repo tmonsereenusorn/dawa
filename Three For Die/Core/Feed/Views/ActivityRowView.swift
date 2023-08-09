@@ -20,10 +20,10 @@ struct ActivityRowView: View {
         if let user = viewModel.activity.user {
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Image(systemName: "person.circle.fill")
+                    CircularProfileImageView(user: user, size: .xxSmall)
                     Text(user.username)
                         .foregroundColor(.black)
-                        .font(.system(size: 10))
+                        .font(.system(size: 12))
                     Text(viewModel.activity.timestamp.dateValue().timeAgoDisplay())
                         .foregroundColor(CustomColors.gray_2)
                         .font(.system(size: 10))
@@ -79,33 +79,27 @@ struct ActivityRowView: View {
                 }
                 HStack {
                     Text(viewModel.activity.title)
-                        .font(.headline)
+                        .font(.system(size: 18))
                         .foregroundColor(.black)
                         .fontWeight(.semibold)
                     if let filterColor = ActivityFilters.color(forLabel: viewModel.activity.category) {
                         Text(viewModel.activity.category)
-                            .padding(.vertical, 6) // Adjust vertical padding
-                            .padding(.horizontal, 9) // Adjust horizontal padding
+                            .padding(.vertical, 4) // Adjust vertical padding
+                            .padding(.horizontal, 6) // Adjust horizontal padding
                             .foregroundColor(.white)
                             .background(filterColor)
                             .cornerRadius(15)
-                            .font(.system(size: 10)).bold()
+                            .font(.system(size: 8)).bold()
                     }
                     Spacer()
                 }
                 HStack {
-                    Text(viewModel.activity.notes)
-                        .font(.system(size: 10))
-                        .foregroundColor(CustomColors.gray_2)
-                    Spacer()
-                    Image(systemName: "pin")
+                    Image(systemName: "mappin.and.ellipse")
+                        .font(.system(size: 12))
                         .foregroundColor(CustomColors.gray_2)
                     Text(viewModel.activity.location)
-                        .font(.system(size: 10))
+                        .font(.system(size: 12))
                         .foregroundColor(CustomColors.gray_2)
-                }
-                
-                HStack {
                     Spacer()
                     HStack {
                         if viewModel.activity.numRequired <= 5 {
@@ -122,9 +116,9 @@ struct ActivityRowView: View {
                             }
                         } else {
                             Text("\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired)")
+                                .foregroundColor(.black)
                         }
                     }
-                    Spacer()
                 }
             }
             .padding()

@@ -56,6 +56,9 @@
 		85B3C1F72A4987AB0041B3FF /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 85B3C1F62A4987AB0041B3FF /* FirebaseRemoteConfigSwift */; };
 		85B3C1F92A4987AB0041B3FF /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 85B3C1F82A4987AB0041B3FF /* FirebaseStorage */; };
 		85B3C1FB2A4987AB0041B3FF /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 85B3C1FA2A4987AB0041B3FF /* FirebaseStorageCombine-Community */; };
+		85B3CA5E2A8393D100690ED9 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3CA5D2A8393D100690ED9 /* ActivityView.swift */; };
+		85B3CA602A83989F00690ED9 /* UserRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3CA5F2A83989F00690ED9 /* UserRowView.swift */; };
+		85B3CA622A839D1100690ED9 /* ActivityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3CA612A839D1100690ED9 /* ActivityViewModel.swift */; };
 		85B3CC9F2A8268DD0082B561 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3CC9E2A8268DD0082B561 /* AuthService.swift */; };
 		85B3CCA22A826CC80082B561 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3CCA12A826CC80082B561 /* ContentViewModel.swift */; };
 		85B3CCA62A826E120082B561 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3CCA52A826E120082B561 /* LoginViewModel.swift */; };
@@ -115,6 +118,9 @@
 		85B273422A4EF69400D5A358 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		85B2B2382A81240C00986708 /* CircularProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProfileImageView.swift; sourceTree = "<group>"; };
 		85B2B23D2A81252400986708 /* ProfileImageSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageSize.swift; sourceTree = "<group>"; };
+		85B3CA5D2A8393D100690ED9 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		85B3CA5F2A83989F00690ED9 /* UserRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRowView.swift; sourceTree = "<group>"; };
+		85B3CA612A839D1100690ED9 /* ActivityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewModel.swift; sourceTree = "<group>"; };
 		85B3CC9E2A8268DD0082B561 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		85B3CCA12A826CC80082B561 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		85B3CCA52A826E120082B561 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -268,6 +274,7 @@
 				85B3F7EF2A5D5142004734E8 /* SearchBar.swift */,
 				8554ADD72A7F9D8F007E47B0 /* FormInputView.swift */,
 				85B2B2382A81240C00986708 /* CircularProfileImageView.swift */,
+				85B3CA5F2A83989F00690ED9 /* UserRowView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -329,6 +336,7 @@
 				85B3F7F52A5DFD7D004734E8 /* AddActivityViewModel.swift */,
 				85EE632B2A5EC39400F8AF64 /* FeedViewModel.swift */,
 				857353BA2A6522BF00329BB3 /* ActivityRowViewModel.swift */,
+				85B3CA612A839D1100690ED9 /* ActivityViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -339,6 +347,7 @@
 				389240BF29A1B7F40005AA3D /* AddActivityView.swift */,
 				85D9BAEA2A3AC0A700E11652 /* FeedView.swift */,
 				85D9BAE82A3AC0A700E11652 /* ActivityRowView.swift */,
+				85B3CA5D2A8393D100690ED9 /* ActivityView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -605,6 +614,7 @@
 				85EAF1AA2A7BC16C0035CF17 /* ImageUploader.swift in Sources */,
 				85B2B2392A81240C00986708 /* CircularProfileImageView.swift in Sources */,
 				85B3F7F62A5DFD7D004734E8 /* AddActivityViewModel.swift in Sources */,
+				85B3CA622A839D1100690ED9 /* ActivityViewModel.swift in Sources */,
 				85B3CCA22A826CC80082B561 /* ContentViewModel.swift in Sources */,
 				85B3F7F22A5DEED8004734E8 /* ActivityService.swift in Sources */,
 				85D9BAF32A3AC2F100E11652 /* DateExtension.swift in Sources */,
@@ -622,6 +632,7 @@
 				389240C429A1EC9D0005AA3D /* Event.swift in Sources */,
 				85ACFF912A6E89790050D7D5 /* MessagesViewModel.swift in Sources */,
 				85C8BDDA2A72879B0059932C /* GroupsViewModel.swift in Sources */,
+				85B3CA602A83989F00690ED9 /* UserRowView.swift in Sources */,
 				85D778242A45F6160052D5F9 /* ProfileView.swift in Sources */,
 				85C854D42A418F290057F55F /* SignUpView.swift in Sources */,
 				857353BB2A6522BF00329BB3 /* ActivityRowViewModel.swift in Sources */,
@@ -629,6 +640,7 @@
 				85C9C9212A7A8CAD00CBA0A1 /* EditProfileViewModel.swift in Sources */,
 				85C8BDD22A7254230059932C /* CreateGroupViewModel.swift in Sources */,
 				85C854D12A418EBF0057F55F /* ContentView.swift in Sources */,
+				85B3CA5E2A8393D100690ED9 /* ActivityView.swift in Sources */,
 				85C8BDD02A7251730059932C /* Groups.swift in Sources */,
 				85B3CCAD2A8273160082B561 /* VerifyEmailViewModel.swift in Sources */,
 				8503FCFC2A52D8A60024F98B /* GroupsView.swift in Sources */,
