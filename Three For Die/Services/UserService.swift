@@ -42,7 +42,7 @@ class UserService {
     }
     
     @MainActor
-    func editUser(withUid uid: String, username: String, bio: String, uiImage: UIImage?, completion: @escaping(User) -> Void) async throws {
+    func editUser(withUid uid: String, username: String, bio: String, uiImage: UIImage?) async throws {
         do {
             guard uid == Auth.auth().currentUser?.uid else { return } // Only current user can edit their information
             
@@ -68,7 +68,7 @@ class UserService {
             
             let encodedUser = try Firestore.Encoder().encode(newUserProfile)
             try await Firestore.firestore().collection("users").document(uid).setData(encodedUser)
-            completion(newUserProfile)
+            try await fetchCurrentUser()
         } catch {
             print("DEBUG: Failed to edit user with error \(error.localizedDescription)")
         }

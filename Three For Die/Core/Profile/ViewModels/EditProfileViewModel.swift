@@ -18,7 +18,6 @@ class EditProfileViewModel: ObservableObject {
     private var profileUIImage: UIImage?
     
     @Published var didEditProfile = false
-    private let userService = UserService()
     
     @MainActor
     func loadImage() async throws {
@@ -30,13 +29,10 @@ class EditProfileViewModel: ObservableObject {
     }
     
     @MainActor
-    func editUser(withUid uid: String, username: String, bio: String, completion: @escaping(User) -> Void) async throws {
+    func editUser(withUid uid: String, username: String, bio: String) async throws {
         do {
-            print("User id: \(uid)")
-            try await userService.editUser(withUid: uid, username: username, bio: bio, uiImage: profileUIImage ?? nil) { newUser in
-                self.didEditProfile = true
-                completion(newUser)
-            }
+            try await UserService.shared.editUser(withUid: uid, username: username, bio: bio, uiImage: profileUIImage ?? nil)
+            self.didEditProfile = true
         } catch {
             print("DEBUG: Failed to edit user with error \(error.localizedDescription)")
             self.didEditProfile = false

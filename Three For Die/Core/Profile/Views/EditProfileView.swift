@@ -14,6 +14,7 @@ struct EditProfileView: View {
     @Binding var user: User
     @Environment(\.presentationMode) var mode
     @StateObject var viewModel = EditProfileViewModel()
+    @EnvironmentObject var contentViewModel: ContentViewModel
     
     var body: some View {
         VStack {
@@ -57,8 +58,9 @@ extension EditProfileView {
                 Task {
                     try await viewModel.editUser(withUid: self.user.id,
                                                  username: username,
-                                                 bio: bio) { newUser in
-                        user = newUser
+                                                 bio: bio)
+                    if let updatedUser = contentViewModel.currentUser {
+                        self.user = updatedUser
                     }
                 }
             } label: {

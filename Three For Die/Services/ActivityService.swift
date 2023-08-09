@@ -7,7 +7,7 @@
 
 import Firebase
 
-struct ActivityService {
+class ActivityService {
     
     @MainActor
     func uploadActivity(groupId: String, title: String, location: String, notes: String, numRequired: Int, category: String) async throws {

@@ -22,10 +22,9 @@ struct ProfileView: View {
 
             userProfile
 
-            userInfoDetails
-
             Spacer()
         }
+        .padding()
         .navigationBarHidden(true)
         .background(.black)
         .popover(isPresented: $editingProfile) {
@@ -60,37 +59,21 @@ extension ProfileView {
                     .foregroundColor(.white)
             }
         }
-        .padding(10)
     }
     
     var userProfile: some View {
-        HStack {
-            Spacer()
+        VStack(alignment: .center) {
+            CircularProfileImageView(user: user, size: .xLarge)
             
-            VStack {
-                CircularProfileImageView(user: user, size: .xLarge)
-                
-                Text("@\(user.username)")
-                    .foregroundColor(.white)
-            }
-            
-            Spacer()
-        }
-    }
-    
-    var userInfoDetails: some View {
-        VStack {
-            Text("About")
-                .font(.headline)
+            Text("@\(user.username)")
                 .foregroundColor(.white)
             
-            Text("Bio here")
+            Text(user.bio)
                 .font(.caption)
                 .padding(.vertical, 4)
-                .foregroundColor(.white)
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
         }
-        .padding(12)
-        
     }
 }
 

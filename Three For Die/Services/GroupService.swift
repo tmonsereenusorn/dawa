@@ -8,7 +8,7 @@
 import Foundation
 import Firebase
 
-struct GroupService {
+class GroupService {
     
     @MainActor
     func createGroup(groupName: String, completion: @escaping(String) -> Void) async throws {
