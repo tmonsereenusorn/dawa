@@ -24,23 +24,23 @@ struct ActivityView: View {
             
             HStack{
                 Spacer()
-                Text(activity.title)
+                Text(viewModel.activity.title)
                     .foregroundColor(.white)
                     .font(.title)
                     .fontWeight(.semibold)
                 Spacer()
             }
             
-            Text("Location: \(activity.location)")
+            Text("Location: \(viewModel.activity.location)")
                 .foregroundColor(.white)
             
-            Text("Details: \(activity.notes)")
+            Text("Details: \(viewModel.activity.notes)")
                 .foregroundColor(.white)
             
             Divider()
                 .background(.white)
             
-            Text("Participants (\(activity.numCurrent) / \(activity.numRequired))")
+            Text("Participants (\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired))")
                 .foregroundColor(.white)
             
             ScrollView() {
@@ -52,7 +52,7 @@ struct ActivityView: View {
                                 .foregroundColor(.white)
                                 .font(.system(size: 12))
                             Spacer()
-                            if participant.id == activity.userId {
+                            if participant.id == viewModel.activity.userId {
                                 Text("Host")
                                     .foregroundColor(.gray)
                             }
@@ -64,6 +64,7 @@ struct ActivityView: View {
             .refreshable {
                 Task {
                     await viewModel.fetchActivityParticipants(activity: activity)
+                    try await viewModel.refreshActivity()
                 }
             }
         }

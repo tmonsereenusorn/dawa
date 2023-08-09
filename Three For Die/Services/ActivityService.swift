@@ -69,6 +69,18 @@ class ActivityService {
     }
     
     @MainActor
+    static func fetchActivity(activity: Activity) async throws -> Activity? {
+        do {
+            guard let activityId = activity.id else { return nil }
+            let snapshot = try await Firestore.firestore().collection("activities").document(activityId).getDocument()
+            return try snapshot.data(as: Activity.self)
+        } catch {
+            print("DEBUG: Failed to fetch activity with error \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    @MainActor
     func joinActivity(activity: Activity, completion: @escaping() -> Void) async throws {
         do {
             guard activity.numCurrent < activity.numRequired else { return }
