@@ -6,31 +6,42 @@
 //
 
 import SwiftUI
+import SlidingTabView
 
 struct MessagesView: View {
     @ObservedObject var viewModel = MessagesViewModel()
     
+    @State private var selectedIndex = 0
+    
     var body: some View {
         VStack {
-            ScrollView() {
-                LazyVStack(spacing: 16) {
-                    ForEach(viewModel.userActivities) { activity in
-                        ActivityRowView(activity: activity)
-                    }
-                }
-                .padding(.horizontal, 18)
+            SlidingTabView(selection: $selectedIndex, tabs: ["Activities", "Events"], animation: .easeInOut)
+            Spacer()
+            if selectedIndex == 0 {
+                InboxView()
+            } else {
+                Text("Events")
             }
-            .refreshable {
-                Task {
-                    await viewModel.fetchUserActivities()
-                }
-            }
+            Spacer()
+//            ScrollView() {
+//                LazyVStack(spacing: 16) {
+//                    ForEach(viewModel.userActivities) { activity in
+//                        ActivityRowView(activity: activity)
+//                    }
+//                }
+//                .padding(.horizontal, 18)
+//            }
+//            .refreshable {
+//                Task {
+//                    await viewModel.fetchUserActivities()
+//                }
+//            }
         }
     }
 }
-
-//struct ActivitiesView_Previews: PreviewProvider {
+//
+//struct MessagesView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        ActivitiesView()
+//        MessagesView()
 //    }
 //}

@@ -25,6 +25,8 @@
 		85AF06512A58297400599107 /* RightSideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AF06502A58297400599107 /* RightSideMenuView.swift */; };
 		85AF06532A582BCA00599107 /* RightSideMenuRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AF06522A582BCA00599107 /* RightSideMenuRow.swift */; };
 		85AF06552A582E3300599107 /* RightSideMenuRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AF06542A582E3300599107 /* RightSideMenuRowView.swift */; };
+		85B241BB2A866174001EAA59 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B241BA2A866174001EAA59 /* ChatMessageCell.swift */; };
+		85B241BD2A866372001EAA59 /* ChatBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B241BC2A866372001EAA59 /* ChatBubble.swift */; };
 		85B273432A4EF69400D5A358 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B273422A4EF69400D5A358 /* MessagesView.swift */; };
 		85B2B2392A81240C00986708 /* CircularProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B2B2382A81240C00986708 /* CircularProfileImageView.swift */; };
 		85B2B23C2A8124E500986708 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 85B2B23B2A8124E500986708 /* Kingfisher */; };
@@ -70,6 +72,10 @@
 		85B3F7F22A5DEED8004734E8 /* ActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3F7F12A5DEED8004734E8 /* ActivityService.swift */; };
 		85B3F7F42A5DF1CF004734E8 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3F7F32A5DF1CF004734E8 /* Activity.swift */; };
 		85B3F7F62A5DFD7D004734E8 /* AddActivityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B3F7F52A5DFD7D004734E8 /* AddActivityViewModel.swift */; };
+		85C09D792A86554C00D51576 /* SlidingTabView in Frameworks */ = {isa = PBXBuildFile; productRef = 85C09D782A86554C00D51576 /* SlidingTabView */; };
+		85C09D7B2A8657D800D51576 /* InboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C09D7A2A8657D800D51576 /* InboxView.swift */; };
+		85C09D7D2A86589C00D51576 /* InboxRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C09D7C2A86589C00D51576 /* InboxRowView.swift */; };
+		85C09D7F2A865EC800D51576 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C09D7E2A865EC800D51576 /* ChatView.swift */; };
 		85C854CE2A4167B00057F55F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 85C854CD2A4167B00057F55F /* GoogleService-Info.plist */; };
 		85C854D12A418EBF0057F55F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D02A418EBF0057F55F /* ContentView.swift */; };
 		85C854D42A418F290057F55F /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D32A418F290057F55F /* SignUpView.swift */; };
@@ -115,6 +121,8 @@
 		85AF06502A58297400599107 /* RightSideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSideMenuView.swift; sourceTree = "<group>"; };
 		85AF06522A582BCA00599107 /* RightSideMenuRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSideMenuRow.swift; sourceTree = "<group>"; };
 		85AF06542A582E3300599107 /* RightSideMenuRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSideMenuRowView.swift; sourceTree = "<group>"; };
+		85B241BA2A866174001EAA59 /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
+		85B241BC2A866372001EAA59 /* ChatBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubble.swift; sourceTree = "<group>"; };
 		85B273422A4EF69400D5A358 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		85B2B2382A81240C00986708 /* CircularProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProfileImageView.swift; sourceTree = "<group>"; };
 		85B2B23D2A81252400986708 /* ProfileImageSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageSize.swift; sourceTree = "<group>"; };
@@ -132,6 +140,9 @@
 		85B3F7F12A5DEED8004734E8 /* ActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityService.swift; sourceTree = "<group>"; };
 		85B3F7F32A5DF1CF004734E8 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		85B3F7F52A5DFD7D004734E8 /* AddActivityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityViewModel.swift; sourceTree = "<group>"; };
+		85C09D7A2A8657D800D51576 /* InboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxView.swift; sourceTree = "<group>"; };
+		85C09D7C2A86589C00D51576 /* InboxRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxRowView.swift; sourceTree = "<group>"; };
+		85C09D7E2A865EC800D51576 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		85C854CD2A4167B00057F55F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		85C854D02A418EBF0057F55F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		85C854D32A418F290057F55F /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -185,6 +196,7 @@
 				85B3C1F32A4987AB0041B3FF /* FirebasePerformance in Frameworks */,
 				85B3C1EB2A4987AB0041B3FF /* FirebaseInAppMessagingSwift-Beta in Frameworks */,
 				85B3C1F92A4987AB0041B3FF /* FirebaseStorage in Frameworks */,
+				85C09D792A86554C00D51576 /* SlidingTabView in Frameworks */,
 				85B3C1DD2A4987AB0041B3FF /* FirebaseDynamicLinks in Frameworks */,
 				85B3C1E12A4987AB0041B3FF /* FirebaseFirestoreCombine-Community in Frameworks */,
 				85B3C1F12A4987AB0041B3FF /* FirebaseMessaging in Frameworks */,
@@ -377,6 +389,11 @@
 			isa = PBXGroup;
 			children = (
 				85B273422A4EF69400D5A358 /* MessagesView.swift */,
+				85C09D7A2A8657D800D51576 /* InboxView.swift */,
+				85C09D7C2A86589C00D51576 /* InboxRowView.swift */,
+				85C09D7E2A865EC800D51576 /* ChatView.swift */,
+				85B241BA2A866174001EAA59 /* ChatMessageCell.swift */,
+				85B241BC2A866372001EAA59 /* ChatBubble.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -537,6 +554,7 @@
 				85B3C1F82A4987AB0041B3FF /* FirebaseStorage */,
 				85B3C1FA2A4987AB0041B3FF /* FirebaseStorageCombine-Community */,
 				85B2B23B2A8124E500986708 /* Kingfisher */,
+				85C09D782A86554C00D51576 /* SlidingTabView */,
 			);
 			productName = "Three For Die";
 			productReference = 3892409729A187260005AA3D /* Three For Die.app */;
@@ -569,6 +587,7 @@
 			packageReferences = (
 				85B3C1C52A4987AB0041B3FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				85B2B23A2A8124E500986708 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				85C09D772A86554B00D51576 /* XCRemoteSwiftPackageReference "SlidingTabView" */,
 			);
 			productRefGroup = 3892409829A187260005AA3D /* Products */;
 			projectDirPath = "";
@@ -597,6 +616,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85C09D7D2A86589C00D51576 /* InboxRowView.swift in Sources */,
 				85B3F7F42A5DF1CF004734E8 /* Activity.swift in Sources */,
 				85B3CC9F2A8268DD0082B561 /* AuthService.swift in Sources */,
 				389240C029A1B7F40005AA3D /* AddActivityView.swift in Sources */,
@@ -615,6 +635,8 @@
 				85B2B2392A81240C00986708 /* CircularProfileImageView.swift in Sources */,
 				85B3F7F62A5DFD7D004734E8 /* AddActivityViewModel.swift in Sources */,
 				85B3CA622A839D1100690ED9 /* ActivityViewModel.swift in Sources */,
+				85B241BB2A866174001EAA59 /* ChatMessageCell.swift in Sources */,
+				85C09D7F2A865EC800D51576 /* ChatView.swift in Sources */,
 				85B3CCA22A826CC80082B561 /* ContentViewModel.swift in Sources */,
 				85B3F7F22A5DEED8004734E8 /* ActivityService.swift in Sources */,
 				85D9BAF32A3AC2F100E11652 /* DateExtension.swift in Sources */,
@@ -627,6 +649,7 @@
 				8503FCFE2A52D95D0024F98B /* GroupRowView.swift in Sources */,
 				389240C329A1EC9D0005AA3D /* Location.swift in Sources */,
 				85D778262A45FE680052D5F9 /* SettingsRowView.swift in Sources */,
+				85B241BD2A866372001EAA59 /* ChatBubble.swift in Sources */,
 				85AF06512A58297400599107 /* RightSideMenuView.swift in Sources */,
 				85B3CCB02A8278FA0082B561 /* RightSideMenuViewModel.swift in Sources */,
 				389240C429A1EC9D0005AA3D /* Event.swift in Sources */,
@@ -649,6 +672,7 @@
 				85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */,
 				85A4171B2A56D99100A9096A /* UserService.swift in Sources */,
 				85D5DD8B2A42E4C000D61F12 /* LoginView.swift in Sources */,
+				85C09D7B2A8657D800D51576 /* InboxView.swift in Sources */,
 				85D9BAEB2A3AC0A800E11652 /* ActivityRowView.swift in Sources */,
 				85B273432A4EF69400D5A358 /* MessagesView.swift in Sources */,
 			);
@@ -882,6 +906,14 @@
 				minimumVersion = 9.0.0;
 			};
 		};
+		85C09D772A86554B00D51576 /* XCRemoteSwiftPackageReference "SlidingTabView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/QuynhNguyen/SlidingTabView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1024,6 +1056,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 85B3C1C52A4987AB0041B3FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
+		};
+		85C09D782A86554C00D51576 /* SlidingTabView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 85C09D772A86554B00D51576 /* XCRemoteSwiftPackageReference "SlidingTabView" */;
+			productName = SlidingTabView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
