@@ -33,9 +33,9 @@ struct MessageService {
             guard let changes = snapshot?.documentChanges.filter({ $0.type == .added}) else { return }
             var messages = changes.compactMap({ try? $0.document.data(as: Message.self) })
             
-            for (index, message) in messages.enumerated() where message.fromId != currentUid {
-                let messageUser = UserService.fetchUser(withUid: message.fromId) { user in
-                    messages[index].user = messageUser
+            for (index, message) in messages.enumerated() where message.fromUserId != currentUid {
+                UserService.fetchUser(withUid: message.fromUserId) { user in
+                    messages[index].user = user
                 }
             }
             
