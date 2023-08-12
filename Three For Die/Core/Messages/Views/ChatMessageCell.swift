@@ -8,30 +8,30 @@
 import SwiftUI
 
 struct ChatMessageCell: View {
-    let isFromCurrentUser: Bool
+    let message: Message
     
     var body: some View {
         HStack {
-            if isFromCurrentUser {
+            if message.isFromCurrentUser {
                 Spacer()
                 
-                Text("This is a test message for now")
+                Text(message.messageText)
                     .font(.subheadline)
                     .padding(12)
                     .backgroundStyle(Color(.systemBlue))
                     .foregroundColor(.white)
-                    .clipShape(ChatBubble(isFromCurrentUser: isFromCurrentUser))
+                    .clipShape(ChatBubble(isFromCurrentUser: message.isFromCurrentUser))
                     .frame(maxWidth: UIScreen.main.bounds.width / 1.5, alignment: .trailing)
             } else {
                 HStack(alignment: .bottom, spacing: 8) {
                     CircularProfileImageView(user: User.MOCK_USER, size: .xxSmall)
                     
-                    Text("This is a test message for now")
+                    Text(message.messageText)
                         .font(.subheadline)
                         .padding()
                         .backgroundStyle(Color(.systemGray5))
                         .foregroundColor(.black)
-                        .clipShape(ChatBubble(isFromCurrentUser: isFromCurrentUser))
+                        .clipShape(ChatBubble(isFromCurrentUser: message.isFromCurrentUser))
                         .frame(maxWidth: UIScreen.main.bounds.width / 1.75, alignment: .leading)
                     
                     Spacer()

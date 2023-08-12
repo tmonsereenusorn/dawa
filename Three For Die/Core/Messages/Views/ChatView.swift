@@ -8,19 +8,25 @@
 import SwiftUI
 
 struct ChatView: View {
-    @State private var messageText = ""
+    @StateObject var viewModel: ChatViewModel
+    let activity: Activity
+    
+    init(activity: Activity) {
+        self.activity = activity
+        self._viewModel = StateObject(wrappedValue: ChatViewModel(activity: activity))
+    }
     
     var body: some View {
         VStack {
             ScrollView {
-                ForEach(0 ... 15, id: \.self) { message in
-                    ChatMessageCell(isFromCurrentUser: Bool.random())
+                ForEach(viewModel.messages) { message in
+                    ChatMessageCell(message: message)
                 }
             }
             Spacer()
             // Message input view
             ZStack(alignment: .trailing) {
-                TextField("Message...", text: $messageText, axis: .vertical)
+                TextField("Message...", text: $viewModel.messageText, axis: .vertical)
                     .padding(12)
                     .padding(.trailing, 48)
                     .background(Color(.systemGroupedBackground))
@@ -28,7 +34,7 @@ struct ChatView: View {
                     .font(.subheadline)
                 
                 Button {
-                    
+                    viewModel.sendMessage()
                 } label: {
                     Text("Send")
                         .fontWeight(.semibold)

@@ -45,7 +45,7 @@ class ActivityService {
         do {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             guard uid == activity.userId else { return } // Only host can close activity
-            guard let activityId = activity.id else { return }
+            let activityId = activity.id
             try await Firestore.firestore().collection("activities").document(activityId).updateData(["status": "Closed"])
         } catch {
             print("DEBUG: Failed to close activity with error \(error.localizedDescription)")
@@ -71,7 +71,7 @@ class ActivityService {
     @MainActor
     static func fetchActivity(activity: Activity) async throws -> Activity? {
         do {
-            guard let activityId = activity.id else { return nil }
+            let activityId = activity.id
             let snapshot = try await Firestore.firestore().collection("activities").document(activityId).getDocument()
             return try snapshot.data(as: Activity.self)
         } catch {
@@ -86,7 +86,7 @@ class ActivityService {
             guard activity.numCurrent < activity.numRequired else { return }
             guard let uid = Auth.auth().currentUser?.uid else { return }
             guard uid != activity.userId else { return } // Host of activity is already in activity
-            guard let activityId = activity.id else { return }
+            let activityId = activity.id
             
             // Update activity by incrementing numCurrent
             try await Firestore.firestore().collection("activities").document(activityId).updateData(["numCurrent": activity.numCurrent + 1])
@@ -108,7 +108,7 @@ class ActivityService {
     @MainActor
     func checkIfUserJoinedActivity(activity: Activity, completion: @escaping(Bool) -> Void) async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        guard let activityId = activity.id else { return }
+        let activityId = activity.id
         
         guard let snapshot = try? await Firestore.firestore().collection("users").document(uid)
                                                       .collection("user-activities").document(activityId)
@@ -123,7 +123,7 @@ class ActivityService {
             guard activity.numCurrent > 0 else { return }
             guard let uid = Auth.auth().currentUser?.uid else { return }
             guard uid != activity.userId else { return } // Host of activity cannot leave
-            guard let activityId = activity.id else { return }
+            let activityId = activity.id
             
             // Update activity by decrementing numCurrent
             try await Firestore.firestore().collection("activities").document(activityId).updateData(["numCurrent": activity.numCurrent - 1])
@@ -161,7 +161,7 @@ class ActivityService {
     func fetchActivityParticipants(activity: Activity, completion: @escaping([User]) -> Void) async {
         var users: [User] = []
         
-        guard let activityId = activity.id else { return }
+        let activityId = activity.id
         guard let activityParticipantsSnapshot = try? await Firestore.firestore().collection("activities").document(activityId).collection("participants").getDocuments() else { return }
         
         for doc in activityParticipantsSnapshot.documents {
