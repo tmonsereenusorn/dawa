@@ -21,6 +21,7 @@ struct Activity: Identifiable, Codable {
     let timestamp: Timestamp
     var numCurrent: Int
     var status: String
+    var recentMessageId: String?
     
     var user: User?
     var didJoin: Bool? = false

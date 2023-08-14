@@ -15,19 +15,22 @@ struct MessageService {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         let activityId = activity.id
         
+        let messageRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("messages").document()
         let message = Message(fromUserId: currentUid,
                               toActivityId: activityId,
                               messageText: messageText,
                               timestamp: Timestamp())
         
         guard let messageData = try? Firestore.Encoder().encode(message) else { return }
+        messageRef.setData(messageData)
         
-        Firestore.firestore().collection("activities").document(activityId).collection("messages").addDocument(data: messageData)
+        let messageId = messageRef.documentID
+        FirestoreConstants.ActivitiesCollection.document(activityId).setData(["recentMessageId": messageId], merge: true)
     }
     
     static func observeMessages(activityId: String, completion: @escaping([Message]) -> Void) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        let query = Firestore.firestore().collection("activities").document(activityId).collection("messages").order(by: "timestamp", descending: false)
+        let query = FirestoreConstants.ActivitiesCollection.document(activityId).collection("messages").order(by: "timestamp", descending: false)
         
         query.addSnapshotListener { snapshot, _ in
             guard let changes = snapshot?.documentChanges.filter({ $0.type == .added}) else { return }

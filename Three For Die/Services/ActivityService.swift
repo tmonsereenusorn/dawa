@@ -25,15 +25,15 @@ class ActivityService {
                                     numCurrent: 1,
                                     status: "Open")
             let encodedActivity = try Firestore.Encoder().encode(activity)
-            let activityRef = try await Firestore.firestore().collection("activities").addDocument(data: encodedActivity)
+            let activityRef = try await FirestoreConstants.ActivitiesCollection.addDocument(data: encodedActivity)
             
             // Add activity to user's activity list
             let activityId = activityRef.documentID
-            let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
+            let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
             try await userActivitiesRef.document(activityId).setData([:])
             
             // Add user to activity's participants list
-            let activityParticipantsRef = Firestore.firestore().collection("activities").document(activityId).collection("participants")
+            let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
             try await activityParticipantsRef.document(uid).setData([:])
             
         } catch {
@@ -46,7 +46,7 @@ class ActivityService {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             guard uid == activity.userId else { return } // Only host can close activity
             let activityId = activity.id
-            try await Firestore.firestore().collection("activities").document(activityId).updateData(["status": "Closed"])
+            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["status": "Closed"])
         } catch {
             print("DEBUG: Failed to close activity with error \(error.localizedDescription)")
         }
@@ -54,7 +54,7 @@ class ActivityService {
     
     @MainActor
     func fetchActivities(groupId: String, completion: @escaping([Activity]) -> Void) async {
-        guard let snapshot = try? await Firestore.firestore().collection("activities")
+        guard let snapshot = try? await FirestoreConstants.ActivitiesCollection
                                                             .whereField("status", isEqualTo: "Open")
                                                             .whereField("groupId", isEqualTo: groupId)
                                                             .order(by: "timestamp", descending: true)
@@ -72,7 +72,7 @@ class ActivityService {
     static func fetchActivity(activity: Activity) async throws -> Activity? {
         do {
             let activityId = activity.id
-            let snapshot = try await Firestore.firestore().collection("activities").document(activityId).getDocument()
+            let snapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).getDocument()
             return try snapshot.data(as: Activity.self)
         } catch {
             print("DEBUG: Failed to fetch activity with error \(error.localizedDescription)")
@@ -89,14 +89,14 @@ class ActivityService {
             let activityId = activity.id
             
             // Update activity by incrementing numCurrent
-            try await Firestore.firestore().collection("activities").document(activityId).updateData(["numCurrent": activity.numCurrent + 1])
+            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": activity.numCurrent + 1])
             
             // Update user's activities subcollection by adding activity ID to it
-            let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
+            let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
             try await userActivitiesRef.document(activityId).setData([:])
             
             // Update activity's participants subcollection by adding user ID to it
-            let activityParticipantsRef = Firestore.firestore().collection("activities").document(activityId).collection("participants")
+            let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
             try await activityParticipantsRef.document(uid).setData([:])
             
             completion()
@@ -110,7 +110,7 @@ class ActivityService {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let activityId = activity.id
         
-        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid)
+        guard let snapshot = try? await FirestoreConstants.UserCollection.document(uid)
                                                       .collection("user-activities").document(activityId)
                                                       .getDocument() else { return }
         
@@ -126,14 +126,14 @@ class ActivityService {
             let activityId = activity.id
             
             // Update activity by decrementing numCurrent
-            try await Firestore.firestore().collection("activities").document(activityId).updateData(["numCurrent": activity.numCurrent - 1])
+            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": activity.numCurrent - 1])
             
             // Update user's activities subcollection by removing activity ID from it
-            let userActivitiesRef = Firestore.firestore().collection("users").document(uid).collection("user-activities")
+            let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
             try await userActivitiesRef.document(activityId).delete()
             
             // Update activity's participants subcollection by removing user ID from it
-            let activityParticipantsRef = Firestore.firestore().collection("activities").document(activityId).collection("participants")
+            let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
             try await activityParticipantsRef.document(uid).delete()
             
             completion()
@@ -147,10 +147,10 @@ class ActivityService {
         var activities: [Activity] = []
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        guard let userActivitiesSnapshot = try? await Firestore.firestore().collection("users").document(uid).collection("user-activities").getDocuments() else { return }
+        guard let userActivitiesSnapshot = try? await FirestoreConstants.UserCollection.document(uid).collection("user-activities").getDocuments() else { return }
         for doc in userActivitiesSnapshot.documents {
             let activityId = doc.documentID
-            guard let activitySnapshot = try? await Firestore.firestore().collection("activities").document(activityId).getDocument() else { return }
+            guard let activitySnapshot = try? await FirestoreConstants.ActivitiesCollection.document(activityId).getDocument() else { return }
             guard let activity = try? activitySnapshot.data(as: Activity.self) else { return }
             activities.append(activity)
         }
@@ -162,11 +162,11 @@ class ActivityService {
         var users: [User] = []
         
         let activityId = activity.id
-        guard let activityParticipantsSnapshot = try? await Firestore.firestore().collection("activities").document(activityId).collection("participants").getDocuments() else { return }
+        guard let activityParticipantsSnapshot = try? await FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants").getDocuments() else { return }
         
         for doc in activityParticipantsSnapshot.documents {
             let uid = doc.documentID
-            guard let userSnapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
+            guard let userSnapshot = try? await FirestoreConstants.UserCollection.document(uid).getDocument() else { return }
             guard let user = try? userSnapshot.data(as: User.self) else { return }
             users.append(user)
         }
