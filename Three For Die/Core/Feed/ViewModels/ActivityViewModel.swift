@@ -10,7 +10,6 @@ import Foundation
 class ActivityViewModel: ObservableObject {
     @Published var activity: Activity
     @Published var participants = [User]()
-    private let activityService = ActivityService()
     
     init(activity: Activity) {
         self.activity = activity
@@ -21,7 +20,7 @@ class ActivityViewModel: ObservableObject {
     
     @MainActor
     func fetchActivityParticipants(activity: Activity) async {
-        await activityService.fetchActivityParticipants(activity: activity) { participants in
+        await ActivityService.fetchActivityParticipants(activity: activity) { participants in
             self.participants = participants
         }
     }

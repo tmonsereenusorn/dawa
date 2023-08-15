@@ -17,8 +17,8 @@ class ChatViewModel: ObservableObject {
         observeMessages()
     }
     
-    func sendMessage() {
-        MessageService.sendMessage(messageText, toActivity: activity)
+    func sendMessage() async throws {
+        try await MessageService.sendMessage(messageText, toActivity: activity)
     }
     
     func observeMessages() {

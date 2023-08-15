@@ -158,7 +158,7 @@ class ActivityService {
     }
     
     @MainActor
-    func fetchActivityParticipants(activity: Activity, completion: @escaping([User]) -> Void) async {
+    static func fetchActivityParticipants(activity: Activity, completion: @escaping([User]) -> Void) async {
         var users: [User] = []
         
         let activityId = activity.id

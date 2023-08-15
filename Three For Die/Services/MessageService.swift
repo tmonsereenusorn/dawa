@@ -11,10 +11,11 @@ import FirebaseFirestoreSwift
 
 struct MessageService {
     
-    static func sendMessage(_ messageText: String, toActivity activity: Activity) {
+    static func sendMessage(_ messageText: String, toActivity activity: Activity) async throws {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         let activityId = activity.id
         
+        // Add message to activity's messages subcollection
         let messageRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("messages").document()
         let message = Message(fromUserId: currentUid,
                               toActivityId: activityId,
@@ -24,8 +25,13 @@ struct MessageService {
         guard let messageData = try? Firestore.Encoder().encode(message) else { return }
         messageRef.setData(messageData)
         
+        // Add recent message ID to each participant's activity
         let messageId = messageRef.documentID
-        FirestoreConstants.ActivitiesCollection.document(activityId).setData(["recentMessageId": messageId], merge: true)
+        guard let activityParticipantsSnapshot = try? await FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants").getDocuments() else { return }
+        for doc in activityParticipantsSnapshot.documents {
+            let participantId = doc.documentID
+            try await FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId).setData(["recentMessageId": messageId], merge: true)
+        }
     }
     
     static func observeMessages(activityId: String, completion: @escaping([Message]) -> Void) {

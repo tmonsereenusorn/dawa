@@ -34,7 +34,9 @@ struct ChatView: View {
                     .font(.subheadline)
                 
                 Button {
-                    viewModel.sendMessage()
+                    Task {
+                        try await viewModel.sendMessage()
+                    }
                 } label: {
                     Text("Send")
                         .fontWeight(.semibold)
