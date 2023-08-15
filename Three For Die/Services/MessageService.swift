@@ -23,7 +23,7 @@ struct MessageService {
                               timestamp: Timestamp())
         
         guard let messageData = try? Firestore.Encoder().encode(message) else { return }
-        messageRef.setData(messageData)
+        try await messageRef.setData(messageData)
         
         // Add recent message ID to each participant's activity
         let messageId = messageRef.documentID

@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 
 class InboxService {
-    @Published var documentChanges = [DocumentChange]()
-    
-    func observeRecent
+//    @Published var documentChanges = [DocumentChange]()
+//    
+//    func observeRecent
 }

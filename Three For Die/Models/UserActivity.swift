@@ -11,7 +11,7 @@ import FirebaseFirestoreSwift
 struct UserActivity: Identifiable, Codable {
     @DocumentID var activityId: String?
     
-    var lastMessageId: String?
+    var recentMessageId: String?
     
     var id: String {
         return activityId ?? NSUUID().uuidString
