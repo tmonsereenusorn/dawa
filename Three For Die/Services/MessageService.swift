@@ -32,6 +32,9 @@ struct MessageService {
             let participantId = doc.documentID
             try await FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId).setData(["recentMessageId": messageId], merge: true)
         }
+        
+        // Add recent message ID to activity as well
+        try? await FirestoreConstants.ActivitiesCollection.document(activityId).setData(["recentMessageId": messageId], merge: true)
     }
     
     static func observeMessages(activityId: String, completion: @escaping([Message]) -> Void) {
@@ -49,6 +52,27 @@ struct MessageService {
             }
             
             completion(messages)
+        }
+    }
+    
+    @MainActor
+    static func fetchMessage(withMessageId messageId: String, activityId: String) async throws -> Message? {
+        do {
+            let snapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).collection("messages").document(messageId).getDocument()
+            return try snapshot.data(as: Message.self)
+        } catch {
+            print("DEBUG: Failed to fetch message with error \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    static func fetchMessage(withMessageId messageId: String, activityId: String, completion: @escaping(Message) -> Void) {
+        FirestoreConstants.ActivitiesCollection.document(activityId).collection("messages").document(messageId).getDocument() { snapshot, _ in
+            guard let message = try? snapshot?.data(as: Message.self) else {
+                print("DEBUG: Failed to map message")
+                return
+            }
+            completion(message)
         }
     }
 }

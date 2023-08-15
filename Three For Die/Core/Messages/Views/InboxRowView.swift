@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct InboxRowView: View {
+    let userActivity: UserActivity
+    
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: "person.circle.fill")
@@ -16,11 +18,11 @@ struct InboxRowView: View {
                 .foregroundColor(Color(.systemGray4))
             
             VStack(alignment: .leading, spacing: 4) {
-                Text("Sample name")
+                Text(userActivity.activity?.title ?? "Error displaying activity title")
                     .font(.subheadline)
                     .fontWeight(.semibold)
                 
-                Text("Some sample message for now")
+                Text(userActivity.recentMessage?.messageText ?? "No messages yet. Start planning!")
                     .font(.subheadline)
                     .foregroundColor(.gray)
                     .lineLimit(2)
@@ -28,7 +30,7 @@ struct InboxRowView: View {
             }
             
             HStack {
-                Text("Yesterday")
+                Text(userActivity.recentMessage?.timestamp.dateValue().timeAgoDisplay() ?? "")
                 
                 Image(systemName: "chevron.right")
             }
@@ -39,8 +41,8 @@ struct InboxRowView: View {
     }
 }
 
-struct InboxRowView_Previews: PreviewProvider {
-    static var previews: some View {
-        InboxRowView()
-    }
-}
+//struct InboxRowView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        InboxRowView()
+//    }
+//}

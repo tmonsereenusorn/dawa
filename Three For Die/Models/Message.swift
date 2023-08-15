@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-struct Message: Identifiable, Codable {
+struct Message: Identifiable, Codable, Hashable {
     @DocumentID var messageId: String?
     let fromUserId: String
     let toActivityId: String

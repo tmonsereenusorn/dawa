@@ -80,6 +80,16 @@ class ActivityService {
         }
     }
     
+    static func fetchActivity(withActivityId activityId: String, completion: @escaping(Activity) -> Void) {
+        FirestoreConstants.ActivitiesCollection.document(activityId).getDocument() { snapshot, _ in
+            guard let activity = try? snapshot?.data(as: Activity.self) else {
+                print("DEBUG: Failed to map activity")
+                return
+            }
+            completion(activity)
+        }
+    }
+    
     @MainActor
     func joinActivity(activity: Activity, completion: @escaping() -> Void) async throws {
         do {

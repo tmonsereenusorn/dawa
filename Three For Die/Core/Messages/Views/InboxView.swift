@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct InboxView: View {
+    @StateObject var viewModel = InboxViewModel()
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 List {
-                    ForEach(0 ... 10, id: \.self) { message in
-                        InboxRowView()
+                    ForEach(viewModel.userActivities, id: \.self) { userActivity in
+                        InboxRowView(userActivity: userActivity)
                     }
                 }
                 .listStyle(PlainListStyle())

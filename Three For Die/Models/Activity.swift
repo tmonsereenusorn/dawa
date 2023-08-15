@@ -8,7 +8,7 @@
 import Firebase
 import FirebaseFirestoreSwift
 
-struct Activity: Identifiable, Codable {
+struct Activity: Identifiable, Codable, Hashable {
     @DocumentID var activityId: String?
     
     let userId: String
@@ -21,7 +21,7 @@ struct Activity: Identifiable, Codable {
     let timestamp: Timestamp
     var numCurrent: Int
     var status: String
-    
+    var recentMessageId: String?
     
     var user: User?
     var didJoin: Bool? = false
