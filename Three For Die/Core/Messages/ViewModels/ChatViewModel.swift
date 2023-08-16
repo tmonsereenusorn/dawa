@@ -23,6 +23,7 @@ class ChatViewModel: ObservableObject {
     
     func observeMessages() {
         MessageService.observeMessages(activityId: activity.id) { messages in
+            print("Got new message")
             self.messages.append(contentsOf: messages)
         }
     }

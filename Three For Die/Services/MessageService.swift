@@ -46,6 +46,7 @@ struct MessageService {
             var messages = changes.compactMap({ try? $0.document.data(as: Message.self) })
             
             for (index, message) in messages.enumerated() where message.fromUserId != currentUid {
+                print("Got message: \(message.messageText)")
                 UserService.fetchUser(withUid: message.fromUserId) { user in
                     messages[index].user = user
                 }
