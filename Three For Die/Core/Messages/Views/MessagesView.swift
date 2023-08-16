@@ -15,14 +15,15 @@ struct MessagesView: View {
     
     var body: some View {
         VStack {
-            SlidingTabView(selection: $selectedIndex, tabs: ["Activities", "Events"], animation: .easeInOut)
-            Spacer()
-            if selectedIndex == 0 {
-                InboxView()
-            } else {
-                Text("Events")
-            }
-            Spacer()
+            InboxView()
+//            SlidingTabView(selection: $selectedIndex, tabs: ["Activities", "Events"], animation: .easeInOut)
+//            Spacer()
+//            if selectedIndex == 0 {
+//                InboxView()
+//            } else {
+//                Text("Events")
+//            }
+//            Spacer()
 //            ScrollView() {
 //                LazyVStack(spacing: 16) {
 //                    ForEach(viewModel.userActivities) { activity in

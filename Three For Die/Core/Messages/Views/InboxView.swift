@@ -11,7 +11,7 @@ struct InboxView: View {
     @StateObject var viewModel = InboxViewModel()
     
     var body: some View {
-        NavigationStack {
+        VStack {
             ScrollView {
                 List {
                     ForEach(viewModel.userActivities, id: \.self) { userActivity in

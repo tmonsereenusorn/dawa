@@ -12,17 +12,11 @@ struct MainTabView: View {
     var body: some View {
         TabView(selection: $selectedIndex) {
             FeedView()
-                .onTapGesture {
-                    self.selectedIndex = 0
-                }
                 .tabItem {
                     Image(systemName: "house")
                 }.tag(0)
             
-            MessagesView()
-                .onTapGesture {
-                    self.selectedIndex = 1
-                }
+            InboxView()
                 .tabItem {
                     Image(systemName: "figure.walk")
                 }.tag(1)

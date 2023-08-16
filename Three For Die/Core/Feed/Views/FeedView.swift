@@ -66,6 +66,8 @@ struct FeedView: View{
                 }
             }
             .background(.black)
+        } else {
+            ProgressView("Loading Feed...")
         }
     }
 }

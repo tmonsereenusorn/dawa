@@ -44,11 +44,14 @@ class InboxViewModel: ObservableObject {
         print("Got this many user activities: \(userActivities.count)")
         
         for i in 0 ..< userActivities.count {
-            var userActivity = userActivities[i]
+            print("Mapping activity to \(i)'th user activity")
+            let userActivity = userActivities[i]
             
+            print("User activity has id: \(userActivity.id)")
             // Attach activity to the user's activity
             ActivityService.fetchActivity(withActivityId: userActivity.id) { activity in
-                userActivity.activity = activity
+                print("Got activity with activity id: \(activity.id)")
+                self.userActivities[i].activity = activity
             }
             
             // Attach most recent message to the user's activity to display preview in inbox
@@ -62,15 +65,13 @@ class InboxViewModel: ObservableObject {
                         
                         newMessage.user = user
                         
-                        userActivity.recentMessage = newMessage
+                        self.userActivities[i].recentMessage = newMessage
                     }
                 }
             }
-            
-            if i == self.userActivities.count - 1 {
-                self.didCompleteInitialLoad = true
-            }
         }
+        
+        self.didCompleteInitialLoad = true
     }
     
     private func updateMessages(fromChanges changes: [DocumentChange]) {
@@ -88,25 +89,25 @@ class InboxViewModel: ObservableObject {
         
         ActivityService.fetchActivity(withActivityId: userActivity.id) { activity in
             userActivity.activity = activity
-        }
-        
-        // Attach most recent message to the user's activity to display preview in inbox
-        if let messageId = userActivity.activity?.recentMessageId {
-            MessageService.fetchMessage(withMessageId: messageId, activityId: userActivity.id) { [weak self] message in
-                guard let self else { return }
-                
-                var newMessage = message
-                
-                UserService.fetchUser(withUid: message.fromUserId) { user in
+            
+            // Attach most recent message to the user's activity to display preview in inbox
+            if let messageId = userActivity.activity?.recentMessageId {
+                MessageService.fetchMessage(withMessageId: messageId, activityId: userActivity.id) { [weak self] message in
+                    guard let self else { return }
                     
-                    newMessage.user = user
+                    var newMessage = message
                     
-                    userActivity.recentMessage = newMessage
+                    UserService.fetchUser(withUid: message.fromUserId) { user in
+                        
+                        newMessage.user = user
+                        
+                        userActivity.recentMessage = newMessage
+                    }
                 }
             }
+            
+            self.userActivities.insert(userActivity, at: 0)
         }
-        
-        self.userActivities.insert(userActivity, at: 0)
     }
     
     private func updateMessagesFromExistingConversation(fromChange change: DocumentChange) {
