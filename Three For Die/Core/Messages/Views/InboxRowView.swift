@@ -22,11 +22,25 @@ struct InboxRowView: View {
                     .font(.subheadline)
                     .fontWeight(.semibold)
                 
-                Text(userActivity.recentMessage?.messageText ?? "No messages yet. Start planning!")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                    .lineLimit(2)
-                    .frame(maxWidth: UIScreen.main.bounds.width - 100, alignment: .leading)
+                HStack(spacing: 0) {
+                    if let messageSender = userActivity.recentMessage?.user {
+                        if messageSender.isCurrentUser {
+                            Text("You: ")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        } else {
+                            Text("\(messageSender.username): ")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    
+                    Text(userActivity.recentMessage?.messageText ?? "No messages yet. Start planning!")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .lineLimit(1)
+                        .frame(maxWidth: UIScreen.main.bounds.width - 100, alignment: .leading)
+                }
             }
             
             HStack {
