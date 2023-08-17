@@ -32,4 +32,10 @@ class InboxService {
             self.documentChanges = changes
         }
     }
+    
+    func reset() {
+        self.firestoreListener?.remove()
+        self.firestoreListener = nil
+        self.documentChanges.removeAll()
+    }
 }

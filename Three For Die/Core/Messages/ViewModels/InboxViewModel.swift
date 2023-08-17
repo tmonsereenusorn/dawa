@@ -99,20 +99,20 @@ class InboxViewModel: ObservableObject {
             // Attach most recent message to the user's activity to display preview in inbox
             if let messageId = activity.recentMessageId {
                 MessageService.fetchMessage(withMessageId: messageId, activityId: activity.id) { message in
-                    defer { dispatchGroup.leave() }
-                    
                     var newMessage = message
                     UserService.fetchUser(withUid: message.fromUserId) { user in
                         newMessage.user = user
                         userActivity.recentMessage = newMessage
+                        dispatchGroup.leave()
                     }
                 }
             } else {
                 dispatchGroup.leave()
             }
-        }
-        dispatchGroup.notify(queue: .main) {
-            self.userActivities.insert(userActivity, at: 0)
+            
+            dispatchGroup.notify(queue: .main) {
+                self.userActivities.insert(userActivity, at: 0)
+            }
         }
     }
     
@@ -126,9 +126,9 @@ class InboxViewModel: ObservableObject {
         let dispatchGroup = DispatchGroup()
         
         ActivityService.fetchActivity(withActivityId: userActivity.id) { [weak self] activity in
-            dispatchGroup.enter()
             guard let self else { return }
             
+            dispatchGroup.enter()
             userActivity.activity = activity
             
             // Attach most recent message to the user's activity to display preview in inbox
