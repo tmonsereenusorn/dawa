@@ -25,16 +25,16 @@ struct MessageService {
         guard let messageData = try? Firestore.Encoder().encode(message) else { return }
         try await messageRef.setData(messageData)
         
-        // Add recent message ID to each participant's activity
+        // Add recent message ID to activity
         let messageId = messageRef.documentID
+        try? await FirestoreConstants.ActivitiesCollection.document(activityId).setData(["recentMessageId": messageId], merge: true)
+        
+        // Add recent message ID to each participant's activity
         guard let activityParticipantsSnapshot = try? await FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants").getDocuments() else { return }
         for doc in activityParticipantsSnapshot.documents {
             let participantId = doc.documentID
             try await FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId).setData(["recentMessageId": messageId], merge: true)
         }
-        
-        // Add recent message ID to activity as well
-        try? await FirestoreConstants.ActivitiesCollection.document(activityId).setData(["recentMessageId": messageId], merge: true)
     }
     
     static func observeMessages(activityId: String, completion: @escaping([Message]) -> Void) {

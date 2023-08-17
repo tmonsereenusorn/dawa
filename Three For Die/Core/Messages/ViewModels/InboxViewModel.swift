@@ -44,28 +44,29 @@ class InboxViewModel: ObservableObject {
         print("Got this many user activities: \(userActivities.count)")
         
         for i in 0 ..< userActivities.count {
-            print("Mapping activity to \(i)'th user activity")
             let userActivity = userActivities[i]
             
-            print("User activity has id: \(userActivity.id)")
             // Attach activity to the user's activity
-            ActivityService.fetchActivity(withActivityId: userActivity.id) { activity in
-                print("Got activity with activity id: \(activity.id)")
+            ActivityService.fetchActivity(withActivityId: userActivity.id) { [weak self] activity in
+                guard let self else { return }
+                
                 self.userActivities[i].activity = activity
-            }
-            
-            // Attach most recent message to the user's activity to display preview in inbox
-            if let messageId = userActivity.activity?.recentMessageId {
-                MessageService.fetchMessage(withMessageId: messageId, activityId: userActivity.id) { [weak self] message in
-                    guard let self else { return }
-                    
-                    var newMessage = message
-                    
-                    UserService.fetchUser(withUid: message.fromUserId) { user in
+                
+                // Attach most recent message to the user's activity to display preview in inbox
+                if let messageId = activity.recentMessageId {
+                    print("Attempting to get recent message with message ID: \(messageId)")
+                    MessageService.fetchMessage(withMessageId: messageId, activityId: userActivity.id) { [weak self] message in
+                        guard let self else { return }
+                        print("Got message with message text: \(message.messageText)")
                         
-                        newMessage.user = user
+                        var newMessage = message
                         
-                        self.userActivities[i].recentMessage = newMessage
+                        UserService.fetchUser(withUid: message.fromUserId) { user in
+                            
+                            newMessage.user = user
+                            
+                            self.userActivities[i].recentMessage = newMessage
+                        }
                     }
                 }
             }
@@ -87,56 +88,69 @@ class InboxViewModel: ObservableObject {
     private func createNewConversation(fromChange change: DocumentChange) {
         guard var userActivity = try? change.document.data(as: UserActivity.self) else { return }
         
-        ActivityService.fetchActivity(withActivityId: userActivity.id) { activity in
+        let dispatchGroup = DispatchGroup()
+        
+        ActivityService.fetchActivity(withActivityId: userActivity.id) { [weak self] activity in
+            guard let self else { return }
+            
+            dispatchGroup.enter()
             userActivity.activity = activity
             
             // Attach most recent message to the user's activity to display preview in inbox
-            if let messageId = userActivity.activity?.recentMessageId {
-                MessageService.fetchMessage(withMessageId: messageId, activityId: userActivity.id) { [weak self] message in
-                    guard let self else { return }
+            if let messageId = activity.recentMessageId {
+                MessageService.fetchMessage(withMessageId: messageId, activityId: activity.id) { message in
+                    defer { dispatchGroup.leave() }
                     
                     var newMessage = message
-                    
                     UserService.fetchUser(withUid: message.fromUserId) { user in
-                        
                         newMessage.user = user
-                        
                         userActivity.recentMessage = newMessage
                     }
                 }
+            } else {
+                dispatchGroup.leave()
             }
-            
+        }
+        dispatchGroup.notify(queue: .main) {
             self.userActivities.insert(userActivity, at: 0)
         }
     }
     
     private func updateMessagesFromExistingConversation(fromChange change: DocumentChange) {
+        print("Attempting to update conversation")
         guard var userActivity = try? change.document.data(as: UserActivity.self) else { return }
         guard let index = self.userActivities.firstIndex(where: {
-            $0.activityId ?? "" == userActivity.activityId
+            $0.id == userActivity.id
         }) else { return }
         
-        // Attach same activity from previous user activity
-        guard let activity = self.userActivities[index].activity else { return }
-        userActivity.activity = activity
+        let dispatchGroup = DispatchGroup()
         
-        // Attach most recent message to the user's activity to display preview in inbox
-        if let messageId = userActivity.activity?.recentMessageId {
-            MessageService.fetchMessage(withMessageId: messageId, activityId: userActivity.id) { [weak self] message in
-                guard let self else { return }
-                
-                var newMessage = message
-                
-                UserService.fetchUser(withUid: message.fromUserId) { user in
-                    
-                    newMessage.user = user
-                    
-                    userActivity.recentMessage = newMessage
+        ActivityService.fetchActivity(withActivityId: userActivity.id) { [weak self] activity in
+            dispatchGroup.enter()
+            guard let self else { return }
+            
+            userActivity.activity = activity
+            
+            // Attach most recent message to the user's activity to display preview in inbox
+            if let messageId = activity.recentMessageId {
+                MessageService.fetchMessage(withMessageId: messageId, activityId: activity.id) { message in
+                    print("Got new message with message text \(message.messageText)")
+                    var newMessage = message
+                    UserService.fetchUser(withUid: message.fromUserId) { user in
+                        newMessage.user = user
+                        userActivity.recentMessage = newMessage
+                        dispatchGroup.leave()
+                    }
                 }
+            } else {
+                dispatchGroup.leave()
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                print("About to update user activity with id: \(userActivity.id)")
+                self.userActivities.remove(at: index)
+                self.userActivities.insert(userActivity, at: 0)
             }
         }
-        
-        self.userActivities.remove(at: index)
-        self.userActivities.insert(userActivity, at: 0)
     }
 }
