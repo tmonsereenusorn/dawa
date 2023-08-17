@@ -25,9 +25,7 @@ class InboxService {
             .collection("user-activities")
         
         self.firestoreListener = query.addSnapshotListener { snapshot, _ in
-            guard let changes = snapshot?.documentChanges.filter({
-                $0.type == .added || $0.type == .modified
-            }) else { return }
+            guard let changes = snapshot?.documentChanges else { return }
             
             self.documentChanges = changes
         }

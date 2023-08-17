@@ -41,7 +41,6 @@ class InboxViewModel: ObservableObject {
     private func loadInitialMessages(fromChanges changes: [DocumentChange]) {
         self.userActivities = changes.compactMap{ try? $0.document.data(as: UserActivity.self) }
         
-        print("Got this many user activities: \(userActivities.count)")
         
         for i in 0 ..< userActivities.count {
             let userActivity = userActivities[i]
@@ -54,10 +53,8 @@ class InboxViewModel: ObservableObject {
                 
                 // Attach most recent message to the user's activity to display preview in inbox
                 if let messageId = activity.recentMessageId {
-                    print("Attempting to get recent message with message ID: \(messageId)")
                     MessageService.fetchMessage(withMessageId: messageId, activityId: userActivity.id) { [weak self] message in
                         guard let self else { return }
-                        print("Got message with message text: \(message.messageText)")
                         
                         var newMessage = message
                         
@@ -81,6 +78,8 @@ class InboxViewModel: ObservableObject {
                 self.createNewConversation(fromChange: change)
             } else if change.type == .modified {
                 self.updateMessagesFromExistingConversation(fromChange: change)
+            } else if change.type == .removed { // if removed
+                self.removeConversation(fromChange: change)
             }
         }
     }
@@ -117,7 +116,6 @@ class InboxViewModel: ObservableObject {
     }
     
     private func updateMessagesFromExistingConversation(fromChange change: DocumentChange) {
-        print("Attempting to update conversation")
         guard var userActivity = try? change.document.data(as: UserActivity.self) else { return }
         guard let index = self.userActivities.firstIndex(where: {
             $0.id == userActivity.id
@@ -134,7 +132,6 @@ class InboxViewModel: ObservableObject {
             // Attach most recent message to the user's activity to display preview in inbox
             if let messageId = activity.recentMessageId {
                 MessageService.fetchMessage(withMessageId: messageId, activityId: activity.id) { message in
-                    print("Got new message with message text \(message.messageText)")
                     var newMessage = message
                     UserService.fetchUser(withUid: message.fromUserId) { user in
                         newMessage.user = user
@@ -147,10 +144,18 @@ class InboxViewModel: ObservableObject {
             }
             
             dispatchGroup.notify(queue: .main) {
-                print("About to update user activity with id: \(userActivity.id)")
                 self.userActivities.remove(at: index)
                 self.userActivities.insert(userActivity, at: 0)
             }
+        }
+    }
+    
+    private func removeConversation(fromChange change: DocumentChange) {
+        print("Attempting to remove conversation")
+        guard let removedUserActivity = try? change.document.data(as: UserActivity.self) else { return }
+        
+        if let indexToRemove = userActivities.firstIndex(where: { $0.id == removedUserActivity.id }) {
+            self.userActivities.remove(at: indexToRemove)
         }
     }
 }
