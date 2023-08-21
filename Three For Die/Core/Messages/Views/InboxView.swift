@@ -12,8 +12,8 @@ struct InboxView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                List {
+            VStack {
+                ScrollView {
                     ForEach(viewModel.userActivities, id: \.self) { userActivity in
                         ZStack {
                             NavigationLink(value: userActivity) {
@@ -25,7 +25,6 @@ struct InboxView: View {
                         }
                     }
                 }
-                .listStyle(PlainListStyle())
                 .frame(height: UIScreen.main.bounds.height - 120)
             }
             .navigationDestination(for: UserActivity.self, destination: { userActivity in

@@ -7,14 +7,10 @@ import FirebaseAuth
 struct Three_For_DieApp: App {
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @StateObject var groupsViewModel = GroupsViewModel()
-    @StateObject var feedViewModel = FeedViewModel()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(groupsViewModel)
-                .environmentObject(feedViewModel)
         }
     }
 }
