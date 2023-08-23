@@ -15,7 +15,7 @@ struct RightSideMenuView: View {
         if let user = contentViewModel.currentUser {
             VStack (alignment: .leading) {
                 VStack(alignment: .leading) {
-                    Circle()
+                    CircularProfileImageView(user: user, size: .medium)
                         .frame(width: 48, height: 48)
                     
                     VStack(alignment: .leading, spacing: 4) {
@@ -24,7 +24,7 @@ struct RightSideMenuView: View {
                         
                         Text("@\(user.username)")
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.white)
                     }
                 }
                 .padding()
@@ -34,7 +34,7 @@ struct RightSideMenuView: View {
                         NavigationLink {
                             ProfileView(user: user)
                         } label: {
-                            RightSideMenuRowView(option: option, color: .gray)
+                            RightSideMenuRowView(option: option, color: .white)
                         }
                     } else if option == .logout {
                         Button {

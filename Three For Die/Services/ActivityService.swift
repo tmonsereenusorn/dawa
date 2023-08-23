@@ -53,7 +53,7 @@ class ActivityService {
     }
     
     @MainActor
-    func fetchActivities(groupId: String, completion: @escaping([Activity]) -> Void) async {
+    static func fetchActivities(groupId: String, completion: @escaping([Activity]) -> Void) async {
         guard let snapshot = try? await FirestoreConstants.ActivitiesCollection
                                                             .whereField("status", isEqualTo: "Open")
                                                             .whereField("groupId", isEqualTo: groupId)
@@ -69,9 +69,8 @@ class ActivityService {
     }
     
     @MainActor
-    static func fetchActivity(activity: Activity) async throws -> Activity? {
+    static func fetchActivity(activityId: String) async throws -> Activity? {
         do {
-            let activityId = activity.id
             let snapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).getDocument()
             return try snapshot.data(as: Activity.self)
         } catch {
@@ -91,15 +90,16 @@ class ActivityService {
     }
     
     @MainActor
-    func joinActivity(activity: Activity, completion: @escaping() -> Void) async throws {
+    func joinActivity(activityId: String, completion: @escaping(Activity) -> Void) async throws {
         do {
+            guard var activity = try await ActivityService.fetchActivity(activityId: activityId) else { return }
             guard activity.numCurrent < activity.numRequired else { return }
             guard let uid = Auth.auth().currentUser?.uid else { return }
             guard uid != activity.userId else { return } // Host of activity is already in activity
-            let activityId = activity.id
             
             // Update activity by incrementing numCurrent
-            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": activity.numCurrent + 1])
+            activity.numCurrent += 1
+            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": activity.numCurrent])
             
             // Update user's activities subcollection by adding activity ID to it
             let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
@@ -109,16 +109,15 @@ class ActivityService {
             let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
             try await activityParticipantsRef.document(uid).setData([:])
             
-            completion()
+            completion(activity)
         } catch {
             print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
         }
     }
     
     @MainActor
-    func checkIfUserJoinedActivity(activity: Activity, completion: @escaping(Bool) -> Void) async {
+    static func checkIfUserJoinedActivity(activityId: String, completion: @escaping(Bool) -> Void) async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        let activityId = activity.id
         
         guard let snapshot = try? await FirestoreConstants.UserCollection.document(uid)
                                                       .collection("user-activities").document(activityId)

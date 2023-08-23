@@ -28,8 +28,12 @@ class ActivityViewModel: ObservableObject {
     @MainActor
     func refreshActivity() async throws {
         do {
-            if let newActivity = try await ActivityService.fetchActivity(activity: activity) {
+            let activityId = activity.id
+            if let newActivity = try await ActivityService.fetchActivity(activityId: activityId) {
                 self.activity = newActivity
+                await ActivityService.checkIfUserJoinedActivity(activityId: activityId) { didJoin in
+                    self.activity.didJoin = didJoin
+                }
             }
         } catch {
             print("DEBUG: Failed to fetch activity with error \(error.localizedDescription)")

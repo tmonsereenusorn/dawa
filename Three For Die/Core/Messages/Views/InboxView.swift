@@ -12,26 +12,31 @@ struct InboxView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                ScrollView {
-                    ForEach(viewModel.userActivities, id: \.self) { userActivity in
-                        ZStack {
-                            NavigationLink(value: userActivity) {
-                                EmptyView()
-                            }
-                            .opacity(0.0)
-                            
-                            InboxRowView(userActivity: userActivity)
+            List {
+                ForEach(viewModel.userActivities, id: \.self) { userActivity in
+                    ZStack {
+                        NavigationLink(value: userActivity) {
+                            EmptyView()
                         }
+                        .opacity(0.0)
+                        
+                        InboxRowView(userActivity: userActivity)
                     }
                 }
-                .frame(height: UIScreen.main.bounds.height - 120)
+                .listRowInsets(EdgeInsets())
+                .padding(.vertical)
+                .padding(.trailing, 8)
+                .padding(.leading, 20)
             }
             .navigationDestination(for: UserActivity.self, destination: { userActivity in
                 if let activity = userActivity.activity {
                     ChatView(activity: activity)
                 }
             })
+            .listStyle(PlainListStyle())
+            .navigationTitle("Inbox")
+            .navigationBarTitleDisplayMode(.inline)
+            .overlay { if !viewModel.didCompleteInitialLoad { ProgressView() } }
         }
     }
 }

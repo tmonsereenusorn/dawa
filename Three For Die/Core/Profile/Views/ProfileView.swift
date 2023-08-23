@@ -62,18 +62,23 @@ extension ProfileView {
     }
     
     var userProfile: some View {
-        VStack(alignment: .center) {
-            CircularProfileImageView(user: user, size: .xLarge)
-            
-            Text("@\(user.username)")
-                .foregroundColor(.white)
-            
-            Text(user.bio)
-                .font(.caption)
-                .padding(.vertical, 4)
-                .foregroundColor(.gray)
-                .multilineTextAlignment(.center)
+        HStack {
+            Spacer()
+            VStack(alignment: .center) {
+                CircularProfileImageView(user: user, size: .xLarge)
+                
+                Text("@\(user.username)")
+                    .foregroundColor(.white)
+                
+                Text(user.bio)
+                    .font(.caption)
+                    .padding(.vertical, 4)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+            }
+            Spacer()
         }
+        
     }
 }
 

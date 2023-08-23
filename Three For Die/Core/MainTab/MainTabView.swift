@@ -8,11 +8,10 @@ enum TabType {
 
 struct MainTabView: View {
     @State private var selectedIndex = 0
-    @State var sideMenuOpen = false
     
     var body: some View {
         TabView(selection: $selectedIndex) {
-            MainFeedView(sideMenuOpen: $sideMenuOpen)
+            MainFeedView()
                 .tabItem {
                     Image(systemName: "house")
                 }.tag(0)

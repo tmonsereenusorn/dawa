@@ -29,8 +29,8 @@ struct GroupsView: View {
                             }
                         } label: {
                             GroupRowView(group: group)
-                                .foregroundColor(.black)
-                                .background(viewModel.currSelectedGroup == group.id ? .gray : .white)
+                                .foregroundColor(.white)
+                                .background(viewModel.currSelectedGroup == group.id ? .gray : .black)
                         }
                     }
                 }
@@ -53,7 +53,7 @@ struct GroupsView: View {
                     Text("Create Group")
                     Spacer()
                 }
-                .foregroundColor(.black)
+                .foregroundColor(.white)
             }
             .popover(isPresented: $creatingGroup) {
                 CreateGroupView()

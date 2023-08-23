@@ -66,8 +66,6 @@ struct FeedView: View{
                 }
             }
             .background(.black)
-        } else {
-            ProgressView("Loading Feed...")
         }
     }
 }
@@ -77,7 +75,7 @@ func customNavBarAppearance() -> UINavigationBarAppearance {
     
     // Apply a red background.
     customNavBarAppearance.configureWithOpaqueBackground()
-    customNavBarAppearance.backgroundColor = UIColor(CustomColors.cardinal_red)
+    customNavBarAppearance.backgroundColor = UIColor(Color.black)
     
     // Apply white colored normal and large titles.
     customNavBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]

@@ -13,27 +13,17 @@ class ActivityRowViewModel: ObservableObject {
     
     init(activity: Activity) {
         self.activity = activity
-        Task {
-            await checkIfUserJoinedActivity()
-        }
     }
     
     @MainActor
     func joinActivity() async throws{
         do {
-            try await service.joinActivity(activity: self.activity) {
-                self.activity.numCurrent += 1
+            try await service.joinActivity(activityId: self.activity.id) { activity in
+                self.activity = activity
                 self.activity.didJoin = true
             }
         } catch {
             print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
-        }
-    }
-    
-    @MainActor
-    func checkIfUserJoinedActivity() async {
-        await service.checkIfUserJoinedActivity(activity: activity) { didJoin in
-            self.activity.didJoin = didJoin
         }
     }
     
