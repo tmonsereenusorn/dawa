@@ -26,7 +26,7 @@ struct ProfileView: View {
         }
         .padding()
         .navigationBarHidden(true)
-        .background(.black)
+        .background(Color.theme.background)
         .popover(isPresented: $editingProfile) {
             EditProfileView(user: $user)
         }

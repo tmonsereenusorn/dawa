@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct ChatView: View {
+    @State private var messageText = ""
+    @State private var isInitialLoad = false
     @StateObject var viewModel: ChatViewModel
-    let activity: Activity
+    private let activity: Activity
     
     init(activity: Activity) {
         self.activity = activity
@@ -18,32 +20,48 @@ struct ChatView: View {
     
     var body: some View {
         VStack {
-            ScrollView {
-                ForEach(viewModel.messages) { message in
-                    ChatMessageCell(message: message)
-                }
-            }
-            Spacer()
-            // Message input view
-            ZStack(alignment: .trailing) {
-                TextField("Message...", text: $viewModel.messageText, axis: .vertical)
-                    .padding(12)
-                    .padding(.trailing, 48)
-                    .background(Color(.systemGroupedBackground))
-                    .clipShape(Capsule())
-                    .font(.subheadline)
-                
-                Button {
-                    Task {
-                        try await viewModel.sendMessage()
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack {
+                        VStack {
+                            
+                            VStack(spacing: 4) {
+                                Text(activity.title)
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                                
+                                Text("Group Chat")
+                                    .font(.footnote)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        
+                        ForEach(viewModel.messages.indices, id: \.self) { index in
+                            ChatMessageCell(message: viewModel.messages[index],
+                                            nextMessage: viewModel.nextMessage(forIndex: index))
+                                .id(viewModel.messages[index].id)
+                        }
                     }
-                } label: {
-                    Text("Send")
-                        .fontWeight(.semibold)
+                    .padding(.vertical)
                 }
-                .padding(.horizontal)
+                .onChange(of: viewModel.messages) { newValue in
+                    guard let lastMessage = newValue.last else { return }
+            
+                    withAnimation(.spring()) {
+                        proxy.scrollTo(lastMessage.id)
+                    }
+                }
             }
+            
+            Spacer()
+            
+            MessageInputView(messageText: $messageText, viewModel: viewModel)
         }
+        .onDisappear {
+            viewModel.removeChatListener()
+        }
+        .navigationTitle(activity.title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

@@ -21,7 +21,7 @@ struct MainTabView: View {
                     Image(systemName: "figure.walk")
                 }.tag(1)
         }
-        .background(Color.black)
+        .background(Color.theme.background)
         .accentColor(.white)
     }
 }

@@ -32,7 +32,7 @@ struct EditProfileView: View {
             self.username = user.username
             self.bio = user.bio
         }
-        .background(.black)
+        .background(Color.theme.background)
     }
 }
 

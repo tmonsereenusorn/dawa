@@ -47,13 +47,13 @@ struct MainFeedView: View {
                     
                     GroupsView()
                         .frame(width: 300)
-                        .background(showLeftMenu ? Color.black : Color.clear)
+                        .background(showLeftMenu ? Color.theme.background : Color.clear)
                         .foregroundColor(.white)
                         .offset(x: showLeftMenu ? 0 : -300, y: 0)
                     
                     RightSideMenuView()
                         .frame(width: 300)
-                        .background(showRightMenu ? Color.black : Color.clear)
+                        .background(showRightMenu ? Color.theme.background : Color.clear)
                         .offset(x: showRightMenu ? 100 : 500, y: 0)
                 }
                 .navigationTitle("Activity Feed")

@@ -53,7 +53,7 @@ struct CreateGroupView: View {
                             .padding(.horizontal)
                             .padding(.vertical, 8)
                             .background(.green)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.theme.primaryText)
                             .clipShape(Capsule())
                     }
                 }

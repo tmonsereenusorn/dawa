@@ -32,10 +32,14 @@ extension Date {
             } else {
                 return "\(diff) days ago"
             }
-            
+        } else {
+            let diff = Calendar.current.dateComponents([.weekOfYear], from: self, to: Date()).weekOfYear ?? 0
+            if diff == 1 {
+                return "1 week ago"
+            } else {
+                return "\(diff) weeks ago"
+            }
         }
-        let diff = Calendar.current.dateComponents([.weekOfYear], from: self, to: Date()).weekOfYear ?? 0
-        return "\(diff) weeks ago"
     }
     
     private var timeFormatter: DateFormatter {

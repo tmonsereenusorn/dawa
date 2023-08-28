@@ -8,16 +8,27 @@
 import SwiftUI
 
 struct ChatBubble: Shape {
-    let isFromCurrentUser: Bool
+    var isFromCurrentUser: Bool
+    var shouldRoundAllCorners: Bool
+    
+    var corners: UIRectCorner {
+        if shouldRoundAllCorners {
+            return [.allCorners]
+        } else {
+            return [
+                .topLeft,
+                .topRight,
+                isFromCurrentUser ? .bottomLeft : .bottomRight
+            ]
+        }
+    }
     
     func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect,
-                                byRoundingCorners: [
-                                    .topLeft,
-                                    .topRight,
-                                    isFromCurrentUser ? .bottomLeft : .bottomRight
-                                ],
-                                cornerRadii: CGSize(width: 16, height: 16))
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: 16, height: 16)
+        )
         
         return Path(path.cgPath)
     }
@@ -25,6 +36,6 @@ struct ChatBubble: Shape {
 
 //struct ChatBubble_Previews: PreviewProvider {
 //    static var previews: some View {
-//        ChatBubble(isFromCurrentUser: true)
+//        ChatBubble(isFromCurrentUser: true, shouldRoundAllCorners: true)
 //    }
 //}

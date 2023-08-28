@@ -35,7 +35,7 @@ struct AddActivityView: View {
                 Spacer()
                 
                 Text("Create New Activity")
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.theme.primaryText)
                     .font(.headline)
                 
                 Spacer()
@@ -65,8 +65,6 @@ struct AddActivityView: View {
             }
             .padding(10)
             
-            Text("Create a new activity")
-                .font(.title2)
             // Title, notes, location for activity
             VStack {
                 FormInputView(text: $title,
@@ -144,7 +142,7 @@ struct AddActivityView: View {
                                 Text(option.label)
                                     .padding(.vertical, 8) // Adjust vertical padding
                                     .padding(.horizontal, 12) // Adjust horizontal padding
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.theme.primaryText)
                                     .background(option.color)
                                     .opacity(self.selectedTag == option.label ? 1 : 0.5)
                                     .cornerRadius(15)
@@ -157,7 +155,7 @@ struct AddActivityView: View {
             }
             .padding()
         }
-        .background(.black)
+        .background(Color.theme.background)
     }
 
 }

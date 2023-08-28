@@ -21,6 +21,7 @@ struct InboxRowView: View {
                 Text(userActivity.activity?.title ?? "Error displaying activity title")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .foregroundColor(Color.theme.primaryText)
                 
                 HStack(spacing: 0) {
                     if let messageSender = userActivity.recentMessage?.user {

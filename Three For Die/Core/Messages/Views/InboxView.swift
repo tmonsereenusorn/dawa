@@ -37,6 +37,7 @@ struct InboxView: View {
             .navigationTitle("Inbox")
             .navigationBarTitleDisplayMode(.inline)
             .overlay { if !viewModel.didCompleteInitialLoad { ProgressView() } }
+            .background(Color.theme.background)
         }
     }
 }

@@ -22,10 +22,10 @@ struct ActivityRowView: View {
                 HStack {
                     CircularProfileImageView(user: user, size: .xxSmall)
                     Text(user.username)
-                        .foregroundColor(.black)
+                        .foregroundColor(Color.theme.primaryText)
                         .font(.system(size: 12))
                     Text(viewModel.activity.timestamp.dateValue().timeAgoDisplay())
-                        .foregroundColor(CustomColors.gray_2)
+                        .foregroundColor(Color.theme.secondaryText)
                         .font(.system(size: 10))
                     
                     Spacer()
@@ -80,7 +80,7 @@ struct ActivityRowView: View {
                 HStack {
                     Text(viewModel.activity.title)
                         .font(.system(size: 18))
-                        .foregroundColor(.black)
+                        .foregroundColor(Color.theme.primaryText)
                         .fontWeight(.semibold)
                     if let filterColor = ActivityFilters.color(forLabel: viewModel.activity.category) {
                         Text(viewModel.activity.category)
@@ -96,10 +96,10 @@ struct ActivityRowView: View {
                 HStack {
                     Image(systemName: "mappin.and.ellipse")
                         .font(.system(size: 12))
-                        .foregroundColor(CustomColors.gray_2)
+                        .foregroundColor(Color.theme.secondaryText)
                     Text(viewModel.activity.location)
                         .font(.system(size: 12))
-                        .foregroundColor(CustomColors.gray_2)
+                        .foregroundColor(Color.theme.secondaryText)
                     Spacer()
                     HStack {
                         if viewModel.activity.numRequired <= 5 {
@@ -116,14 +116,15 @@ struct ActivityRowView: View {
                             }
                         } else {
                             Text("\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired)")
-                                .foregroundColor(.black)
+                                .foregroundColor(Color.theme.primaryText)
                         }
                     }
                 }
             }
             .padding()
-            .background(.white)
+            .background(Color.theme.background)
             .cornerRadius(12)
+            .shadow(color: Color.gray.opacity(0.5), radius: 5, x: 0, y: 3)
         }
     }
 }

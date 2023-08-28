@@ -58,14 +58,14 @@ struct FeedView: View{
                         .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
                         .foregroundColor(CustomColors.cardinal_red)
                 }
-                .background(.white)
+                .background(Color.theme.primaryText)
                 .clipShape(Circle())
                 .padding()
                 .popover(isPresented: $addingEvent) {
                     AddActivityView(user: user)
                 }
             }
-            .background(.black)
+            .background(Color.theme.background)
         }
     }
 }
@@ -75,19 +75,19 @@ func customNavBarAppearance() -> UINavigationBarAppearance {
     
     // Apply a red background.
     customNavBarAppearance.configureWithOpaqueBackground()
-    customNavBarAppearance.backgroundColor = UIColor(Color.black)
+    customNavBarAppearance.backgroundColor = UIColor(Color.theme.background)
     
     // Apply white colored normal and large titles.
-    customNavBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-    customNavBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+    customNavBarAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.theme.primaryText)]
+    customNavBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.theme.primaryText)]
 
 
     // Apply white color to all the nav bar buttons.
     let barButtonItemAppearance = UIBarButtonItemAppearance(style: .plain)
-    barButtonItemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white]
+    barButtonItemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(Color.theme.primaryText)]
     barButtonItemAppearance.disabled.titleTextAttributes = [.foregroundColor: UIColor.lightText]
     barButtonItemAppearance.highlighted.titleTextAttributes = [.foregroundColor: UIColor.label]
-    barButtonItemAppearance.focused.titleTextAttributes = [.foregroundColor: UIColor.white]
+    barButtonItemAppearance.focused.titleTextAttributes = [.foregroundColor: UIColor(Color.theme.primaryText)]
     customNavBarAppearance.buttonAppearance = barButtonItemAppearance
     customNavBarAppearance.backButtonAppearance = barButtonItemAppearance
     customNavBarAppearance.doneButtonAppearance = barButtonItemAppearance

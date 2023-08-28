@@ -24,7 +24,7 @@ struct RightSideMenuView: View {
                         
                         Text("@\(user.username)")
                             .font(.caption)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.theme.primaryText)
                     }
                 }
                 .padding()
