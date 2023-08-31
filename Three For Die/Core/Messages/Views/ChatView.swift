@@ -24,7 +24,6 @@ struct ChatView: View {
                 ScrollView {
                     LazyVStack {
                         VStack {
-                            
                             VStack(spacing: 4) {
                                 Text(activity.title)
                                     .font(.title3)

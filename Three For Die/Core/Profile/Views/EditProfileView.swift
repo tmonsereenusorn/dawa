@@ -115,7 +115,7 @@ extension EditProfileView {
             HStack(spacing: 0) {
                 Text("@")
                     .font(.system(size: 20))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.theme.primaryText)
                 
                 VStack(alignment: .leading, spacing: 0) {
                     TextField("Enter a new username", text: $username)

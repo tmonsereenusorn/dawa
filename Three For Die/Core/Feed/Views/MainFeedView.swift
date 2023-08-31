@@ -48,7 +48,6 @@ struct MainFeedView: View {
                     GroupsView()
                         .frame(width: 300)
                         .background(showLeftMenu ? Color.theme.background : Color.clear)
-                        .foregroundColor(.white)
                         .offset(x: showLeftMenu ? 0 : -300, y: 0)
                     
                     RightSideMenuView()
