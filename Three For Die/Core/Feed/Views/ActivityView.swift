@@ -9,95 +9,143 @@ import SwiftUI
 
 struct ActivityView: View {
     @Environment(\.presentationMode) var mode
-    @State private var activity: Activity
     @State private var editingActivity: Bool = false
     @ObservedObject var viewModel: ActivityViewModel
+    @EnvironmentObject var feedViewModel: FeedViewModel
+    @EnvironmentObject var groupsViewModel: GroupsViewModel
     
     init(activity: Activity) {
-        _activity = State(initialValue: activity)
         self.viewModel = ActivityViewModel(activity: activity)
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            headerView
-            
-            HStack{
-                Spacer()
-                Text(viewModel.activity.title)
-                    .foregroundColor(.white)
-                    .font(.title)
-                    .fontWeight(.semibold)
-                Spacer()
-            }
-            
-            Text("Location: \(viewModel.activity.location)")
-                .foregroundColor(.white)
-            
-            Text("Details: \(viewModel.activity.notes)")
-                .foregroundColor(.white)
-            
-            Divider()
-                .background(.white)
-            
-            Text("Participants (\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired))")
-                .foregroundColor(.white)
-            
-            ScrollView() {
-                LazyVStack(spacing: 16) {
-                    ForEach(viewModel.participants) { participant in
-                        HStack {
-                            CircularProfileImageView(user: participant, size: .xxSmall)
-                            Text(participant.username)
+        if let user = viewModel.activity.user {
+            VStack(alignment: .leading, spacing: 12) {
+                // Header and buttons
+                HStack(alignment: .top) {
+                    Button {
+                        mode.wrappedValue.dismiss()
+                    } label: {
+                        Image(systemName: "arrow.left")
+                            .resizable()
+                            .frame(width: 20, height: 16)
+                            .foregroundColor(Color.theme.primaryText)
+                            .offset(x: 16, y: 12)
+                    }
+                    
+                    Spacer()
+                    
+                    if user.isCurrentUser {
+                        Button {
+                            Task {
+                                try await viewModel.closeActivity()
+                                try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                            }
+                            mode.wrappedValue.dismiss()
+                        } label: {
+                            Text("Close activity")
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 9)
                                 .foregroundColor(.white)
-                                .font(.system(size: 12))
-                            Spacer()
-                            if participant.id == viewModel.activity.userId {
-                                Text("Host")
-                                    .foregroundColor(.gray)
+                                .background(.red)
+                                .cornerRadius(15)
+                                .font(.system(size: 10)).bold()
+                        }
+                    } else {
+                        if viewModel.activity.didJoin ?? false { // If user already joined activity
+                            Button {
+                                Task {
+                                    try await viewModel.leaveActivity()
+                                    try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                                }
+                            } label: {
+                                Text("Leave activity")
+                                    .padding(.vertical, 6)
+                                    .padding(.horizontal, 9)
+                                    .foregroundColor(.white)
+                                    .background(.red)
+                                    .cornerRadius(15)
+                                    .font(.system(size: 10)).bold()
+                            }
+                        } else {
+                            Button {
+                                Task {
+                                    try await viewModel.joinActivity()
+                                    try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                                }
+                            } label: {
+                                Text("Join Activity")
+                                    .padding(.vertical, 6)
+                                    .padding(.horizontal, 9)
+                                    .foregroundColor(.white)
+                                    .background(.green)
+                                    .cornerRadius(15)
+                                    .font(.system(size: 10)).bold()
                             }
                         }
                     }
+//                    Button {
+//                        editingActivity.toggle()
+//                    } label: {
+//                        Text("Edit Activity")
+//                            .font(.subheadline).bold()
+//                            .frame(width: 120, height: 32)
+//                            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
+//                            .foregroundColor(.white)
+//                    }
                 }
-                .padding(.horizontal, 18)
-            }
-            .refreshable {
-                Task {
-                    await viewModel.fetchActivityParticipants(activity: activity)
-                    try await viewModel.refreshActivity()
+                
+                // Main Activity Content
+                HStack{
+                    Spacer()
+                    Text(viewModel.activity.title)
+                        .foregroundColor(Color.theme.primaryText)
+                        .font(.title)
+                        .fontWeight(.semibold)
+                    Spacer()
+                }
+                
+                Text("Location: \(viewModel.activity.location)")
+                    .foregroundColor(Color.theme.primaryText)
+                
+                Text("Details: \(viewModel.activity.notes)")
+                    .foregroundColor(Color.theme.primaryText)
+                
+                Divider()
+                    .background(Color.theme.secondaryText)
+                
+                // Activity Participants
+                Text("Participants (\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired))")
+                    .foregroundColor(Color.theme.primaryText)
+                
+                ScrollView() {
+                    LazyVStack(spacing: 16) {
+                        ForEach(viewModel.participants) { participant in
+                            HStack {
+                                CircularProfileImageView(user: participant, size: .xxSmall)
+                                Text(participant.username)
+                                    .foregroundColor(Color.theme.primaryText)
+                                    .font(.system(size: 12))
+                                Spacer()
+                                if participant.id == viewModel.activity.userId {
+                                    Text("Host")
+                                        .foregroundColor(Color.theme.secondaryText)
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 18)
+                }
+                .refreshable {
+                    Task {
+                        await viewModel.fetchActivityParticipants()
+                        try await viewModel.refreshActivity()
+                    }
                 }
             }
-        }
-        .padding()
-        .navigationBarHidden(true)
-        .background(.black)
-    }
-}
-
-extension ActivityView {
-    var headerView: some View {
-        HStack(alignment: .top) {
-            Button {
-                mode.wrappedValue.dismiss()
-            } label: {
-                Image(systemName: "arrow.left")
-                    .resizable()
-                    .frame(width: 20, height: 16)
-                    .foregroundColor(.white)
-                    .offset(x: 16, y: 12)
-            }
-            
-            Spacer()
-            
-            Button {
-                editingActivity.toggle()
-            } label: {
-                Text("Edit Activity")
-                    .font(.subheadline).bold()
-                    .frame(width: 120, height: 32)
-                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
-                    .foregroundColor(.white)
-            }
+            .padding()
+            .navigationBarHidden(true)
+            .background(Color.theme.background)
         }
     }
 }

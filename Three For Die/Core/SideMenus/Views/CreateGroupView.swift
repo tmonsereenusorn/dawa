@@ -44,7 +44,7 @@ struct CreateGroupView: View {
                             groupsViewModel.currSelectedGroup = groupId
                         }
                         await groupsViewModel.fetchUserGroups()
-                        await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                        try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
                     }
                 } label: {
                     HStack {

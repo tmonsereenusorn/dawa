@@ -48,7 +48,7 @@ struct AddActivityView: View {
                                                         notes: notes,
                                                         numRequired: Int(numRequired)!,
                                                         category: selectedTag)
-                        await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                        try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
                     }
                 } label: {
                     Text("Create")

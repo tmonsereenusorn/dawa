@@ -34,7 +34,7 @@ struct RightSideMenuView: View {
                         NavigationLink {
                             ProfileView(user: user)
                         } label: {
-                            RightSideMenuRowView(option: option, color: .white)
+                            RightSideMenuRowView(option: option, color: Color.theme.primaryText)
                         }
                     } else if option == .logout {
                         Button {

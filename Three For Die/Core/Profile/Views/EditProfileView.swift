@@ -44,12 +44,13 @@ extension EditProfileView {
             } label: {
                 Text("Cancel")
                     .font(.caption)
+                    .foregroundColor(Color.theme.secondaryText)
             }
             
             Spacer()
             
             Text("Edit Profile")
-                .foregroundColor(.white)
+                .foregroundColor(Color.theme.primaryText)
                 .font(.headline)
             
             Spacer()
@@ -66,6 +67,7 @@ extension EditProfileView {
             } label: {
                 Text("Save")
                     .font(.caption)
+                    .foregroundColor(Color.theme.secondaryText)
             }
         }
         .onReceive(viewModel.$didEditProfile) { success in
@@ -92,11 +94,11 @@ extension EditProfileView {
                     
                     ZStack {
                         Circle()
-                            .fill(.white)
+                            .fill(Color.theme.background)
                             .frame(width: 24, height: 24)
                         
                         Image(systemName: "camera.circle.fill")
-                            .foregroundColor(.black)
+                            .foregroundColor(Color.theme.primaryText)
                             .frame(width: 18, height: 18)
                     }
                 }
@@ -107,7 +109,7 @@ extension EditProfileView {
     var usernameInput: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Username")
-                .foregroundColor(Color(.white))
+                .foregroundColor(Color.theme.primaryText)
                 .fontWeight(.semibold)
                 .font(.footnote)
             HStack(spacing: 0) {
@@ -118,10 +120,10 @@ extension EditProfileView {
                 VStack(alignment: .leading, spacing: 0) {
                     TextField("Enter a new username", text: $username)
                         .font(.system(size: 20))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.theme.primaryText)
                     
                     Divider()
-                        .background(.white)
+                        .background(Color.theme.secondaryText)
                 }
             }
             
@@ -133,21 +135,21 @@ extension EditProfileView {
     var bioInput: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Bio")
-                .foregroundColor(.white)
+                .foregroundColor(Color.theme.primaryText)
                 .fontWeight(.semibold)
                 .font(.footnote)
             
             VStack(alignment: .leading, spacing: 0) {
                 TextField("Enter a new bio", text: $bio, axis: .vertical)
                     .font(.system(size: 12))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.theme.primaryText)
                     .textFieldStyle(.plain)
                     .frame(height: 60, alignment: .top)
                     .padding(5)
                     .fixedSize(horizontal: false, vertical: false)
                     .background(
                         RoundedRectangle(cornerRadius: 3)
-                            .stroke(Color(.gray), lineWidth: 1)
+                            .stroke(Color.theme.secondaryText, lineWidth: 1)
                     )
                     
             }

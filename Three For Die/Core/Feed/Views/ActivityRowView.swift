@@ -30,52 +30,6 @@ struct ActivityRowView: View {
                     
                     Spacer()
                     
-                    if user.isCurrentUser {
-                        Button {
-                            Task {
-                                try await viewModel.closeActivity()
-                                await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
-                            }
-                        } label: {
-                            Text("Close activity")
-                                .padding(.vertical, 6)
-                                .padding(.horizontal, 9)
-                                .foregroundColor(.white)
-                                .background(.red)
-                                .cornerRadius(15)
-                                .font(.system(size: 10)).bold()
-                        }
-                    } else {
-                        if viewModel.activity.didJoin ?? false { // If user already joined activity
-                            Button {
-                                Task {
-                                    try await viewModel.leaveActivity()
-                                }
-                            } label: {
-                                Text("Leave activity")
-                                    .padding(.vertical, 6)
-                                    .padding(.horizontal, 9)
-                                    .foregroundColor(.white)
-                                    .background(.red)
-                                    .cornerRadius(15)
-                                    .font(.system(size: 10)).bold()
-                            }
-                        } else {
-                            Button {
-                                Task {
-                                    try await viewModel.joinActivity()
-                                }
-                            } label: {
-                                Text("Join Activity")
-                                    .padding(.vertical, 6)
-                                    .padding(.horizontal, 9)
-                                    .foregroundColor(.white)
-                                    .background(.green)
-                                    .cornerRadius(15)
-                                    .font(.system(size: 10)).bold()
-                            }
-                        }
-                    }
                 }
                 HStack {
                     Text(viewModel.activity.title)
@@ -122,7 +76,7 @@ struct ActivityRowView: View {
                 }
             }
             .padding()
-            .background(Color.theme.background)
+            .background(Color.theme.tertiaryBackground)
             .cornerRadius(12)
             .shadow(color: Color.gray.opacity(0.5), radius: 5, x: 0, y: 3)
         }

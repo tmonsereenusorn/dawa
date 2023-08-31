@@ -16,22 +16,22 @@ struct FormInputView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
-                .foregroundColor(Color(.white))
+                .foregroundColor(Color.theme.primaryText)
                 .fontWeight(.semibold)
                 .font(.footnote)
             VStack(alignment: .leading, spacing: 0) {
                 if isSecureField {
                     SecureField(placeholder, text: $text)
                         .font(.system(size: 20))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.theme.primaryText)
                 } else {
                     TextField(placeholder, text: $text)
                         .font(.system(size: 20))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.theme.primaryText)
                 }
                 
                 Divider()
-                    .background(.white)
+                    .background(Color.theme.secondaryText)
             }
         }
     }

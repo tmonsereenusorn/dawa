@@ -43,7 +43,7 @@ extension ProfileView {
                 Image(systemName: "arrow.left")
                     .resizable()
                     .frame(width: 20, height: 16)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.theme.primaryText)
                     .offset(x: 16, y: 12)
             }
             
@@ -56,7 +56,7 @@ extension ProfileView {
                     .font(.subheadline).bold()
                     .frame(width: 120, height: 32)
                     .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.theme.primaryText)
             }
         }
     }
@@ -68,12 +68,12 @@ extension ProfileView {
                 CircularProfileImageView(user: user, size: .xLarge)
                 
                 Text("@\(user.username)")
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.theme.primaryText)
                 
                 Text(user.bio)
                     .font(.caption)
                     .padding(.vertical, 4)
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color.theme.secondaryText)
                     .multilineTextAlignment(.center)
             }
             Spacer()

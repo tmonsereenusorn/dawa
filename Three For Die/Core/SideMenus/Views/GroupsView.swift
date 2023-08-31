@@ -26,7 +26,7 @@ struct GroupsView: View {
                         Button {
                             viewModel.currSelectedGroup = group.id!
                             Task {
-                                await feedViewModel.fetchActivities(groupId: group.id!)
+                                try await feedViewModel.fetchActivities(groupId: group.id!)
                             }
                         } label: {
                             GroupRowView(group: group)

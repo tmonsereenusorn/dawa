@@ -15,40 +15,41 @@ struct FeedView: View{
     @EnvironmentObject var viewModel: FeedViewModel
     @EnvironmentObject var groupsViewModel: GroupsViewModel
     
-    init() {
-        let newNavBarAppearance = customNavBarAppearance()
-        
-        let appearance = UINavigationBar.appearance()
-        appearance.scrollEdgeAppearance = newNavBarAppearance
-        appearance.compactAppearance = newNavBarAppearance
-        appearance.standardAppearance = newNavBarAppearance
-    }
+//    init() {
+//        let newNavBarAppearance = customNavBarAppearance()
+//
+//        let appearance = UINavigationBar.appearance()
+//        appearance.scrollEdgeAppearance = newNavBarAppearance
+//        appearance.compactAppearance = newNavBarAppearance
+//        appearance.standardAppearance = newNavBarAppearance
+//    }
     
     var body: some View {
         if let user = contentViewModel.currentUser {
             ZStack(alignment: .bottomTrailing) {
-                VStack {
-                    SearchBar(text: $searchText)
-                        .padding()
-                    
-                    ScrollView() {
-                        LazyVStack(spacing: 16) {
-                            ForEach(viewModel.activities) { activity in
-                                NavigationLink {
-                                    ActivityView(activity: activity)
-                                } label: {
-                                    ActivityRowView(activity: activity)
-                                }
+                List {
+                    ForEach(viewModel.filteredActivities) { activity in
+                        ZStack {
+                            NavigationLink(value: activity) {
+                                EmptyView()
                             }
-                        }
-                        .padding(.horizontal, 18)
-                    }
-                    .refreshable {
-                        Task {
-                            await viewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                            .opacity(0.0)
+                            
+                            ActivityRowView(activity: activity)
                         }
                     }
                 }
+                .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search")
+                .listStyle(PlainListStyle())
+                .refreshable {
+                    Task {
+                        try await viewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                    }
+                }
+                .navigationDestination(for: Activity.self, destination: { activity in
+                    ActivityView(activity: activity)
+                })
+                
                 Button () {
                     addingEvent.toggle()
                 } label: {
@@ -65,7 +66,6 @@ struct FeedView: View{
                     AddActivityView(user: user)
                 }
             }
-            .background(Color.theme.background)
         }
     }
 }
