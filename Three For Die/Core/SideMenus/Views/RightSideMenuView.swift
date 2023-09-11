@@ -60,6 +60,7 @@ struct RightSideMenuView: View {
         }
     }
 }
+
 //
 //struct RightSideMenuView_Previews: PreviewProvider {
 //    static var previews: some View {
