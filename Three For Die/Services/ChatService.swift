@@ -32,13 +32,19 @@ class ChatService {
             guard let changes = snapshot?.documentChanges.filter({ $0.type == .added }) else { return }
             var messages = changes.compactMap{ try? $0.document.data(as: Message.self) }
             
+            let group = DispatchGroup()
             for (index, message) in messages.enumerated() where message.fromUserId != currentUid {
+                group.enter()
+                
                 UserService.fetchUser(withUid: message.fromUserId) { user in
                     messages[index].user = user
+                    group.leave()
                 }
             }
             
-            completion(messages)
+            group.notify(queue: .main) {
+                completion(messages)
+            }
         }
     }
     
