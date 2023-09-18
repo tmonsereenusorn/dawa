@@ -47,6 +47,10 @@ class ChatViewModel: ObservableObject {
         return index != messages.count - 1 ? messages[index + 1] : nil
     }
     
+    func prevMessage(forIndex index: Int) -> Message? {
+        return index != 0 ? messages[index - 1] : nil
+    }
+    
     func removeChatListener() {
         service.removeListener()
     }
