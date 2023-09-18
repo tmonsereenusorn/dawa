@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct GroupsView: View {
+    @Binding var showMenu: Bool
     @State private var creatingGroup: Bool = false
     @EnvironmentObject var feedViewModel: FeedViewModel
     @EnvironmentObject var viewModel: GroupsViewModel
@@ -61,6 +62,20 @@ struct GroupsView: View {
             }
         }
         .padding(10)
+        .frame(width: getRect().width - 90)
+        .frame(maxHeight: .infinity)
+        .background(
+            Color.theme.background
+                .opacity(0.04)
+                .ignoresSafeArea(.container, edges: .vertical)
+        )
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+extension View {
+    func getRect() -> CGRect {
+        return UIScreen.main.bounds
     }
 }
 
