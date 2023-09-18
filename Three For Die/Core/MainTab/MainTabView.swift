@@ -18,7 +18,7 @@ struct MainTabView: View {
             
             InboxView()
                 .tabItem {
-                    Image(systemName: "figure.walk")
+                    Image(systemName: "message")
                 }.tag(1)
         }
         .background(Color.theme.background)
