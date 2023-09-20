@@ -9,65 +9,101 @@ import Foundation
 import SwiftUI
 
 struct FeedView: View{
+    @Binding var showLeftMenu: Bool
     @State private var addingEvent: Bool = false
-    @State private var searchText = ""
     @EnvironmentObject var contentViewModel: ContentViewModel
     @EnvironmentObject var viewModel: FeedViewModel
     @EnvironmentObject var groupsViewModel: GroupsViewModel
     
-    init() {
-        let newNavBarAppearance = customNavBarAppearance()
-
-        let appearance = UINavigationBar.appearance()
-        appearance.scrollEdgeAppearance = newNavBarAppearance
-        appearance.compactAppearance = newNavBarAppearance
-        appearance.standardAppearance = newNavBarAppearance
-        
-        UIBarButtonItem.appearance().tintColor = UIColor(Color.theme.primaryText)
-    }
+//    init() {
+//        let newNavBarAppearance = customNavBarAppearance()
+//
+//        let appearance = UINavigationBar.appearance()
+//        appearance.scrollEdgeAppearance = newNavBarAppearance
+//        appearance.compactAppearance = newNavBarAppearance
+//        appearance.standardAppearance = newNavBarAppearance
+//        
+//        UIBarButtonItem.appearance().tintColor = UIColor(Color.theme.primaryText)
+//    }
     
     var body: some View {
         if let user = contentViewModel.currentUser {
-            ZStack(alignment: .bottomTrailing) {
-                List {
-                    ForEach(viewModel.filteredActivities) { activity in
-                        ZStack {
-                            NavigationLink(value: activity) {
-                                EmptyView()
-                            }
-                            .opacity(0.0)
-                            
-                            ActivityRowView(activity: activity)
+            VStack {
+                VStack(spacing: 0) {
+                    HStack {
+                        Button {
+                            withAnimation{ showLeftMenu.toggle() }
+                        } label: {
+                            Circle()
+                                .frame(width: 32, height: 32)
+                        }
+                        
+                        Spacer()
+                        
+                        Text("Feed")
+                        
+                        Spacer()
+                        
+                        Button {
+                            withAnimation{ showLeftMenu.toggle() }
+                        } label: {
+                            Circle()
+                                .frame(width: 32, height: 32)
                         }
                     }
+                    .padding(.horizontal)
+                    .padding(.vertical, 10)
+                    
+                    Divider()
                 }
-                .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search")
-                .listStyle(PlainListStyle())
-                .refreshable {
-                    Task {
-                        try await viewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                
+                
+                
+                ZStack(alignment: .bottomTrailing) {
+                    List {
+                        SearchBar(text: $viewModel.searchText)
+                        
+                        ForEach(viewModel.filteredActivities) { activity in
+                            ZStack {
+                                NavigationLink(value: activity) {
+                                    EmptyView()
+                                }
+                                .opacity(0.0)
+                                
+                                ActivityRowView(activity: activity)
+                            }
+                        }
+                    }
+                    .listStyle(PlainListStyle())
+                    .refreshable {
+                        Task {
+                            try await viewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                        }
+                    }
+                    .navigationDestination(for: Activity.self, destination: { activity in
+                        ActivityView(activity: activity)
+                    })
+                    
+                    
+                    Button () {
+                        addingEvent.toggle()
+                    } label: {
+                        Image (systemName: "plus.circle.fill")
+                            .resizable ()
+                            .renderingMode(.template)
+                            .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
+                            .foregroundColor(CustomColors.cardinal_red)
+                    }
+                    .background(Color.theme.primaryText)
+                    .clipShape(Circle())
+                    .padding()
+                    .popover(isPresented: $addingEvent) {
+                        AddActivityView(user: user)
                     }
                 }
-                .navigationDestination(for: Activity.self, destination: { activity in
-                    ActivityView(activity: activity)
-                })
-                
-                Button () {
-                    addingEvent.toggle()
-                } label: {
-                    Image (systemName: "plus.circle.fill")
-                        .resizable ()
-                        .renderingMode(.template)
-                        .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
-                        .foregroundColor(CustomColors.cardinal_red)
-                }
-                .background(Color.theme.primaryText)
-                .clipShape(Circle())
-                .padding()
-                .popover(isPresented: $addingEvent) {
-                    AddActivityView(user: user)
-                }
             }
+        } else {
+            ProgressView("Loading Feed...")
         }
     }
 }

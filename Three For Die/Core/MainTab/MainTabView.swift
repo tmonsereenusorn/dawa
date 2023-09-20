@@ -7,22 +7,97 @@ enum TabType {
 }
 
 struct MainTabView: View {
-    @State private var selectedIndex = 0
+    @State var showLeftMenu: Bool = false
+    @State var currentTab = "house"
+    
+    @State var offset: CGFloat = 0
+    @State var lastStoredOffset: CGFloat = 0
+    @StateObject var groupsViewModel = GroupsViewModel()
+    @StateObject var feedViewModel = FeedViewModel()
+    
+    init() {
+        UITabBar.appearance().isHidden = true
+    }
     
     var body: some View {
-        TabView(selection: $selectedIndex) {
-            MainFeedView()
-                .tabItem {
-                    Image(systemName: "house")
-                }.tag(0)
-            
-            InboxView()
-                .tabItem {
-                    Image(systemName: "figure.walk")
-                }.tag(1)
+        let sideBarWidth = getRect().width - 90
+        NavigationStack {
+            HStack(spacing: 0) {
+                GroupsView(showMenu: $showLeftMenu)
+                
+                VStack(spacing: 0) {
+                    TabView(selection: $currentTab) {
+                        FeedView(showLeftMenu: $showLeftMenu)
+                            .navigationBarTitleDisplayMode(.inline)
+                            .navigationBarHidden(true)
+                            .tag("house")
+                        
+                        InboxView()
+                            .navigationBarTitleDisplayMode(.inline)
+                            .navigationBarHidden(true)
+                            .tag("message")
+                    }
+                    
+                    VStack(spacing: 0) {
+                        Divider()
+                        HStack(spacing: 0) {
+                            TabButton(image: "house")
+                            
+                            TabButton(image: "message")
+                        }
+                        .padding(.top, 15)
+                    }
+                    
+                }
+                .frame(width: getRect().width)
+                .overlay (
+                    Rectangle()
+                        .fill(
+                            Color.theme.background.opacity(Double((offset / sideBarWidth) / 5))
+                        )
+                        .ignoresSafeArea(.container, edges: .vertical)
+                        .onTapGesture {
+                            withAnimation {
+                                showLeftMenu.toggle()
+                            }
+                        }
+                )
+            }
+            .frame(width: getRect().width + sideBarWidth)
+            .offset(x: -sideBarWidth / 2)
+            .offset(x: offset)
+//            .navigationBarTitleDisplayMode(.inline)
+//            .navigationBarHidden(true)
         }
-        .background(Color.theme.background)
-        .accentColor(.white)
+        .animation(.easeOut, value: offset == 0)
+        .onChange(of: showLeftMenu) { newValue in
+            if showLeftMenu && offset == 0 {
+                offset = sideBarWidth
+                lastStoredOffset = offset
+            }
+            
+            if !showLeftMenu && offset == sideBarWidth {
+                offset = 0
+                lastStoredOffset = 0
+            }
+        }
+        .environmentObject(groupsViewModel)
+        .environmentObject(feedViewModel)
+    }
+    
+    @ViewBuilder
+    func TabButton(image: String) -> some View {
+        Button {
+            withAnimation { currentTab = image }
+        } label: {
+            Image(systemName: image)
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 23, height: 23)
+                .foregroundColor(currentTab == image ? Color.theme.primaryText : Color.theme.secondaryText)
+                .frame(maxWidth: .infinity)
+        }
     }
 }
 

@@ -12,16 +12,23 @@ import Kingfisher
 struct ChatMessageCell: View {
     let message: Message
     var nextMessage: Message?
+    var prevMessage: Message?
     
-    init(message: Message, nextMessage: Message?) {
+    init(message: Message, nextMessage: Message?, prevMessage: Message?) {
         self.message = message
         self.nextMessage = nextMessage
+        self.prevMessage = prevMessage
     }
     
     private var shouldShowChatPartnerImage: Bool {
         if nextMessage == nil && !message.isFromCurrentUser { return true }
         guard let next = nextMessage else { return message.isFromCurrentUser }
         return next.fromUserId != message.fromUserId
+    }
+    
+    private var shouldShowChatPartnerName: Bool {
+        guard let prev = prevMessage else { return true }
+        return prev.fromUserId != message.fromUserId
     }
     
     var body: some View {
@@ -51,14 +58,23 @@ struct ChatMessageCell: View {
                         MessageImageView(imageUrlString: imageUrl)
 
                     } else {
-                        Text(message.messageText)
-                            .font(.subheadline)
-                            .padding(12)
-                            .background(Color(.systemGray6))
-                            .foregroundColor(Color.theme.primaryText)
-                            .clipShape(ChatBubble(isFromCurrentUser: false, shouldRoundAllCorners: !shouldShowChatPartnerImage))
-                            .frame(maxWidth: UIScreen.main.bounds.width / 1.75, alignment: .leading)
-                            .padding(.leading, shouldShowChatPartnerImage ? 0 : 32)
+                        VStack(alignment: .leading, spacing: 4) {
+                            if shouldShowChatPartnerName {
+                                Text(message.user!.username)
+                                    .font(.caption)
+                                    .foregroundColor(Color.theme.secondaryText)
+                                    .padding(.leading, shouldShowChatPartnerImage ? 12 : 44)
+                            }
+                            
+                            Text(message.messageText)
+                                .font(.subheadline)
+                                .padding(12)
+                                .background(Color(.systemGray6))
+                                .foregroundColor(Color.theme.primaryText)
+                                .clipShape(ChatBubble(isFromCurrentUser: false, shouldRoundAllCorners: !shouldShowChatPartnerImage))
+                                .frame(maxWidth: UIScreen.main.bounds.width / 1.75, alignment: .leading)
+                                .padding(.leading, shouldShowChatPartnerImage ? 0 : 32)
+                        }
                     }
                     
                 }

@@ -37,25 +37,6 @@ struct MessageService {
         }
     }
     
-    static func observeMessages(activityId: String, completion: @escaping([Message]) -> Void) {
-        guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        let query = FirestoreConstants.ActivitiesCollection.document(activityId).collection("messages").order(by: "timestamp", descending: false)
-        
-        query.addSnapshotListener { snapshot, _ in
-            guard let changes = snapshot?.documentChanges.filter({ $0.type == .added}) else { return }
-            var messages = changes.compactMap({ try? $0.document.data(as: Message.self) })
-            
-            for (index, message) in messages.enumerated() where message.fromUserId != currentUid {
-                print("Got message: \(message.messageText)")
-                UserService.fetchUser(withUid: message.fromUserId) { user in
-                    messages[index].user = user
-                }
-            }
-            
-            completion(messages)
-        }
-    }
-    
     @MainActor
     static func fetchMessage(withMessageId messageId: String, activityId: String) async throws -> Message? {
         do {

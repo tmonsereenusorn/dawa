@@ -37,7 +37,8 @@ struct ChatView: View {
                         
                         ForEach(viewModel.messages.indices, id: \.self) { index in
                             ChatMessageCell(message: viewModel.messages[index],
-                                            nextMessage: viewModel.nextMessage(forIndex: index))
+                                            nextMessage: viewModel.nextMessage(forIndex: index),
+                                            prevMessage: viewModel.prevMessage(forIndex: index))
                                 .id(viewModel.messages[index].id)
                         }
                     }
