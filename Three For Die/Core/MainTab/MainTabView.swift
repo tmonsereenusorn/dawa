@@ -71,10 +71,7 @@ struct MainTabView: View {
                 RightSideMenuView()
             }
             .frame(width: getRect().width + 2 * sideBarWidth)
-//            .offset(x: -sideBarWidth / 2)
             .offset(x: offset)
-//            .navigationBarTitleDisplayMode(.inline)
-//            .navigationBarHidden(true)
         }
         .animation(.easeOut, value: offset == 0)
         .onChange(of: showLeftMenu) { newValue in

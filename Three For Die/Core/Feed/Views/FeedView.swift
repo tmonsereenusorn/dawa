@@ -92,9 +92,9 @@ struct FeedView: View{
                             .resizable ()
                             .renderingMode(.template)
                             .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
-                            .foregroundColor(CustomColors.cardinal_red)
+                            .foregroundColor(Color.theme.secondaryText)
                     }
-                    .background(Color.theme.primaryText)
+                    .background(Color.theme.background)
                     .clipShape(Circle())
                     .padding()
                     .popover(isPresented: $addingEvent) {
