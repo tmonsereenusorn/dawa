@@ -8,6 +8,7 @@ enum TabType {
 
 struct MainTabView: View {
     @State var showLeftMenu: Bool = false
+    @State var showRightMenu: Bool = false
     @State var currentTab = "house"
     
     @State var offset: CGFloat = 0
@@ -23,11 +24,11 @@ struct MainTabView: View {
         let sideBarWidth = getRect().width - 90
         NavigationStack {
             HStack(spacing: 0) {
-                GroupsView(showMenu: $showLeftMenu)
+                GroupsView()
                 
                 VStack(spacing: 0) {
                     TabView(selection: $currentTab) {
-                        FeedView(showLeftMenu: $showLeftMenu)
+                        FeedView(showLeftMenu: $showLeftMenu, showRightMenu: $showRightMenu)
                             .navigationBarTitleDisplayMode(.inline)
                             .navigationBarHidden(true)
                             .tag("house")
@@ -58,13 +59,19 @@ struct MainTabView: View {
                         .ignoresSafeArea(.container, edges: .vertical)
                         .onTapGesture {
                             withAnimation {
-                                showLeftMenu.toggle()
+                                if showLeftMenu {
+                                    showLeftMenu.toggle()
+                                } else {
+                                    showRightMenu.toggle()
+                                }
                             }
                         }
                 )
+                
+                RightSideMenuView()
             }
-            .frame(width: getRect().width + sideBarWidth)
-            .offset(x: -sideBarWidth / 2)
+            .frame(width: getRect().width + 2 * sideBarWidth)
+//            .offset(x: -sideBarWidth / 2)
             .offset(x: offset)
 //            .navigationBarTitleDisplayMode(.inline)
 //            .navigationBarHidden(true)
@@ -77,6 +84,17 @@ struct MainTabView: View {
             }
             
             if !showLeftMenu && offset == sideBarWidth {
+                offset = 0
+                lastStoredOffset = 0
+            }
+        }
+        .onChange(of: showRightMenu) { newValue in
+            if showRightMenu && offset == 0 {
+                offset = -sideBarWidth
+                lastStoredOffset = offset
+            }
+            
+            if !showRightMenu && offset == -sideBarWidth {
                 offset = 0
                 lastStoredOffset = 0
             }

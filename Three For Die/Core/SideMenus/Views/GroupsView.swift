@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct GroupsView: View {
-    @Binding var showMenu: Bool
     @State private var creatingGroup: Bool = false
     @EnvironmentObject var feedViewModel: FeedViewModel
     @EnvironmentObject var viewModel: GroupsViewModel

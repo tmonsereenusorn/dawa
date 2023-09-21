@@ -57,6 +57,14 @@ struct RightSideMenuView: View {
                 
                 Spacer()
             }
+            .frame(width: getRect().width - 90)
+            .frame(maxHeight: .infinity)
+            .background(
+                Color.theme.background
+                    .opacity(0.04)
+                    .ignoresSafeArea(.container, edges: .vertical)
+            )
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 }

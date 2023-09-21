@@ -10,6 +10,7 @@ import SwiftUI
 
 struct FeedView: View{
     @Binding var showLeftMenu: Bool
+    @Binding var showRightMenu: Bool
     @State private var addingEvent: Bool = false
     @EnvironmentObject var contentViewModel: ContentViewModel
     @EnvironmentObject var viewModel: FeedViewModel
@@ -40,15 +41,14 @@ struct FeedView: View{
                         
                         Spacer()
                         
-                        Text("Feed")
+                        Text("Activity Feed")
                         
                         Spacer()
                         
                         Button {
-                            withAnimation{ showLeftMenu.toggle() }
+                            withAnimation{ showRightMenu.toggle() }
                         } label: {
-                            Circle()
-                                .frame(width: 32, height: 32)
+                            CircularProfileImageView(user: user, size: .xSmall)
                         }
                     }
                     .padding(.horizontal)
