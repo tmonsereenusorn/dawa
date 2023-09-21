@@ -9,9 +9,38 @@ import SwiftUI
 
 struct InboxView: View {
     @StateObject var viewModel = InboxViewModel()
+    @Binding var showLeftMenu: Bool
+    @Binding var showRightMenu: Bool
     
     var body: some View {
-        NavigationStack {
+        VStack {
+            VStack(spacing: 0) {
+                HStack {
+                    Button {
+                        withAnimation{ showLeftMenu.toggle() }
+                    } label: {
+                        Circle()
+                            .frame(width: 32, height: 32)
+                    }
+                    
+                    Spacer()
+                    
+                    Text("Inbox")
+                    
+                    Spacer()
+                    
+                    Button {
+                        withAnimation{ showRightMenu.toggle() }
+                    } label: {
+                        CircularProfileImageView(user: viewModel.user, size: .xSmall)
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 10)
+                
+                Divider()
+            }
+            
             List {
                 ForEach(viewModel.userActivities, id: \.self) { userActivity in
                     ZStack {

@@ -16,17 +16,6 @@ struct FeedView: View{
     @EnvironmentObject var viewModel: FeedViewModel
     @EnvironmentObject var groupsViewModel: GroupsViewModel
     
-//    init() {
-//        let newNavBarAppearance = customNavBarAppearance()
-//
-//        let appearance = UINavigationBar.appearance()
-//        appearance.scrollEdgeAppearance = newNavBarAppearance
-//        appearance.compactAppearance = newNavBarAppearance
-//        appearance.standardAppearance = newNavBarAppearance
-//        
-//        UIBarButtonItem.appearance().tintColor = UIColor(Color.theme.primaryText)
-//    }
-    
     var body: some View {
         if let user = contentViewModel.currentUser {
             VStack {
@@ -106,31 +95,6 @@ struct FeedView: View{
             ProgressView("Loading Feed...")
         }
     }
-}
-
-func customNavBarAppearance() -> UINavigationBarAppearance {
-    let customNavBarAppearance = UINavigationBarAppearance()
-    
-    // Apply a red background.
-    customNavBarAppearance.configureWithOpaqueBackground()
-    customNavBarAppearance.backgroundColor = UIColor(Color.theme.background)
-    
-    // Apply white colored normal and large titles.
-    customNavBarAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.theme.primaryText)]
-    customNavBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.theme.primaryText)]
-    
-
-    // Apply white color to all the nav bar buttons.
-    let barButtonItemAppearance = UIBarButtonItemAppearance(style: .plain)
-    barButtonItemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(Color.theme.primaryText)]
-    barButtonItemAppearance.disabled.titleTextAttributes = [.foregroundColor: UIColor.lightText]
-    barButtonItemAppearance.highlighted.titleTextAttributes = [.foregroundColor: UIColor.label]
-    barButtonItemAppearance.focused.titleTextAttributes = [.foregroundColor: UIColor(Color.theme.primaryText)]
-    customNavBarAppearance.buttonAppearance = barButtonItemAppearance
-    customNavBarAppearance.backButtonAppearance = barButtonItemAppearance
-    customNavBarAppearance.doneButtonAppearance = barButtonItemAppearance
-    
-    return customNavBarAppearance
 }
 
 //struct FeedViews_Preview: PreviewProvider {

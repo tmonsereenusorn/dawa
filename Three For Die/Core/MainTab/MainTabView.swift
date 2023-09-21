@@ -33,7 +33,7 @@ struct MainTabView: View {
                             .navigationBarHidden(true)
                             .tag("house")
                         
-                        InboxView()
+                        InboxView(showLeftMenu: $showLeftMenu, showRightMenu: $showRightMenu)
                             .navigationBarTitleDisplayMode(.inline)
                             .navigationBarHidden(true)
                             .tag("message")
