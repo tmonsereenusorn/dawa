@@ -20,7 +20,7 @@ struct ActivityRowView: View {
         if let user = viewModel.activity.user {
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    CircularProfileImageView(user: user, size: .xxSmall)
+                    CircularProfileImageView(user: user, size: .xxxSmall)
                     Text(user.username)
                         .foregroundColor(Color.theme.primaryText)
                         .font(.system(size: 12))

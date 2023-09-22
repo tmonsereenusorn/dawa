@@ -8,6 +8,7 @@
 import Foundation
 
 enum ProfileImageSize {
+    case xxxSmall
     case xxSmall
     case xSmall
     case small
@@ -17,6 +18,8 @@ enum ProfileImageSize {
     
     var dimension: CGFloat {
         switch self {
+        case .xxxSmall:
+            return 20
         case .xxSmall:
             return 28
         case .xSmall:
