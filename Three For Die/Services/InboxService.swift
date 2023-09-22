@@ -23,6 +23,7 @@ class InboxService {
         let query = FirestoreConstants.UserCollection
             .document(uid)
             .collection("user-activities")
+            .order(by: "timestamp", descending: true)
         
         self.firestoreListener = query.addSnapshotListener { snapshot, _ in
             guard let changes = snapshot?.documentChanges else { return }

@@ -30,7 +30,7 @@ class ActivityService {
             // Add activity to user's activity list
             let activityId = activityRef.documentID
             let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
-            try await userActivitiesRef.document(activityId).setData([:])
+            try await userActivitiesRef.document(activityId).setData(["timestamp": Timestamp()])
             
             // Add user to activity's participants list
             let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
@@ -99,7 +99,7 @@ class ActivityService {
             
             // Update user's activities subcollection by adding activity ID to it
             let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
-            try await userActivitiesRef.document(activityId).setData([:])
+            try await userActivitiesRef.document(activityId).setData(["timestamp": Timestamp()])
             
             // Update activity's participants subcollection by adding user ID to it
             let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
