@@ -49,14 +49,16 @@ extension ProfileView {
             
             Spacer()
             
-            Button {
-                editingProfile.toggle()
-            } label: {
-                Text("Edit Profile")
-                    .font(.subheadline).bold()
-                    .frame(width: 120, height: 32)
-                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
-                    .foregroundColor(Color.theme.primaryText)
+            if user.isCurrentUser {
+                Button {
+                    editingProfile.toggle()
+                } label: {
+                    Text("Edit Profile")
+                        .font(.subheadline).bold()
+                        .frame(width: 120, height: 32)
+                        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
+                        .foregroundColor(Color.theme.primaryText)
+                }
             }
         }
     }

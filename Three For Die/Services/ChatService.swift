@@ -81,7 +81,8 @@ class ChatService {
         guard let activityParticipantsSnapshot = try? await FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants").getDocuments() else { return }
         for doc in activityParticipantsSnapshot.documents {
             let participantId = doc.documentID
-            try await FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId).setData(["recentMessageId": messageId], merge: true)
+            try await FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId).setData(
+                ["recentMessageId": messageId, "timestamp": Timestamp()], merge: true)
         }
     }
     

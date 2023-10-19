@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct GroupsView: View {
-    @Binding var showMenu: Bool
     @State private var creatingGroup: Bool = false
     @EnvironmentObject var feedViewModel: FeedViewModel
     @EnvironmentObject var viewModel: GroupsViewModel
@@ -25,9 +24,9 @@ struct GroupsView: View {
                 LazyVStack {
                     ForEach(viewModel.groups) { group in
                         Button {
-                            viewModel.currSelectedGroup = group.id!
+                            viewModel.currSelectedGroup = group.id
                             Task {
-                                try await feedViewModel.fetchActivities(groupId: group.id!)
+                                try await feedViewModel.fetchActivities(groupId: group.id)
                             }
                         } label: {
                             GroupRowView(group: group)

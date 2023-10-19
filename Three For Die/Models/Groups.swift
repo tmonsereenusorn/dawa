@@ -9,11 +9,16 @@ import Firebase
 import FirebaseFirestoreSwift
 
 struct Groups: Identifiable, Codable {
-    @DocumentID var id: String?
+    @DocumentID var uid: String?
     
     let name: String
+    var groupImageUrl: String?
+    
+    var id: String {
+        return uid ?? NSUUID().uuidString
+    }
 }
 
 extension Groups {
-    static var MOCK_GROUP = Groups(id: NSUUID().uuidString, name: "Stanford University")
+    static var MOCK_GROUP = Groups(name: "Stanford University")
 }

@@ -51,7 +51,14 @@ struct ChatMessageCell: View {
             } else {
                 HStack(alignment: .bottom, spacing: 8) {
                     if shouldShowChatPartnerImage {
-                        CircularProfileImageView(user: message.user, size: .xxSmall)
+                        if let user = message.user {
+                            NavigationLink {
+                                ProfileView(user: user)
+                            } label: {
+                                CircularProfileImageView(user: message.user, size: .xxSmall)
+                            }
+                        }
+                        
                     }
                     
                     if let imageUrl = message.imageUrl {
