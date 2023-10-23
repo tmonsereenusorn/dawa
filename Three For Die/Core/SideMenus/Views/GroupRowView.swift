@@ -9,6 +9,7 @@ import SwiftUI
 
 struct GroupRowView: View {
     @ObservedObject var viewModel: GroupRowViewModel
+    @EnvironmentObject var groupsViewModel: GroupsViewModel
     
     init(group: Groups) {
         self.viewModel = GroupRowViewModel(group: group)
@@ -16,21 +17,26 @@ struct GroupRowView: View {
     
     var body: some View {
         HStack {
-            RoundedRectangle(cornerRadius: 5)
-                .frame(width: 48, height: 48)
+            SquareGroupImageView(group: viewModel.group, size: .medium)
             
             Text(viewModel.group.name)
-            
+                
             Spacer()
             
-            Image(systemName: "ellipsis")
+            NavigationLink {
+                GroupView(group: $viewModel.group)
+            } label: {
+                Image(systemName: "chevron.right")
+            }
+            
         }
+        .foregroundColor(Color.theme.primaryText)
         .padding()
+        .background(groupsViewModel.currSelectedGroup == viewModel.group.id ? Color.theme.secondaryText : Color.theme.background)
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 }
 
-//struct LeftSideMenuRowView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        LeftSideMenuRowView()
-//    }
+//#Preview {
+//    GroupRowView(group: Groups.MOCK_GROUP)
 //}

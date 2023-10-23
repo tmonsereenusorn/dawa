@@ -12,6 +12,7 @@ import FirebaseStorage
 enum ImageUploadType {
     case profile
     case message
+    case group
     
     var filePath: StorageReference {
         let filename = NSUUID().uuidString
@@ -21,6 +22,8 @@ enum ImageUploadType {
             return Storage.storage().reference(withPath: "/profile_images/\(filename)")
         case .message:
             return Storage.storage().reference(withPath: "/message_images/\(filename)")
+        case .group:
+            return Storage.storage().reference(withPath: "/group_images/\(filename)")
         }
     }
 }

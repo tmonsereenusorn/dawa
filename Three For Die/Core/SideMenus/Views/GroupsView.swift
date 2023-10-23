@@ -30,8 +30,7 @@ struct GroupsView: View {
                             }
                         } label: {
                             GroupRowView(group: group)
-                                .foregroundColor(Color.theme.primaryText)
-                                .background(viewModel.currSelectedGroup == group.id ? .gray : Color.theme.background)
+                                
                         }
                     }
                 }
@@ -65,7 +64,6 @@ struct GroupsView: View {
         .frame(maxHeight: .infinity)
         .background(
             Color.theme.background
-                .opacity(0.04)
                 .ignoresSafeArea(.container, edges: .vertical)
         )
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -77,9 +75,7 @@ extension View {
         return UIScreen.main.bounds
     }
 }
-
-//struct LeftSideMenuView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        LeftSideMenuView()
-//    }
+//
+//#Preview {
+//    GroupsView()
 //}

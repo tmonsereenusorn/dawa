@@ -9,11 +9,8 @@ import SwiftUI
 
 struct GroupView: View {
     @Environment(\.presentationMode) var mode
-    @State private var group: Groups
-    
-    init(group: Groups) {
-        _group = State(initialValue: group)
-    }
+    @Binding var group: Groups
+    @State private var editingGroup: Bool = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -31,7 +28,7 @@ struct GroupView: View {
                 Spacer()
                 
                 Button {
-                    
+                    editingGroup.toggle()
                 } label: {
                     Text("Edit Group")
                         .font(.subheadline).bold()
@@ -43,11 +40,19 @@ struct GroupView: View {
             
             HStack {
                 Spacer()
-                VStack(alignment: .center) {
-                    SquareGroupImageView(size: .medium)
+                VStack(alignment: .center, spacing: 8) {
+                    SquareGroupImageView(group: group, size: .xLarge)
                     
                     Text(group.name)
                         .foregroundColor(Color.theme.primaryText)
+                    
+                    HStack(spacing: 6) {
+                        Text("44")
+                            .foregroundColor(.primary)
+                        
+                        Text("members")
+                            .foregroundColor(.secondary)
+                    }
                     
                 }
                 Spacer()
@@ -60,9 +65,12 @@ struct GroupView: View {
         .padding()
         .navigationBarHidden(true)
         .background(Color.theme.background)
+        .popover(isPresented: $editingGroup) {
+            EditGroupView(group: $group)
+        }
     }
 }
 
-#Preview {
-    GroupView(group: Groups.MOCK_GROUP)
-}
+//#Preview {
+//    GroupView(group: Groups.MOCK_GROUP)
+//}

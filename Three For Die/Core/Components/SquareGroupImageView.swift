@@ -18,7 +18,7 @@ struct SquareGroupImageView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(width: size.dimension, height: size.dimension)
-                .clipShape(Circle())
+                .clipShape(RoundedRectangle(cornerRadius: 10))
         } else {
             Image(systemName: "person.crop.square.fill")
                 .resizable()

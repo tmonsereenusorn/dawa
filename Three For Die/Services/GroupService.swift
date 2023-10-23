@@ -50,4 +50,32 @@ class GroupService {
         }
         completion(groups)
     }
+    
+    @MainActor
+    static func editGroup(withGroupId groupId: String, name: String, uiImage: UIImage?) async throws {
+        do {
+            guard let snapshot = try? await FirestoreConstants.GroupsCollection.document(groupId).getDocument() else { return }
+            
+            // Upload new profile image if provided
+            if let image = uiImage {
+                if let imageUrl = try? await ImageUploader.uploadImage(image: image, type: .group) {
+                    print("Uploading new image")
+                    try await FirestoreConstants.GroupsCollection.document(groupId).setData(["name": name, "groupImageUrl": imageUrl], merge: true)
+                } else {
+                    print("DEBUG: Failed to upload profile image")
+                    return
+                }
+            } else {
+                print("Not uploading new image")
+                try await FirestoreConstants.GroupsCollection.document(groupId).setData(["name": name], merge: true)
+            }
+        } catch {
+            print("DEBUG: Failed to edit user with error \(error.localizedDescription)")
+        }
+    }
+    
+    static func fetchGroup(groupId: String) async throws -> Groups {
+        let snapshot = try await FirestoreConstants.GroupsCollection.document(groupId).getDocument()
+        return try snapshot.data(as: Groups.self)
+    }
 }
