@@ -22,15 +22,15 @@ struct GroupsView: View {
             
             ScrollView {
                 LazyVStack {
-                    ForEach(viewModel.groups) { group in
+                    ForEach(viewModel.groups.indices, id: \.self) { index in
                         Button {
-                            viewModel.currSelectedGroup = group.id
+                            let group = viewModel.groups[index]
+                            viewModel.currSelectedGroup = group
                             Task {
                                 try await feedViewModel.fetchActivities(groupId: group.id)
                             }
                         } label: {
-                            GroupRowView(group: group)
-                                
+                            GroupRowView(group: $viewModel.groups[index])
                         }
                     }
                 }

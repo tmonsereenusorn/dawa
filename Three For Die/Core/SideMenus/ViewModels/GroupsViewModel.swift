@@ -9,20 +9,24 @@ import Foundation
 
 class GroupsViewModel: ObservableObject {
     @Published var groups = [Groups]()
-    @Published var currSelectedGroup: String
-    let service = GroupService()
+    @Published var currSelectedGroup: Groups?
     
     init() {
-        self.currSelectedGroup = "iYBzqoXOHI3rSwl4y1aW"
         Task {
+            try await fetchCurrentGroup(groupId: "iYBzqoXOHI3rSwl4y1aW")
             await fetchUserGroups()
         }
     }
     
     @MainActor
     func fetchUserGroups() async {
-        await service.fetchUserGroups { groups in
+        await GroupService.fetchUserGroups { groups in
             self.groups = groups
         }
+    }
+    
+    @MainActor
+    func fetchCurrentGroup(groupId: String) async throws {
+        self.currSelectedGroup = try await GroupService.fetchGroup(groupId: groupId)
     }
 }

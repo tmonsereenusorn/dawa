@@ -39,7 +39,7 @@ struct ActivityView: View {
                         Button {
                             Task {
                                 try await viewModel.closeActivity()
-                                try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                                try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
                             }
                             mode.wrappedValue.dismiss()
                         } label: {
@@ -56,7 +56,7 @@ struct ActivityView: View {
                             Button {
                                 Task {
                                     try await viewModel.leaveActivity()
-                                    try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                                    try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
                                 }
                             } label: {
                                 Text("Leave activity")
@@ -71,7 +71,7 @@ struct ActivityView: View {
                             Button {
                                 Task {
                                     try await viewModel.joinActivity()
-                                    try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                                    try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
                                 }
                             } label: {
                                 Text("Join Activity")

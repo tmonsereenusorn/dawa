@@ -8,23 +8,19 @@
 import SwiftUI
 
 struct GroupRowView: View {
-    @ObservedObject var viewModel: GroupRowViewModel
     @EnvironmentObject var groupsViewModel: GroupsViewModel
-    
-    init(group: Groups) {
-        self.viewModel = GroupRowViewModel(group: group)
-    }
+    @Binding var group: Groups
     
     var body: some View {
         HStack {
-            SquareGroupImageView(group: viewModel.group, size: .medium)
+            SquareGroupImageView(group: group, size: .medium)
             
-            Text(viewModel.group.name)
+            Text(group.name)
                 
             Spacer()
             
             NavigationLink {
-                GroupView(group: $viewModel.group)
+                GroupView(group: $group)
             } label: {
                 Image(systemName: "chevron.right")
             }
@@ -32,7 +28,7 @@ struct GroupRowView: View {
         }
         .foregroundColor(Color.theme.primaryText)
         .padding()
-        .background(groupsViewModel.currSelectedGroup == viewModel.group.id ? Color.theme.secondaryText : Color.theme.background)
+        .background(groupsViewModel.currSelectedGroup?.id == group.id ? Color.theme.secondaryText : Color.theme.background)
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 }

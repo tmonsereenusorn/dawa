@@ -30,6 +30,6 @@ struct SquareGroupImageView: View {
     }
 }
 
-#Preview {
-    SquareGroupImageView(group: Groups.MOCK_GROUP, size: .large)
-}
+//#Preview {
+//    SquareGroupImageView(group: Groups.MOCK_GROUP, size: .large)
+//}

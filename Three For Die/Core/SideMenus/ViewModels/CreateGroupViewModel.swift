@@ -12,15 +12,16 @@ protocol CreateGroupFormProtocol {
 }
 
 class CreateGroupViewModel: ObservableObject {
+    @Published var groupId: String?
     @Published var didCreateGroup = false
     let service = GroupService()
     
     @MainActor
-    func createGroup(name: String, completion: @escaping(String) -> Void) async throws {
+    func createGroup(name: String) async throws {
         do {
             try await service.createGroup(groupName: name) { groupId in
+                self.groupId = groupId
                 self.didCreateGroup = true
-                completion(groupId)
             }
         } catch {
             print("DEBUG: Failed to create group with error \(error.localizedDescription)")

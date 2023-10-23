@@ -40,11 +40,13 @@ struct CreateGroupView: View {
                 
                 Button {
                     Task {
-                        try await viewModel.createGroup(name: groupName) { groupId in
-                            groupsViewModel.currSelectedGroup = groupId
+                        try await viewModel.createGroup(name: groupName)
+                        if let newGroupId = viewModel.groupId {
+                            groupsViewModel.currSelectedGroup = try await GroupService.fetchGroup(groupId: newGroupId)
+                            try await feedViewModel.fetchActivities(groupId: newGroupId)
                         }
                         await groupsViewModel.fetchUserGroups()
-                        try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                        
                     }
                 } label: {
                     HStack {

@@ -24,8 +24,7 @@ struct FeedView: View{
                         Button {
                             withAnimation{ showLeftMenu.toggle() }
                         } label: {
-                            Circle()
-                                .frame(width: 32, height: 32)
+                            SquareGroupImageView(group: groupsViewModel.currSelectedGroup, size: .xSmall)
                         }
                         
                         Spacer()
@@ -66,7 +65,7 @@ struct FeedView: View{
                     .listStyle(PlainListStyle())
                     .refreshable {
                         Task {
-                            try await viewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                            try await viewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
                         }
                     }
                     .navigationDestination(for: Activity.self, destination: { activity in

@@ -37,7 +37,7 @@ class GroupService {
     }
     
     @MainActor
-    func fetchUserGroups(completion: @escaping([Groups]) -> Void) async {
+    static func fetchUserGroups(completion: @escaping([Groups]) -> Void) async {
         var groups: [Groups] = []
         
         guard let uid = Auth.auth().currentUser?.uid else { return }

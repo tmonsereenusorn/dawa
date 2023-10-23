@@ -42,13 +42,13 @@ struct AddActivityView: View {
                 
                 Button {
                     Task {
-                        try await viewModel.addActivity(groupId: groupsViewModel.currSelectedGroup,
+                        try await viewModel.addActivity(groupId: groupsViewModel.currSelectedGroup!.id,
                                                         title: title,
                                                         location: location,
                                                         notes: notes,
                                                         numRequired: Int(numRequired)!,
                                                         category: selectedTag)
-                        try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup)
+                        try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
                     }
                 } label: {
                     Text("Create")
