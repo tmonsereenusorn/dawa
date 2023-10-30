@@ -155,8 +155,8 @@ class ActivityService {
         guard let userActivitiesSnapshot = try? await FirestoreConstants.UserCollection.document(uid).collection("user-activities").getDocuments() else { return }
         for doc in userActivitiesSnapshot.documents {
             let activityId = doc.documentID
-            guard let activitySnapshot = try? await FirestoreConstants.ActivitiesCollection.document(activityId).getDocument() else { return }
-            guard let activity = try? activitySnapshot.data(as: Activity.self) else { return }
+            guard let activitySnapshot = try? await FirestoreConstants.ActivitiesCollection.document(activityId).getDocument() else { continue }
+            guard let activity = try? activitySnapshot.data(as: Activity.self) else { continue }
             activities.append(activity)
         }
         completion(activities)

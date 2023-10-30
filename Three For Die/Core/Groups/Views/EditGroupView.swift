@@ -20,6 +20,8 @@ struct EditGroupView: View {
             
             groupImageInput
             
+            groupNameInput
+            
             Spacer()
         }
         .onAppear {

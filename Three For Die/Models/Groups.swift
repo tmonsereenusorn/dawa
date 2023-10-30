@@ -13,6 +13,7 @@ struct Groups: Identifiable, Codable {
     
     let name: String
     var groupImageUrl: String?
+    var numMembers: Int
     
     var id: String {
         return uid ?? NSUUID().uuidString
@@ -20,5 +21,5 @@ struct Groups: Identifiable, Codable {
 }
 
 extension Groups {
-    static var MOCK_GROUP = Groups(name: "Stanford University")
+    static var MOCK_GROUP = Groups(name: "Stanford University", numMembers: 44)
 }
