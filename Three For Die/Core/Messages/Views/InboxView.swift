@@ -11,6 +11,7 @@ struct InboxView: View {
     @StateObject var viewModel = InboxViewModel()
     @Binding var showLeftMenu: Bool
     @Binding var showRightMenu: Bool
+    @EnvironmentObject var groupsViewModel: GroupsViewModel
     
     var body: some View {
         VStack {
@@ -19,8 +20,7 @@ struct InboxView: View {
                     Button {
                         withAnimation{ showLeftMenu.toggle() }
                     } label: {
-                        Circle()
-                            .frame(width: 32, height: 32)
+                        SquareGroupImageView(group: groupsViewModel.currSelectedGroup, size: .xSmall)
                     }
                     
                     Spacer()

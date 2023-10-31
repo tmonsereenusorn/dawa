@@ -45,8 +45,7 @@ class GroupService {
         guard let userGroupsSnapshot = try? await FirestoreConstants.UserCollection.document(uid).collection("user-groups").getDocuments() else { return }
         for doc in userGroupsSnapshot.documents {
             let groupId = doc.documentID
-            guard let groupSnapshot = try? await FirestoreConstants.GroupsCollection.document(groupId).getDocument() else { continue }
-            guard let group = try? groupSnapshot.data(as: Groups.self) else { continue }
+            guard let group = try? await fetchGroup(groupId: groupId) else { continue }
             groups.append(group)
         }
         completion(groups)
@@ -73,6 +72,24 @@ class GroupService {
     
     static func fetchGroup(groupId: String) async throws -> Groups {
         let snapshot = try await FirestoreConstants.GroupsCollection.document(groupId).getDocument()
-        return try snapshot.data(as: Groups.self)
+        var group = try snapshot.data(as: Groups.self)
+        let members = await fetchGroupMembers(groupId: group.id)
+        group.memberList = members
+        return group
+    }
+    
+    @MainActor
+    static func fetchGroupMembers(groupId: String) async -> [User] {
+        var users: [User] = []
+        
+        guard let groupMembersSnapshot = try? await FirestoreConstants.GroupsCollection.document(groupId).collection("members").getDocuments() else { return users }
+        
+        for doc in groupMembersSnapshot.documents {
+            let uid = doc.documentID
+            guard let userSnapshot = try? await FirestoreConstants.UserCollection.document(uid).getDocument() else { continue }
+            guard let user = try? userSnapshot.data(as: User.self) else { continue }
+            users.append(user)
+        }
+        return users
     }
 }

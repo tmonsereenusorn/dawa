@@ -23,6 +23,8 @@
 		8503FCFE2A52D95D0024F98B /* GroupRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8503FCFD2A52D95D0024F98B /* GroupRowView.swift */; };
 		85301E542AE495D0004052C2 /* EditGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85301E532AE495D0004052C2 /* EditGroupView.swift */; };
 		85301E562AE496CA004052C2 /* EditGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85301E552AE496CA004052C2 /* EditGroupViewModel.swift */; };
+		85307F952AF0675700987A3C /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85307F942AF0675700987A3C /* MemberListView.swift */; };
+		85307F972AF06BC100987A3C /* MemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85307F962AF06BC100987A3C /* MemberListViewModel.swift */; };
 		8554ADD82A7F9D8F007E47B0 /* FormInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8554ADD72A7F9D8F007E47B0 /* FormInputView.swift */; };
 		856758002AE0A2390006F843 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856757FF2AE0A2390006F843 /* GroupView.swift */; };
 		856758022AE0E5EB0006F843 /* SquareGroupImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856758012AE0E5EB0006F843 /* SquareGroupImageView.swift */; };
@@ -137,6 +139,8 @@
 		8503FCFD2A52D95D0024F98B /* GroupRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRowView.swift; sourceTree = "<group>"; };
 		85301E532AE495D0004052C2 /* EditGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupView.swift; sourceTree = "<group>"; };
 		85301E552AE496CA004052C2 /* EditGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupViewModel.swift; sourceTree = "<group>"; };
+		85307F942AF0675700987A3C /* MemberListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListView.swift; sourceTree = "<group>"; };
+		85307F962AF06BC100987A3C /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
 		8554ADD72A7F9D8F007E47B0 /* FormInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormInputView.swift; sourceTree = "<group>"; };
 		856757FF2AE0A2390006F843 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
 		856758012AE0E5EB0006F843 /* SquareGroupImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareGroupImageView.swift; sourceTree = "<group>"; };
@@ -436,6 +440,7 @@
 			isa = PBXGroup;
 			children = (
 				85301E552AE496CA004052C2 /* EditGroupViewModel.swift */,
+				85307F962AF06BC100987A3C /* MemberListViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -445,6 +450,7 @@
 			children = (
 				856757FF2AE0A2390006F843 /* GroupView.swift */,
 				85301E532AE495D0004052C2 /* EditGroupView.swift */,
+				85307F942AF0675700987A3C /* MemberListView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -752,6 +758,7 @@
 				85D778242A45F6160052D5F9 /* ProfileView.swift in Sources */,
 				85C854D42A418F290057F55F /* SignUpView.swift in Sources */,
 				8501F24C2A8B6EA0000CC58B /* InboxViewModel.swift in Sources */,
+				85307F972AF06BC100987A3C /* MemberListViewModel.swift in Sources */,
 				857353BB2A6522BF00329BB3 /* ActivityRowViewModel.swift in Sources */,
 				85AF06552A582E3300599107 /* RightSideMenuRowView.swift in Sources */,
 				85C9C9212A7A8CAD00CBA0A1 /* EditProfileViewModel.swift in Sources */,
@@ -764,6 +771,7 @@
 				8503FCFC2A52D8A60024F98B /* GroupsView.swift in Sources */,
 				8501F2462A8AA3FB000CC58B /* Constants.swift in Sources */,
 				85B3F7F02A5D5142004734E8 /* SearchBar.swift in Sources */,
+				85307F952AF0675700987A3C /* MemberListView.swift in Sources */,
 				85C8BDD62A7256350059932C /* CreateGroupView.swift in Sources */,
 				85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */,
 				85A4171B2A56D99100A9096A /* UserService.swift in Sources */,

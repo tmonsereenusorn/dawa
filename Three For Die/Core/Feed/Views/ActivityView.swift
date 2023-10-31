@@ -138,7 +138,6 @@ struct ActivityView: View {
                 }
                 .refreshable {
                     Task {
-                        await viewModel.fetchActivityParticipants()
                         try await viewModel.refreshActivity()
                     }
                 }

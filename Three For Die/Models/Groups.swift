@@ -18,6 +18,8 @@ struct Groups: Identifiable, Codable {
     var id: String {
         return uid ?? NSUUID().uuidString
     }
+    
+    var memberList: [User]?
 }
 
 extension Groups {

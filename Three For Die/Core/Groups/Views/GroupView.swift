@@ -46,12 +46,21 @@ struct GroupView: View {
                     Text(group.name)
                         .foregroundColor(Color.theme.primaryText)
                     
-                    HStack(spacing: 6) {
-                        Text("44")
-                            .foregroundColor(.primary)
-                        
-                        Text("members")
-                            .foregroundColor(.secondary)
+                    NavigationLink {
+                        MemberListView(group: $group)
+                    } label: {
+                        HStack(spacing: 6) {
+                            Text("\(group.numMembers)")
+                                .foregroundColor(.primary)
+                            
+                            if group.numMembers == 1 {
+                                Text("member")
+                                    .foregroundColor(.secondary)
+                            } else {
+                                Text("members")
+                                    .foregroundColor(.secondary)
+                            }
+                        }
                     }
                     
                 }
