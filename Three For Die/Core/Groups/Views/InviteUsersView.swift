@@ -9,9 +9,17 @@ import SwiftUI
 
 struct InviteUsersView: View {
     @Environment(\.presentationMode) var mode
-    @StateObject var viewModel = InviteUsersViewModel()
+    @StateObject var viewModel: InviteUsersViewModel
     @Binding var group: Groups
     
+    init(group: Binding<Groups>) {
+        _group = group
+        _viewModel = StateObject(wrappedValue: InviteUsersViewModel(groupMembers: group.wrappedValue.memberList ?? []))
+    }
+    
+    private var usernamesToInvite: String {
+        viewModel.usersToInvite.map { $0.username }.joined(separator: ", ")
+    }
     
     var body: some View {
         VStack {
@@ -49,7 +57,18 @@ struct InviteUsersView: View {
             }
             .padding(10)
             
-            TextField("To: ", text: $viewModel.searchText)
+            HStack(spacing: 0) {
+                Text("Send invites to: ")
+                    .foregroundColor(Color.theme.primaryText)
+                
+                Text(usernamesToInvite)
+                    .foregroundColor(Color.theme.secondaryText)
+                
+                Spacer()
+            }
+            .padding()
+            
+            TextField("Search for username", text: $viewModel.searchText)
                 .frame(height: 44)
                 .padding(.leading)
                 .background(Color(.systemGroupedBackground))
@@ -77,7 +96,14 @@ struct InviteUsersView: View {
                                     .fontWeight(.semibold)
 
                                 Spacer()
+                                
+                                if viewModel.usersToInvite.contains(user) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(Color.green)
+                                        .padding(.horizontal)
+                                }
                             }
+                            
                         }
                         
                         Divider()

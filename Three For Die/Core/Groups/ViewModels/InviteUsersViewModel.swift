@@ -14,12 +14,20 @@ class InviteUsersViewModel: ObservableObject {
     @Published var users = [User]()
     @Published var searchText = ""
     
+    var groupMembers: [User]
+    
+    init(groupMembers: [User]) {
+        self.groupMembers = groupMembers
+    }
+    
     func searchForUsers() async throws {
         let fetchedUsers = try await UserService.searchForUsers(beginningWith: searchText.lowercased())
             
         // Switch to the main thread to update the published property
         await MainActor.run {
-            self.users = fetchedUsers
+            self.users = fetchedUsers.filter { user in
+                !groupMembers.contains(where: { $0.id == user.id })
+            }
         }
     }
     
