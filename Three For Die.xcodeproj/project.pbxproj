@@ -25,6 +25,10 @@
 		85301E562AE496CA004052C2 /* EditGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85301E552AE496CA004052C2 /* EditGroupViewModel.swift */; };
 		85307F952AF0675700987A3C /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85307F942AF0675700987A3C /* MemberListView.swift */; };
 		85307F972AF06BC100987A3C /* MemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85307F962AF06BC100987A3C /* MemberListViewModel.swift */; };
+		85465C9D2AFB21B20052568C /* InviteUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85465C9C2AFB21B20052568C /* InviteUsersView.swift */; };
+		85465C9F2AFB47F30052568C /* InviteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85465C9E2AFB47F30052568C /* InviteService.swift */; };
+		85465CA12AFB49FB0052568C /* GroupInvite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85465CA02AFB49FB0052568C /* GroupInvite.swift */; };
+		85465CA32AFB53710052568C /* InviteUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85465CA22AFB53710052568C /* InviteUsersViewModel.swift */; };
 		8554ADD82A7F9D8F007E47B0 /* FormInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8554ADD72A7F9D8F007E47B0 /* FormInputView.swift */; };
 		856758002AE0A2390006F843 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856757FF2AE0A2390006F843 /* GroupView.swift */; };
 		856758022AE0E5EB0006F843 /* SquareGroupImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856758012AE0E5EB0006F843 /* SquareGroupImageView.swift */; };
@@ -141,6 +145,10 @@
 		85301E552AE496CA004052C2 /* EditGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupViewModel.swift; sourceTree = "<group>"; };
 		85307F942AF0675700987A3C /* MemberListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListView.swift; sourceTree = "<group>"; };
 		85307F962AF06BC100987A3C /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
+		85465C9C2AFB21B20052568C /* InviteUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteUsersView.swift; sourceTree = "<group>"; };
+		85465C9E2AFB47F30052568C /* InviteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteService.swift; sourceTree = "<group>"; };
+		85465CA02AFB49FB0052568C /* GroupInvite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInvite.swift; sourceTree = "<group>"; };
+		85465CA22AFB53710052568C /* InviteUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteUsersViewModel.swift; sourceTree = "<group>"; };
 		8554ADD72A7F9D8F007E47B0 /* FormInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormInputView.swift; sourceTree = "<group>"; };
 		856757FF2AE0A2390006F843 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
 		856758012AE0E5EB0006F843 /* SquareGroupImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareGroupImageView.swift; sourceTree = "<group>"; };
@@ -317,6 +325,7 @@
 				85B3CCA72A826E680082B561 /* AuthError.swift */,
 				85B241BE2A87BCA1001EAA59 /* Message.swift */,
 				8501F2472A8AC689000CC58B /* UserActivity.swift */,
+				85465CA02AFB49FB0052568C /* GroupInvite.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -441,6 +450,7 @@
 			children = (
 				85301E552AE496CA004052C2 /* EditGroupViewModel.swift */,
 				85307F962AF06BC100987A3C /* MemberListViewModel.swift */,
+				85465CA22AFB53710052568C /* InviteUsersViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -451,6 +461,7 @@
 				856757FF2AE0A2390006F843 /* GroupView.swift */,
 				85301E532AE495D0004052C2 /* EditGroupView.swift */,
 				85307F942AF0675700987A3C /* MemberListView.swift */,
+				85465C9C2AFB21B20052568C /* InviteUsersView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -466,6 +477,7 @@
 				85B241C02A87BE38001EAA59 /* MessageService.swift */,
 				8501F2492A8B6121000CC58B /* InboxService.swift */,
 				856FE1562A9D0BED00E9224B /* ChatService.swift */,
+				85465C9E2AFB47F30052568C /* InviteService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -725,11 +737,13 @@
 				3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */,
 				85CB69882A7A6FAF008BCE7E /* EditProfileView.swift in Sources */,
 				85EAF1AA2A7BC16C0035CF17 /* ImageUploader.swift in Sources */,
+				85465CA32AFB53710052568C /* InviteUsersViewModel.swift in Sources */,
 				85B2B2392A81240C00986708 /* CircularProfileImageView.swift in Sources */,
 				85301E562AE496CA004052C2 /* EditGroupViewModel.swift in Sources */,
 				85B3F7F62A5DFD7D004734E8 /* AddActivityViewModel.swift in Sources */,
 				85B3CA622A839D1100690ED9 /* ActivityViewModel.swift in Sources */,
 				856FE1552A9D026400E9224B /* Color.swift in Sources */,
+				85465C9D2AFB21B20052568C /* InviteUsersView.swift in Sources */,
 				85B241BB2A866174001EAA59 /* ChatMessageCell.swift in Sources */,
 				85C09D7F2A865EC800D51576 /* ChatView.swift in Sources */,
 				85301E542AE495D0004052C2 /* EditGroupView.swift in Sources */,
@@ -747,6 +761,7 @@
 				85C8BDD82A7286120059932C /* GroupRowViewModel.swift in Sources */,
 				8503FCFE2A52D95D0024F98B /* GroupRowView.swift in Sources */,
 				389240C329A1EC9D0005AA3D /* Location.swift in Sources */,
+				85465CA12AFB49FB0052568C /* GroupInvite.swift in Sources */,
 				85D778262A45FE680052D5F9 /* SettingsRowView.swift in Sources */,
 				85B241BD2A866372001EAA59 /* ChatBubble.swift in Sources */,
 				85AF06512A58297400599107 /* RightSideMenuView.swift in Sources */,
@@ -781,6 +796,7 @@
 				856FE15B2A9D149500E9224B /* MessageInputView.swift in Sources */,
 				85C09D7B2A8657D800D51576 /* InboxView.swift in Sources */,
 				85B241BF2A87BCA2001EAA59 /* Message.swift in Sources */,
+				85465C9F2AFB47F30052568C /* InviteService.swift in Sources */,
 				85D9BAEB2A3AC0A800E11652 /* ActivityRowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

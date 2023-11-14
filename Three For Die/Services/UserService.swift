@@ -42,6 +42,18 @@ class UserService {
     }
     
     @MainActor
+    static func searchForUsers(beginningWith startString: String) async throws -> [User] {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return [] }
+        let query = FirestoreConstants.UserCollection
+            .whereField("username", isGreaterThanOrEqualTo: startString)
+            .whereField("username", isLessThan: startString + "\u{f8ff}")
+            .limit(to: 100)
+        
+        let snapshot = try await query.getDocuments()
+        return mapUsers(fromSnapshot: snapshot, currentUid: currentUid)
+    }
+    
+    @MainActor
     func editUser(withUid uid: String, username: String, bio: String, uiImage: UIImage?) async throws {
         do {
             guard uid == Auth.auth().currentUser?.uid else { return } // Only current user can edit their information
@@ -52,7 +64,7 @@ class UserService {
             
             var newUserProfile = User(fullname: oldUserProfile.fullname,
                                       email: oldUserProfile.email,
-                                      username: username,
+                                      username: username.lowercased(),
                                       bio: bio,
                                       profileImageUrl: oldUserProfile.profileImageUrl)
             
@@ -72,5 +84,11 @@ class UserService {
         } catch {
             print("DEBUG: Failed to edit user with error \(error.localizedDescription)")
         }
+    }
+    
+    private static func mapUsers(fromSnapshot snapshot: QuerySnapshot, currentUid: String) -> [User] {
+        return snapshot.documents
+            .compactMap({ try? $0.data(as: User.self) })
+            .filter({ $0.id !=  currentUid })
     }
 }
