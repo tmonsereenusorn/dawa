@@ -55,6 +55,7 @@ class AuthService {
             self.userSession = nil
             UserService.shared.currentUser = nil
             InboxService.shared.reset()
+            InviteService.shared.reset()
         } catch {
             print("DEBUG: Failed to sign out with error \(error.localizedDescription)")
         }

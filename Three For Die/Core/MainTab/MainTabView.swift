@@ -4,6 +4,7 @@ import SwiftUI
 enum TabType {
     case home
     case activities
+    case notifications
 }
 
 struct MainTabView: View {
@@ -37,6 +38,11 @@ struct MainTabView: View {
                             .navigationBarTitleDisplayMode(.inline)
                             .navigationBarHidden(true)
                             .tag("message")
+                        
+                        NotificationsView(showLeftMenu: $showLeftMenu, showRightMenu: $showRightMenu)
+                            .navigationBarTitleDisplayMode(.inline)
+                            .navigationBarHidden(true)
+                            .tag("bell")
                     }
                     
                     VStack(spacing: 0) {
@@ -45,6 +51,8 @@ struct MainTabView: View {
                             TabButton(image: "house")
                             
                             TabButton(image: "message")
+                            
+                            TabButton(image: "bell")
                         }
                         .padding(.top, 15)
                     }

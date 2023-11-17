@@ -11,10 +11,14 @@ import FirebaseFirestoreSwift
 
 struct GroupInvite: Identifiable, Codable, Hashable {
     @DocumentID var inviteId: String?
+    
     let fromUserId: String
     let toUserId: String
     let forGroupId: String
     var status: String
+    let timestamp: Timestamp
+    
+    var group: Groups?
     
     var id: String {
         return inviteId ?? NSUUID().uuidString

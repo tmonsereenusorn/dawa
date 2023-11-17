@@ -9,6 +9,32 @@ import Foundation
 import Firebase
 
 class InviteService {
+    @Published var documentChanges = [DocumentChange]()
+    static let shared = InviteService()
+    private var firestoreListener: ListenerRegistration?
+    
+    // need to call this thru shared instance to setup the observer
+    func observeGroupInvites() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        let query = FirestoreConstants.UserCollection
+            .document(uid)
+            .collection("group-invites")
+            .order(by: "timestamp", descending: true)
+        
+        self.firestoreListener = query.addSnapshotListener { snapshot, _ in
+            guard let changes = snapshot?.documentChanges else { return }
+            
+            self.documentChanges = changes
+        }
+    }
+    
+    func reset() {
+        self.firestoreListener?.remove()
+        self.firestoreListener = nil
+        self.documentChanges.removeAll()
+    }
+    
     
     @MainActor
     static func sendGroupInvitations(toUsers: [User], forGroupId: String) async throws {
@@ -25,7 +51,8 @@ class InviteService {
             let invite = GroupInvite(fromUserId: fromUid,
                                      toUserId: toUid,
                                      forGroupId: forGroupId,
-                                     status: "Pending")
+                                     status: "Pending",
+                                     timestamp: Timestamp())
             
             let encodedInvite = try Firestore.Encoder().encode(invite)
             

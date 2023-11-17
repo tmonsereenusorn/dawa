@@ -78,6 +78,16 @@ class GroupService {
         return group
     }
     
+    static func fetchGroupForInvite(withGroupId groupId: String, completion: @escaping(Groups) -> Void) {
+        FirestoreConstants.GroupsCollection.document(groupId).getDocument() { snapshot, _ in
+            guard let group = try? snapshot?.data(as: Groups.self) else {
+                print("DEBUG: Failed to map group")
+                return
+            }
+            completion(group)
+        }
+    }
+    
     @MainActor
     static func fetchGroupMembers(groupId: String) async -> [User] {
         var users: [User] = []
