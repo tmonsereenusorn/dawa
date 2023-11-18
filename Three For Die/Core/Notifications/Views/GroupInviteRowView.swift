@@ -9,6 +9,7 @@ import SwiftUI
 
 struct GroupInviteRowView: View {
     let groupInvite: GroupInvite
+    @StateObject var viewModel = GroupInviteRowViewModel()
     
     var body: some View {
         if let group = groupInvite.group {
@@ -21,7 +22,9 @@ struct GroupInviteRowView: View {
                 Spacer()
                 
                 Button("Confirm") {
-                    // Action to perform when the button is tapped
+                    Task {
+                        try await viewModel.acceptGroupInvitation(groupInvite: groupInvite)
+                    }
                 }
                 .padding()
                 .foregroundColor(.white) // Text color
@@ -29,7 +32,9 @@ struct GroupInviteRowView: View {
                 .cornerRadius(10) // Rounded corners
                 
                 Button("Delete") {
-                    // Action to perform when the button is tapped
+                    Task {
+                        try await viewModel.deleteGroupInvitation(groupInvite: groupInvite)
+                    }
                 }
                 .padding()
                 .foregroundColor(.white) // Text color

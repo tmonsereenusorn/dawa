@@ -27,6 +27,7 @@
 		850B074C2B06DA2A00A4FAF5 /* GroupInvitesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B074B2B06DA2A00A4FAF5 /* GroupInvitesView.swift */; };
 		850B074F2B06DA5C00A4FAF5 /* GroupInvitesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B074E2B06DA5C00A4FAF5 /* GroupInvitesViewModel.swift */; };
 		850B07512B06EF2700A4FAF5 /* GroupInviteRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07502B06EF2700A4FAF5 /* GroupInviteRowView.swift */; };
+		850B07532B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07522B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift */; };
 		85301E542AE495D0004052C2 /* EditGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85301E532AE495D0004052C2 /* EditGroupView.swift */; };
 		85301E562AE496CA004052C2 /* EditGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85301E552AE496CA004052C2 /* EditGroupViewModel.swift */; };
 		85307F952AF0675700987A3C /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85307F942AF0675700987A3C /* MemberListView.swift */; };
@@ -153,6 +154,7 @@
 		850B074B2B06DA2A00A4FAF5 /* GroupInvitesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInvitesView.swift; sourceTree = "<group>"; };
 		850B074E2B06DA5C00A4FAF5 /* GroupInvitesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInvitesViewModel.swift; sourceTree = "<group>"; };
 		850B07502B06EF2700A4FAF5 /* GroupInviteRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInviteRowView.swift; sourceTree = "<group>"; };
+		850B07522B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInviteRowViewModel.swift; sourceTree = "<group>"; };
 		85301E532AE495D0004052C2 /* EditGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupView.swift; sourceTree = "<group>"; };
 		85301E552AE496CA004052C2 /* EditGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupViewModel.swift; sourceTree = "<group>"; };
 		85307F942AF0675700987A3C /* MemberListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListView.swift; sourceTree = "<group>"; };
@@ -424,6 +426,7 @@
 			children = (
 				850B07472B06D3B100A4FAF5 /* NotificationsViewModel.swift */,
 				850B074E2B06DA5C00A4FAF5 /* GroupInvitesViewModel.swift */,
+				850B07522B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -785,6 +788,7 @@
 				85B2B2392A81240C00986708 /* CircularProfileImageView.swift in Sources */,
 				85301E562AE496CA004052C2 /* EditGroupViewModel.swift in Sources */,
 				85B3F7F62A5DFD7D004734E8 /* AddActivityViewModel.swift in Sources */,
+				850B07532B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift in Sources */,
 				85B3CA622A839D1100690ED9 /* ActivityViewModel.swift in Sources */,
 				856FE1552A9D026400E9224B /* Color.swift in Sources */,
 				85465C9D2AFB21B20052568C /* InviteUsersView.swift in Sources */,

@@ -38,6 +38,31 @@ class GroupService {
     }
     
     @MainActor
+    static func joinGroup(uid: String, groupId: String) async throws {
+        do {
+            var group = try await GroupService.fetchGroup(groupId: groupId)
+            
+            let isCurrentUserAMember = group.memberList?.contains { $0.id == uid } ?? true
+            
+            if !isCurrentUserAMember {
+                try await FirestoreConstants.GroupsCollection.document(groupId).updateData(["numMembers": FieldValue.increment(Int64(1))])
+                
+                // Add user to group's user member list
+                let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
+                try await groupMembersRef.document(uid).setData([:])
+                
+                // Add group to user's groups list
+                let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
+                try await groupsRef.document(groupId).setData([:])
+            } else {
+                print("User is already a member")
+            }
+        } catch {
+            print("DEBUG: Failed to join group with error \(error.localizedDescription)")
+        }
+    }
+    
+    @MainActor
     static func fetchUserGroups(completion: @escaping([Groups]) -> Void) async {
         var groups: [Groups] = []
         

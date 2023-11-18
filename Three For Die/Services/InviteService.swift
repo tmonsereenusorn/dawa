@@ -61,4 +61,13 @@ class InviteService {
             print("DEBUG: Failed to send group invite to user id: \(toUid) with error \(error.localizedDescription)")
         }
     }
+    
+    static func deleteGroupInvitation(groupInviteId: String) async throws {
+        do {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            try await FirestoreConstants.UserCollection.document(uid).collection("group-invites").document(groupInviteId).delete()
+        } catch {
+            print("DEBUG: Error deleting group invitation")
+        }
+    }
 }
