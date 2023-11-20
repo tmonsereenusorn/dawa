@@ -12,10 +12,7 @@ struct InboxRowView: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "person.circle.fill")
-                .resizable()
-                .frame(width: 64, height: 64)
-                .foregroundColor(Color(.systemGray4))
+            SquareGroupImageView(group: userActivity.activity?.group, size: .medium)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(userActivity.activity?.title ?? "Error displaying activity title")

@@ -24,6 +24,7 @@ struct Activity: Identifiable, Codable, Hashable {
     
     var recentMessageId: String?
     var user: User?
+    var group: Groups?
     var didJoin: Bool? = false
     
     var id: String {

@@ -43,7 +43,7 @@ class GroupInvitesViewModel: ObservableObject {
             let groupInvite = groupInvites[i]
             
             // Attach group to the user's group invite
-            GroupService.fetchGroupForInvite(withGroupId: groupInvite.forGroupId) { [weak self] group in
+            GroupService.fetchGroup(withGroupId: groupInvite.forGroupId) { [weak self] group in
                 guard let self else { return }
                 
                 self.groupInvites[i].group = group
@@ -73,7 +73,7 @@ class GroupInvitesViewModel: ObservableObject {
         guard var groupInvite = try? change.document.data(as: GroupInvite.self) else { return }
         
         
-        GroupService.fetchGroupForInvite(withGroupId: groupInvite.forGroupId) { [weak self] group in
+        GroupService.fetchGroup(withGroupId: groupInvite.forGroupId) { [weak self] group in
             guard let self else { return }
             
             groupInvite.group = group

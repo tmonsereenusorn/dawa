@@ -77,11 +77,14 @@ class ActivityService {
     
     static func fetchActivity(withActivityId activityId: String, completion: @escaping(Activity) -> Void) {
         FirestoreConstants.ActivitiesCollection.document(activityId).getDocument() { snapshot, _ in
-            guard let activity = try? snapshot?.data(as: Activity.self) else {
+            guard var activity = try? snapshot?.data(as: Activity.self) else {
                 print("DEBUG: Failed to map activity")
                 return
             }
-            completion(activity)
+            GroupService.fetchGroup(withGroupId: activity.groupId) { group in
+                activity.group = group
+                completion(activity)
+            }
         }
     }
     

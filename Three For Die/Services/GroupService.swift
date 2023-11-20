@@ -129,7 +129,7 @@ class GroupService {
         return group
     }
     
-    static func fetchGroupForInvite(withGroupId groupId: String, completion: @escaping(Groups) -> Void) {
+    static func fetchGroup(withGroupId groupId: String, completion: @escaping(Groups) -> Void) {
         FirestoreConstants.GroupsCollection.document(groupId).getDocument() { snapshot, _ in
             guard let group = try? snapshot?.data(as: Groups.self) else {
                 print("DEBUG: Failed to map group")
