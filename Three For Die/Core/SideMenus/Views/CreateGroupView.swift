@@ -26,10 +26,19 @@ struct CreateGroupView: View {
                           placeholder: "Enter a name for your group")
                 .padding()
                 
-                InputView(text: $handle,
-                          title: "Group Handle",
-                          placeholder: "Enter a handle for your group")
-                .padding()
+                
+                VStack(spacing: 0) {
+                    InputView(text: $handle,
+                              title: "Group Handle",
+                              placeholder: "Enter a handle for your group")
+                    .padding()
+                    
+                    if viewModel.showGroupHandleErrorMessage {
+                        Text("Group handle already exists. Please choose a different one")
+                            .foregroundColor(.red)
+                            .font(.caption)
+                    }
+                }
             }
             
             // Cancel and Submit button

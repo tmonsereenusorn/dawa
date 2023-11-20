@@ -13,6 +13,15 @@ class GroupService {
     @MainActor
     func createGroup(groupName: String, handle: String, completion: @escaping(String) -> Void) async throws {
         do {
+            // Check if group handle already exists
+            let querySnapshot = try await FirestoreConstants.GroupsCollection
+                .whereField("handle", isEqualTo: handle)
+                .getDocuments()
+            
+            guard querySnapshot.documents.isEmpty else {
+                throw AppError.groupHandleAlreadyExists
+            }
+            
             // Upload group to firestore
             guard let uid = Auth.auth().currentUser?.uid else { return }
             let group = Groups(name: groupName,
@@ -33,6 +42,9 @@ class GroupService {
             
             completion(groupId)
             
+        } catch let error as AppError {
+            print(error.localizedDescription)
+            throw error
         } catch {
             print("DEBUG: Failed to create group with error \(error.localizedDescription)")
         }
@@ -80,6 +92,16 @@ class GroupService {
     @MainActor
     static func editGroup(withGroupId groupId: String, name: String, handle: String, uiImage: UIImage?) async throws {
         do {
+            // Check if group handle already exists
+            let querySnapshot = try await FirestoreConstants.GroupsCollection
+                .whereField("handle", isEqualTo: handle)
+                .getDocuments()
+            
+            if let existingGroup = querySnapshot.documents.first(where: { $0.documentID != groupId }) {
+                // A different group with the same handle exists
+                throw AppError.groupHandleAlreadyExists
+            }
+            
             // Upload new profile image if provided
             if let image = uiImage {
                 if let imageUrl = try? await ImageUploader.uploadImage(image: image, type: .group) {
@@ -91,8 +113,11 @@ class GroupService {
             } else {
                 try await FirestoreConstants.GroupsCollection.document(groupId).setData(["name": name, "handle": handle], merge: true)
             }
+        } catch let error as AppError {
+            print(error.localizedDescription)
+            throw error
         } catch {
-            print("DEBUG: Failed to edit user with error \(error.localizedDescription)")
+            print("DEBUG: Failed to create group with error \(error.localizedDescription)")
         }
     }
     

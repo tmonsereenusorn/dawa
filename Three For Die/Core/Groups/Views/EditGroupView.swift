@@ -136,6 +136,12 @@ extension EditGroupView{
                 }
             }
             
+            if viewModel.showGroupHandleErrorMessage {
+                Text("Group handle already exists. Please choose a different one")
+                    .foregroundColor(.red)
+                    .font(.caption)
+            }
+            
         }
         .padding()
         .autocapitalization(.none)

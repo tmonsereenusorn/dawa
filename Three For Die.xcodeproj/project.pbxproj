@@ -28,6 +28,7 @@
 		850B074F2B06DA5C00A4FAF5 /* GroupInvitesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B074E2B06DA5C00A4FAF5 /* GroupInvitesViewModel.swift */; };
 		850B07512B06EF2700A4FAF5 /* GroupInviteRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07502B06EF2700A4FAF5 /* GroupInviteRowView.swift */; };
 		850B07532B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07522B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift */; };
+		850B07552B0B176700A4FAF5 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07542B0B176700A4FAF5 /* AppError.swift */; };
 		85301E542AE495D0004052C2 /* EditGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85301E532AE495D0004052C2 /* EditGroupView.swift */; };
 		85301E562AE496CA004052C2 /* EditGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85301E552AE496CA004052C2 /* EditGroupViewModel.swift */; };
 		85307F952AF0675700987A3C /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85307F942AF0675700987A3C /* MemberListView.swift */; };
@@ -155,6 +156,7 @@
 		850B074E2B06DA5C00A4FAF5 /* GroupInvitesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInvitesViewModel.swift; sourceTree = "<group>"; };
 		850B07502B06EF2700A4FAF5 /* GroupInviteRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInviteRowView.swift; sourceTree = "<group>"; };
 		850B07522B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInviteRowViewModel.swift; sourceTree = "<group>"; };
+		850B07542B0B176700A4FAF5 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		85301E532AE495D0004052C2 /* EditGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupView.swift; sourceTree = "<group>"; };
 		85301E552AE496CA004052C2 /* EditGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupViewModel.swift; sourceTree = "<group>"; };
 		85307F942AF0675700987A3C /* MemberListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListView.swift; sourceTree = "<group>"; };
@@ -649,6 +651,7 @@
 			children = (
 				85D9BAF22A3AC2F100E11652 /* DateExtension.swift */,
 				856FE1542A9D026400E9224B /* Color.swift */,
+				850B07542B0B176700A4FAF5 /* AppError.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -781,6 +784,7 @@
 				85A9F85E2A54366800D04715 /* ActivityFilters.swift in Sources */,
 				850B07512B06EF2700A4FAF5 /* GroupInviteRowView.swift in Sources */,
 				3892409B29A187260005AA3D /* ThreeForDieApp.swift in Sources */,
+				850B07552B0B176700A4FAF5 /* AppError.swift in Sources */,
 				85CB69882A7A6FAF008BCE7E /* EditProfileView.swift in Sources */,
 				85EAF1AA2A7BC16C0035CF17 /* ImageUploader.swift in Sources */,
 				85465CA32AFB53710052568C /* InviteUsersViewModel.swift in Sources */,

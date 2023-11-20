@@ -19,6 +19,7 @@ class EditGroupViewModel: ObservableObject {
     private var groupUIImage: UIImage?
     
     @Published var didEditGroup = false
+    @Published var showGroupHandleErrorMessage = false
     
     @MainActor
     func loadImage() async throws {
@@ -32,9 +33,13 @@ class EditGroupViewModel: ObservableObject {
     @MainActor
     func editGroup(withGroupId groupId: String, name: String, handle: String) async throws {
         do {
-            try await GroupService.editGroup(withGroupId: groupId, name: name, handle: handle, uiImage: groupUIImage ?? nil)
+            try await GroupService.editGroup(withGroupId: groupId, name: name, handle: handle.lowercased(), uiImage: groupUIImage ?? nil)
             self.group = try await GroupService.fetchGroup(groupId: groupId)
             self.didEditGroup = true
+        } catch AppError.groupHandleAlreadyExists {
+            self.showGroupHandleErrorMessage = true
+            self.didEditGroup = false
+            print("Group handle already exists. Please choose a different handle.")
         } catch {
             print("DEBUG: Failed to edit group with error \(error.localizedDescription)")
             self.didEditGroup = false
