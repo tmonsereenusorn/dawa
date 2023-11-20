@@ -10,6 +10,7 @@ import Firebase
 
 class InviteService {
     @Published var documentChanges = [DocumentChange]()
+    @Published var hasInvites = false
     static let shared = InviteService()
     private var firestoreListener: ListenerRegistration?
     
@@ -23,6 +24,7 @@ class InviteService {
             .order(by: "timestamp", descending: true)
         
         self.firestoreListener = query.addSnapshotListener { snapshot, _ in
+            self.hasInvites = !(snapshot?.documents.isEmpty ?? true)
             guard let changes = snapshot?.documentChanges else { return }
             
             self.documentChanges = changes

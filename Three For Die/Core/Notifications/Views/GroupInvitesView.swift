@@ -42,26 +42,34 @@ struct GroupInvitesView: View {
                 
                 Divider()
             }
-            
-            List {
-                ForEach(viewModel.groupInvites, id: \.self) { groupInvite in
-                    ZStack {
-                        NavigationLink(value: groupInvite) {
-                            EmptyView()
+            if InviteService.shared.hasInvites {
+                List {
+                    ForEach(viewModel.groupInvites, id: \.self) { groupInvite in
+                        ZStack {
+                            NavigationLink(value: groupInvite) {
+                                EmptyView()
+                            }
+                            .opacity(0.0)
+                            
+                            GroupInviteRowView(groupInvite: groupInvite)
                         }
-                        .opacity(0.0)
-                        
-                        GroupInviteRowView(groupInvite: groupInvite)
                     }
+                    .listRowInsets(EdgeInsets())
+                    .padding(.vertical)
+                    .padding(.trailing, 8)
+                    .padding(.leading, 20)
                 }
-                .listRowInsets(EdgeInsets())
-                .padding(.vertical)
-                .padding(.trailing, 8)
-                .padding(.leading, 20)
+                .listStyle(PlainListStyle())
+                .overlay { if !viewModel.didCompleteInitialLoad { ProgressView() } }
+                .background(Color.theme.background)
+            } else {
+                Spacer()
+                
+                Text("No group invitations yet")
+                    .foregroundColor(Color.theme.secondaryText)
+                
+                Spacer()
             }
-            .listStyle(PlainListStyle())
-            .overlay { if !viewModel.didCompleteInitialLoad { ProgressView() } }
-            .background(Color.theme.background)
         }
     }
 }

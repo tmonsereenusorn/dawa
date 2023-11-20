@@ -13,6 +13,7 @@ class GroupInvitesViewModel: ObservableObject {
     @Published var groupInvites = [GroupInvite]()
     private var cancellables = Set<AnyCancellable>()
     @Published var didCompleteInitialLoad = false
+    @Published var hasInvites = false
     
     init() {
         setupSubscribers()
@@ -53,6 +54,7 @@ class GroupInvitesViewModel: ObservableObject {
         dispatchGroup.leave()
         
         dispatchGroup.notify(queue: .main) {
+            print("Completed initial load")
             self.didCompleteInitialLoad = true
         }
     }
