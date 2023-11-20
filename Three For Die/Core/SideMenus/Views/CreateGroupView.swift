@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CreateGroupView: View {
     @State private var groupName = ""
+    @State private var handle = ""
     @ObservedObject var viewModel = CreateGroupViewModel()
     @EnvironmentObject var groupsViewModel: GroupsViewModel
     @EnvironmentObject var feedViewModel: FeedViewModel
@@ -23,6 +24,11 @@ struct CreateGroupView: View {
                 InputView(text: $groupName,
                           title: "Group Name",
                           placeholder: "Enter a name for your group")
+                .padding()
+                
+                InputView(text: $handle,
+                          title: "Group Handle",
+                          placeholder: "Enter a handle for your group")
                 .padding()
             }
             
@@ -40,7 +46,7 @@ struct CreateGroupView: View {
                 
                 Button {
                     Task {
-                        try await viewModel.createGroup(name: groupName)
+                        try await viewModel.createGroup(name: groupName, handle: handle)
                         if let newGroupId = viewModel.groupId {
                             groupsViewModel.currSelectedGroup = try await GroupService.fetchGroup(groupId: newGroupId)
                             try await feedViewModel.fetchActivities(groupId: newGroupId)

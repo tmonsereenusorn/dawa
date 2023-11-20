@@ -11,12 +11,13 @@ import Firebase
 class GroupService {
     
     @MainActor
-    func createGroup(groupName: String, completion: @escaping(String) -> Void) async throws {
+    func createGroup(groupName: String, handle: String, completion: @escaping(String) -> Void) async throws {
         do {
             // Upload group to firestore
             guard let uid = Auth.auth().currentUser?.uid else { return }
             let group = Groups(name: groupName,
-                                numMembers: 1)
+                               handle: handle,
+                               numMembers: 1)
             let encodedGroup = try Firestore.Encoder().encode(group)
             let groupRef = try await FirestoreConstants.GroupsCollection.addDocument(data: encodedGroup)
             
@@ -77,18 +78,18 @@ class GroupService {
     }
     
     @MainActor
-    static func editGroup(withGroupId groupId: String, name: String, uiImage: UIImage?) async throws {
+    static func editGroup(withGroupId groupId: String, name: String, handle: String, uiImage: UIImage?) async throws {
         do {
             // Upload new profile image if provided
             if let image = uiImage {
                 if let imageUrl = try? await ImageUploader.uploadImage(image: image, type: .group) {
-                    try await FirestoreConstants.GroupsCollection.document(groupId).setData(["name": name, "groupImageUrl": imageUrl], merge: true)
+                    try await FirestoreConstants.GroupsCollection.document(groupId).setData(["name": name, "handle": handle, "groupImageUrl": imageUrl], merge: true)
                 } else {
                     print("DEBUG: Failed to upload profile image")
                     return
                 }
             } else {
-                try await FirestoreConstants.GroupsCollection.document(groupId).setData(["name": name], merge: true)
+                try await FirestoreConstants.GroupsCollection.document(groupId).setData(["name": name, "handle": handle], merge: true)
             }
         } catch {
             print("DEBUG: Failed to edit user with error \(error.localizedDescription)")

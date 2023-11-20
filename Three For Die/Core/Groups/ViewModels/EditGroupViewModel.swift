@@ -30,9 +30,9 @@ class EditGroupViewModel: ObservableObject {
     }
     
     @MainActor
-    func editGroup(withGroupId groupId: String, name: String) async throws {
+    func editGroup(withGroupId groupId: String, name: String, handle: String) async throws {
         do {
-            try await GroupService.editGroup(withGroupId: groupId, name: name, uiImage: groupUIImage ?? nil)
+            try await GroupService.editGroup(withGroupId: groupId, name: name, handle: handle, uiImage: groupUIImage ?? nil)
             self.group = try await GroupService.fetchGroup(groupId: groupId)
             self.didEditGroup = true
         } catch {

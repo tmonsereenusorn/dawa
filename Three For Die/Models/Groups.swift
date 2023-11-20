@@ -12,6 +12,7 @@ struct Groups: Identifiable, Codable, Hashable {
     @DocumentID var uid: String?
     
     let name: String
+    var handle: String
     var groupImageUrl: String?
     var numMembers: Int
     
@@ -23,5 +24,5 @@ struct Groups: Identifiable, Codable, Hashable {
 }
 
 extension Groups {
-    static var MOCK_GROUP = Groups(name: "Stanford University", numMembers: 44)
+    static var MOCK_GROUP = Groups(name: "Stanford University", handle: "stanforduniversity", numMembers: 44)
 }

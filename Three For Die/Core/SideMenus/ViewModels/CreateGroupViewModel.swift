@@ -17,9 +17,9 @@ class CreateGroupViewModel: ObservableObject {
     let service = GroupService()
     
     @MainActor
-    func createGroup(name: String) async throws {
+    func createGroup(name: String, handle: String) async throws {
         do {
-            try await service.createGroup(groupName: name) { groupId in
+            try await service.createGroup(groupName: name, handle: handle) { groupId in
                 self.groupId = groupId
                 self.didCreateGroup = true
             }

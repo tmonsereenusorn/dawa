@@ -10,6 +10,7 @@ import PhotosUI
 
 struct EditGroupView: View {
     @State private var name = ""
+    @State private var handle = ""
     @StateObject var viewModel = EditGroupViewModel()
     @Binding var group: Groups
     @Environment(\.presentationMode) var mode
@@ -26,6 +27,7 @@ struct EditGroupView: View {
         }
         .onAppear {
             self.name = group.name
+            self.handle = group.handle
         }
     }
 }
@@ -51,7 +53,7 @@ extension EditGroupView{
             
             Button {
                 Task {
-                    try await viewModel.editGroup(withGroupId: group.id, name: name)
+                    try await viewModel.editGroup(withGroupId: group.id, name: name, handle: handle)
                 }
             } label: {
                 Text("Save")
@@ -113,6 +115,27 @@ extension EditGroupView{
                 Divider()
                     .background(Color.theme.secondaryText)
             }
+            
+            Text("Group handle")
+                .foregroundColor(Color.theme.primaryText)
+                .fontWeight(.semibold)
+                .font(.footnote)
+            
+            HStack(spacing: 0) {
+                Text("@")
+                    .font(.system(size: 20))
+                    .foregroundColor(Color.theme.primaryText)
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    TextField("Enter a new group handle", text: $handle)
+                        .font(.system(size: 20))
+                        .foregroundColor(Color.theme.primaryText)
+                    
+                    Divider()
+                        .background(Color.theme.secondaryText)
+                }
+            }
+            
         }
         .padding()
         .autocapitalization(.none)

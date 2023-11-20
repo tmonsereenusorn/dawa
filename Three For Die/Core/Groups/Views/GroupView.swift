@@ -46,6 +46,9 @@ struct GroupView: View {
                     Text(group.name)
                         .foregroundColor(Color.theme.primaryText)
                     
+                    Text("@\(group.handle)")
+                        .foregroundColor(Color.theme.secondaryText)
+                    
                     NavigationLink {
                         MemberListView(group: $group)
                     } label: {
