@@ -56,12 +56,16 @@ struct MemberListView: View {
                 ScrollView() {
                     LazyVStack(spacing: 16) {
                         ForEach(members) { member in
-                            HStack {
-                                CircularProfileImageView(user: member, size: .medium)
-                                Text(member.username)
-                                    .foregroundColor(Color.theme.primaryText)
-                                    .font(.system(size: 16))
-                                Spacer()
+                            NavigationLink {
+                                ProfileView(user: member)
+                            } label: {
+                                HStack {
+                                    CircularProfileImageView(user: member, size: .medium)
+                                    Text(member.username)
+                                        .foregroundColor(Color.theme.primaryText)
+                                        .font(.system(size: 16))
+                                    Spacer()
+                                }
                             }
                         }
                     }
