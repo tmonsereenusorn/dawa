@@ -65,6 +65,9 @@ struct MemberListView: View {
                                         .foregroundColor(Color.theme.primaryText)
                                         .font(.system(size: 16))
                                     Spacer()
+                                    Text(member.groupPermissions ?? "")
+                                        .foregroundColor(Color.theme.secondaryText)
+                                        .font(.system(size: 12))
                                 }
                             }
                         }

@@ -34,7 +34,7 @@ class GroupService {
             
             // Add user to group's user member list
             let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
-            try await groupMembersRef.document(uid).setData([:])
+            try await groupMembersRef.document(uid).setData(["permissions":"Admin"])
             
             // Add group to user's groups list
             let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
@@ -53,7 +53,7 @@ class GroupService {
     @MainActor
     static func joinGroup(uid: String, groupId: String) async throws {
         do {
-            var group = try await GroupService.fetchGroup(groupId: groupId)
+            let group = try await GroupService.fetchGroup(groupId: groupId)
             
             let isCurrentUserAMember = group.memberList?.contains { $0.id == uid } ?? true
             
@@ -62,7 +62,7 @@ class GroupService {
                 
                 // Add user to group's user member list
                 let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
-                try await groupMembersRef.document(uid).setData([:])
+                try await groupMembersRef.document(uid).setData(["permissions":"Member"])
                 
                 // Add group to user's groups list
                 let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
@@ -97,7 +97,7 @@ class GroupService {
                 .whereField("handle", isEqualTo: handle)
                 .getDocuments()
             
-            if let existingGroup = querySnapshot.documents.first(where: { $0.documentID != groupId }) {
+            if querySnapshot.documents.first(where: { $0.documentID != groupId }) != nil {
                 // A different group with the same handle exists
                 throw AppError.groupHandleAlreadyExists
             }
@@ -148,7 +148,8 @@ class GroupService {
         for doc in groupMembersSnapshot.documents {
             let uid = doc.documentID
             guard let userSnapshot = try? await FirestoreConstants.UserCollection.document(uid).getDocument() else { continue }
-            guard let user = try? userSnapshot.data(as: User.self) else { continue }
+            guard var user = try? userSnapshot.data(as: User.self) else { continue }
+            user.groupPermissions = doc.get("permissions") as? String
             users.append(user)
         }
         return users
