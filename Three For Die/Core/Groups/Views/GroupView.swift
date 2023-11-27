@@ -8,9 +8,15 @@
 import SwiftUI
 
 struct GroupView: View {
+    @EnvironmentObject var contentViewModel: ContentViewModel
     @Environment(\.presentationMode) var mode
     @Binding var group: Groups
     @State private var editingGroup: Bool = false
+    
+    private var isCurrentUserAdmin: Bool {
+        guard let currentUser = contentViewModel.currentUser else { return false }
+        return group.memberList?.contains(where: { $0.id == currentUser.id && $0.groupPermissions == "Admin" }) ?? false
+    }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -27,14 +33,16 @@ struct GroupView: View {
                 
                 Spacer()
                 
-                Button {
-                    editingGroup.toggle()
-                } label: {
-                    Text("Edit Group")
-                        .font(.subheadline).bold()
-                        .frame(width: 120, height: 32)
-                        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
-                        .foregroundColor(Color.theme.primaryText)
+                if (isCurrentUserAdmin) {
+                    Button {
+                        editingGroup.toggle()
+                    } label: {
+                        Text("Edit Group")
+                            .font(.subheadline).bold()
+                            .frame(width: 120, height: 32)
+                            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
+                            .foregroundColor(Color.theme.primaryText)
+                    }
                 }
             }
             
