@@ -9,6 +9,7 @@ import SwiftUI
 
 struct GroupSearchView: View {
     @StateObject var viewModel = GroupSearchViewModel()
+    @EnvironmentObject var groupsViewModel: GroupsViewModel
     
     var body: some View {
         VStack {
@@ -46,6 +47,15 @@ struct GroupSearchView: View {
                             
                             Spacer()
                             
+                            if !groupsViewModel.groups.contains(where: { $0.id == group.id }) {
+                                Button("Request to Join") {
+                                    
+                                }
+                                .padding()
+                                .foregroundColor(.white) // Text color
+                                .background(Color.blue) // System blue background
+                                .cornerRadius(10)
+                            }
                         }
                         
                         Divider()
