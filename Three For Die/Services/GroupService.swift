@@ -154,4 +154,20 @@ class GroupService {
         }
         return users
     }
+    
+    @MainActor
+    static func searchForGroups(beginningWith startString: String) async throws -> [Groups] {
+        let query = FirestoreConstants.GroupsCollection
+            .whereField("handle", isGreaterThanOrEqualTo: startString)
+            .whereField("handle", isLessThan: startString + "\u{f8ff}")
+            .limit(to: 100)
+        
+        let snapshot = try await query.getDocuments()
+        return mapGroups(fromSnapshot: snapshot)
+    }
+    
+    private static func mapGroups(fromSnapshot snapshot: QuerySnapshot) -> [Groups] {
+        return snapshot.documents
+            .compactMap({ try? $0.data(as: Groups.self) })
+    }
 }

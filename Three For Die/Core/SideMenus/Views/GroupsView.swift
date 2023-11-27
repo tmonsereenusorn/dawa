@@ -14,10 +14,22 @@ struct GroupsView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Groups")
-                .font(.title2).bold()
-                .padding(.leading)
-                .foregroundColor(Color.theme.primaryText)
+            HStack {
+                Text("Groups")
+                    .font(.title2).bold()
+                    .padding(.leading)
+                    .foregroundColor(Color.theme.primaryText)
+                
+                Spacer()
+                
+                NavigationLink {
+                    GroupSearchView()
+                } label: {
+                    Image(systemName: "plus")
+                        .foregroundColor(Color.theme.primaryText)
+                }
+            }
+            
             Divider()
             
             ScrollView {
