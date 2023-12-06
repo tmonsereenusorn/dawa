@@ -34,7 +34,7 @@ class GroupService {
             
             // Add user to group's user member list
             let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
-            try await groupMembersRef.document(uid).setData(["permissions":"Admin"])
+            try await groupMembersRef.document(uid).setData(["permissions":"Owner"])
             
             // Add group to user's groups list
             let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
@@ -164,6 +164,11 @@ class GroupService {
         
         let snapshot = try await query.getDocuments()
         return mapGroups(fromSnapshot: snapshot)
+    }
+    
+    @MainActor
+    static func changeGroupPermissions(groupId: String, forUserId uid: String, toPermission permission: String) async throws {
+        try await FirestoreConstants.GroupsCollection.document(groupId).collection("members").document(uid).setData(["permissions": permission], merge: true)
     }
     
     private static func mapGroups(fromSnapshot snapshot: QuerySnapshot) -> [Groups] {

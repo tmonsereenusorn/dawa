@@ -12,9 +12,15 @@ struct MemberListView: View {
     @Binding var group: Groups
     @Environment(\.presentationMode) var mode
     @State private var inviteMembers: Bool = false
+    @EnvironmentObject var contentViewModel: ContentViewModel
+    
+    private var isCurrentUserAdmin: Bool {
+        guard let currentUser = contentViewModel.currentUser else { return false }
+        return group.memberList?.contains(where: { $0.id == currentUser.id && ($0.groupPermissions == "Admin" || $0.groupPermissions == "Owner") }) ?? false
+    }
     
     var body: some View {
-        VStack(spacing: 10) {
+        VStack() {
             VStack(spacing: 0) {
                 HStack {
                     Button {
@@ -50,30 +56,74 @@ struct MemberListView: View {
                 .padding(.vertical, 10)
                 
                 Divider()
+                    .padding(0)
+                
             }
             
-            if let members = group.memberList {
-                ScrollView() {
-                    LazyVStack(spacing: 16) {
-                        ForEach(members) { member in
-                            NavigationLink {
-                                ProfileView(user: member)
+            if var members = group.memberList {
+                List() {
+                    ForEach(members) { member in
+                        Menu {
+                            Button {
+                                
                             } label: {
-                                HStack {
-                                    CircularProfileImageView(user: member, size: .medium)
-                                    Text(member.username)
-                                        .foregroundColor(Color.theme.primaryText)
-                                        .font(.system(size: 16))
-                                    Spacer()
-                                    Text(member.groupPermissions ?? "")
-                                        .foregroundColor(Color.theme.secondaryText)
-                                        .font(.system(size: 12))
+                                Text("View profile")
+                            }
+                            
+                            if isCurrentUserAdmin {
+                                Menu("Change permissions") {
+                                    if member.groupPermissions == "Admin" {
+                                        Button {
+                                            Task {
+                                                try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Member")
+                                            }
+                                            if let index = members.firstIndex(where: { $0.id == member.id }) {
+                                                members[index].groupPermissions = "Member"
+                                                self.group.memberList = members // Update the entire list
+                                            }
+                                        } label: {
+                                            Text("Member")
+                                        }
+                                    }
+                                    
+                                    if member.groupPermissions == "Member"{
+                                        Button {
+                                            Task {
+                                                try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Admin")
+                                            }
+                                            if let index = members.firstIndex(where: { $0.id == member.id }) {
+                                                members[index].groupPermissions = "Admin"
+                                                self.group.memberList = members // Update the entire list
+                                            }
+                                        } label: {
+                                            Text("Admin")
+                                        }
+                                    }
+                                }
+                                
+                                Button(role: .destructive) {
+                                    
+                                } label: {
+                                    Text("Remove member")
                                 }
                             }
+                        } label: {
+                            HStack {
+                                CircularProfileImageView(user: member, size: .small)
+                                Text(member.username)
+                                    .foregroundColor(Color.theme.primaryText)
+                                    .font(.system(size: 16))
+                                Spacer()
+                                Text(member.groupPermissions ?? "")
+                                    .foregroundColor(Color.theme.secondaryText)
+                                    .font(.system(size: 12))
+                            }
                         }
+                        .listRowInsets(EdgeInsets())
+                        .padding()
                     }
-                    .padding(.horizontal, 18)
                 }
+                .listStyle(PlainListStyle())
                 .refreshable {
                     Task {
                         try await viewModel.refreshGroup(groupId: group.id)
@@ -87,7 +137,6 @@ struct MemberListView: View {
             Spacer()
         }
         .navigationBarHidden(true)
-        .background(Color.theme.background)
     }
 }
 

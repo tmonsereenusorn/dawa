@@ -19,4 +19,6 @@ class MemberListViewModel: ObservableObject {
             print("DEBUG: Failed to fetch group with error \(error.localizedDescription)")
         }
     }
+    
+    
 }
