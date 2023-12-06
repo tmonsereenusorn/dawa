@@ -15,7 +15,7 @@ struct GroupView: View {
     
     private var isCurrentUserAdmin: Bool {
         guard let currentUser = contentViewModel.currentUser else { return false }
-        return group.memberList?.contains(where: { $0.id == currentUser.id && $0.groupPermissions == "Admin" }) ?? false
+        return group.memberList?.contains(where: { $0.id == currentUser.id && ($0.groupPermissions == "Admin" || $0.groupPermissions == "Owner") }) ?? false
     }
     
     var body: some View {

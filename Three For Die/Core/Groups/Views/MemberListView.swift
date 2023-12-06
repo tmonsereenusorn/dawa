@@ -64,8 +64,8 @@ struct MemberListView: View {
                 List() {
                     ForEach(members) { member in
                         Menu {
-                            Button {
-                                
+                            NavigationLink {
+                                ProfileView(user: member)
                             } label: {
                                 Text("View profile")
                             }
