@@ -10,6 +10,7 @@ import Foundation
 class GroupsViewModel: ObservableObject {
     @Published var groups = [Groups]()
     @Published var currSelectedGroup: Groups?
+    @Published var fetchedGroups = false
     
     init() {
         Task {
@@ -20,7 +21,9 @@ class GroupsViewModel: ObservableObject {
     
     @MainActor
     func fetchUserGroups() async {
+        fetchedGroups = false
         self.groups = await GroupService.fetchUserGroups()
+        fetchedGroups = true
     }
     
     @MainActor

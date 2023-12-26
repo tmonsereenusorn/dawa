@@ -10,6 +10,7 @@ import SwiftUI
 struct GroupInviteRowView: View {
     let groupInvite: GroupInvite
     @StateObject var viewModel = GroupInviteRowViewModel()
+    @EnvironmentObject var groupsViewModel: GroupsViewModel
     
     var body: some View {
         if let group = groupInvite.group {
@@ -23,7 +24,9 @@ struct GroupInviteRowView: View {
                 
                 Button("Confirm") {
                     Task {
+                        groupsViewModel.fetchedGroups = false
                         try await viewModel.acceptGroupInvitation(groupInvite: groupInvite)
+                        await groupsViewModel.fetchUserGroups()
                     }
                 }
                 .padding()

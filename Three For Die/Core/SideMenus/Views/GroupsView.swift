@@ -32,26 +32,37 @@ struct GroupsView: View {
             
             Divider()
             
-            ScrollView {
-                LazyVStack {
-                    ForEach(viewModel.groups.indices, id: \.self) { index in
-                        Button {
-                            let group = viewModel.groups[index]
-                            viewModel.currSelectedGroup = group
-                            Task {
-                                try await feedViewModel.fetchActivities(groupId: group.id)
+            if viewModel.fetchedGroups {
+                ScrollView {
+                    LazyVStack {
+                        ForEach(viewModel.groups.indices, id: \.self) { index in
+                            Button {
+                                let group = viewModel.groups[index]
+                                viewModel.currSelectedGroup = group
+                                Task {
+                                    try await feedViewModel.fetchActivities(groupId: group.id)
+                                }
+                            } label: {
+                                GroupRowView(group: $viewModel.groups[index])
                             }
-                        } label: {
-                            GroupRowView(group: $viewModel.groups[index])
                         }
                     }
                 }
-            }
-            .refreshable {
-                Task {
-                    await viewModel.fetchUserGroups()
+                .refreshable {
+                    Task {
+                        await viewModel.fetchUserGroups()
+                    }
                 }
+            } else {
+                VStack {
+                    Spacer()
+                    ProgressView("Fetching groups...")
+                        .frame(maxWidth: .infinity)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+            
             
             Spacer()
             
