@@ -20,9 +20,7 @@ class GroupsViewModel: ObservableObject {
     
     @MainActor
     func fetchUserGroups() async {
-        await GroupService.fetchUserGroups { groups in
-            self.groups = groups
-        }
+        self.groups = await GroupService.fetchUserGroups()
     }
     
     @MainActor

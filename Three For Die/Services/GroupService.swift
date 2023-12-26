@@ -76,18 +76,32 @@ class GroupService {
     }
     
     @MainActor
-    static func fetchUserGroups(completion: @escaping([Groups]) -> Void) async {
+    static func fetchUserGroups() async -> [Groups] {
         var groups: [Groups] = []
-        
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        guard let userGroupsSnapshot = try? await FirestoreConstants.UserCollection.document(uid).collection("user-groups").getDocuments() else { return }
-        for doc in userGroupsSnapshot.documents {
-            let groupId = doc.documentID
-            guard let group = try? await fetchGroup(groupId: groupId) else { continue }
-            groups.append(group)
+
+        guard let uid = Auth.auth().currentUser?.uid else { return groups }
+        guard let userGroupsSnapshot = try? await FirestoreConstants.UserCollection.document(uid).collection("user-groups").getDocuments() else { return groups }
+
+        // Create a task group to fetch group data in parallel
+        await withTaskGroup(of: Groups?.self) { group in
+            for doc in userGroupsSnapshot.documents {
+                let groupId = doc.documentID
+                group.addTask {
+                    // Try to fetch each group concurrently
+                    return try? await fetchGroup(groupId: groupId)
+                }
+            }
+
+            for await groupResult in group {
+                if let groupResult = groupResult {
+                    groups.append(groupResult)
+                }
+            }
         }
-        completion(groups)
+        
+        return groups
     }
+
     
     @MainActor
     static func editGroup(withGroupId groupId: String, name: String, handle: String, uiImage: UIImage?) async throws {
@@ -121,6 +135,7 @@ class GroupService {
         }
     }
     
+    @MainActor
     static func fetchGroup(groupId: String) async throws -> Groups {
         let snapshot = try await FirestoreConstants.GroupsCollection.document(groupId).getDocument()
         var group = try snapshot.data(as: Groups.self)
@@ -145,13 +160,26 @@ class GroupService {
         
         guard let groupMembersSnapshot = try? await FirestoreConstants.GroupsCollection.document(groupId).collection("members").getDocuments() else { return users }
         
-        for doc in groupMembersSnapshot.documents {
-            let uid = doc.documentID
-            guard let userSnapshot = try? await FirestoreConstants.UserCollection.document(uid).getDocument() else { continue }
-            guard var user = try? userSnapshot.data(as: User.self) else { continue }
-            user.groupPermissions = doc.get("permissions") as? String
-            users.append(user)
+        // Create a task group to fetch user data in parallel
+        await withTaskGroup(of: User?.self) { group in
+            for doc in groupMembersSnapshot.documents {
+                let uid = doc.documentID
+                group.addTask {
+                    guard let userSnapshot = try? await FirestoreConstants.UserCollection.document(uid).getDocument(),
+                          var user = try? userSnapshot.data(as: User.self) else { return nil }
+                    user.groupPermissions = doc.get("permissions") as? String
+                    return user
+                }
+            }
+
+            for await user in group {
+                if let user = user {
+                    users.append(user)
+                    print("Appended user")
+                }
+            }
         }
+        
         return users
     }
     
