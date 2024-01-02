@@ -13,10 +13,16 @@ struct MemberListView: View {
     @Environment(\.presentationMode) var mode
     @State private var inviteMembers: Bool = false
     @EnvironmentObject var contentViewModel: ContentViewModel
+    @State var members: [User]
     
     private var isCurrentUserAdmin: Bool {
         guard let currentUser = contentViewModel.currentUser else { return false }
         return group.memberList?.contains(where: { $0.id == currentUser.id && ($0.groupPermissions == "Admin" || $0.groupPermissions == "Owner") }) ?? false
+    }
+    
+    init(group: Binding<Groups>) {
+        self._group = group
+        self._members = State(initialValue: group.wrappedValue.memberList ?? [])
     }
     
     var body: some View {
@@ -60,79 +66,90 @@ struct MemberListView: View {
                 
             }
             
-            if var members = group.memberList {
-                List() {
-                    ForEach(members) { member in
-                        Menu {
-                            NavigationLink {
-                                ProfileView(user: member)
-                            } label: {
-                                Text("View profile")
-                            }
-                            
-                            if isCurrentUserAdmin {
-                                Menu("Change permissions") {
-                                    if member.groupPermissions == "Admin" {
-                                        Button {
-                                            Task {
-                                                try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Member")
+            List() {
+                ForEach(members, id: \.id) { member in
+                    Menu {
+                        NavigationLink {
+                            ProfileView(user: member)
+                        } label: {
+                            Text("View profile")
+                        }
+                        
+                        if isCurrentUserAdmin {
+                            Menu("Change permissions") {
+                                if member.groupPermissions == "Admin" {
+                                    Button {
+                                        Task {
+                                            try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Member")
+                                            try await viewModel.refreshGroup(groupId: group.id)
+                                            if let newGroup = viewModel.group {
+                                                self.group = newGroup
+                                                self.members = newGroup.memberList ?? []
                                             }
-                                            if let index = members.firstIndex(where: { $0.id == member.id }) {
-                                                members[index].groupPermissions = "Member"
-                                                self.group.memberList = members // Update the entire list
-                                            }
-                                        } label: {
-                                            Text("Member")
                                         }
-                                    }
-                                    
-                                    if member.groupPermissions == "Member"{
-                                        Button {
-                                            Task {
-                                                try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Admin")
-                                            }
-                                            if let index = members.firstIndex(where: { $0.id == member.id }) {
-                                                members[index].groupPermissions = "Admin"
-                                                self.group.memberList = members // Update the entire list
-                                            }
-                                        } label: {
-                                            Text("Admin")
-                                        }
+                                    } label: {
+                                        Text("Member")
                                     }
                                 }
                                 
+                                if member.groupPermissions == "Member"{
+                                    Button {
+                                        Task {
+                                            try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Admin")
+                                            try await viewModel.refreshGroup(groupId: group.id)
+                                            if let newGroup = viewModel.group {
+                                                self.group = newGroup
+                                                self.members = newGroup.memberList ?? []
+                                            }
+                                        }
+                                    } label: {
+                                        Text("Admin")
+                                    }
+                                }
+                            }
+                            
+                            if member.groupPermissions != "Owner" {
                                 Button(role: .destructive) {
-                                    
+                                    Task {
+                                        try await GroupService.leaveGroup(uid: member.id, groupId: group.id)
+                                        try await viewModel.refreshGroup(groupId: group.id)
+                                        if let newGroup = viewModel.group {
+                                            self.group = newGroup
+                                            self.members = newGroup.memberList ?? []
+                                        }
+                                    }
                                 } label: {
                                     Text("Remove member")
                                 }
                             }
-                        } label: {
-                            HStack {
-                                CircularProfileImageView(user: member, size: .small)
-                                Text(member.username)
-                                    .foregroundColor(Color.theme.primaryText)
-                                    .font(.system(size: 16))
-                                Spacer()
-                                Text(member.groupPermissions ?? "")
-                                    .foregroundColor(Color.theme.secondaryText)
-                                    .font(.system(size: 12))
-                            }
                         }
-                        .listRowInsets(EdgeInsets())
-                        .padding()
+                    } label: {
+                        HStack {
+                            CircularProfileImageView(user: member, size: .small)
+                            Text(member.username)
+                                .foregroundColor(Color.theme.primaryText)
+                                .font(.system(size: 16))
+                            Spacer()
+                            Text(member.groupPermissions ?? "")
+                                .foregroundColor(Color.theme.secondaryText)
+                                .font(.system(size: 12))
+                        }
                     }
+                    .listRowInsets(EdgeInsets())
+                    .padding()
                 }
-                .listStyle(PlainListStyle())
-                .refreshable {
-                    Task {
-                        try await viewModel.refreshGroup(groupId: group.id)
-                        if let newGroup = viewModel.group {
-                            self.group = newGroup
-                        }
+            }
+            .listStyle(PlainListStyle())
+            .refreshable {
+                Task {
+                    try await viewModel.refreshGroup(groupId: group.id)
+                    if let newGroup = viewModel.group {
+                        self.group = newGroup
                     }
                 }
             }
+            
+            
             
             Spacer()
         }

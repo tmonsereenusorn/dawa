@@ -97,8 +97,7 @@ class ActivityService {
             guard uid != activity.userId else { return } // Host of activity is already in activity
             
             // Update activity by incrementing numCurrent
-            activity.numCurrent += 1
-            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": activity.numCurrent])
+            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": FieldValue.increment(Int64(1))])
             
             // Update user's activities subcollection by adding activity ID to it
             let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
@@ -134,7 +133,7 @@ class ActivityService {
             let activityId = activity.id
             
             // Update activity by decrementing numCurrent
-            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": activity.numCurrent - 1])
+            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": FieldValue.increment(Int64(-1))])
             
             // Update user's activities subcollection by removing activity ID from it
             let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")

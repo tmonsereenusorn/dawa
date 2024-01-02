@@ -14,7 +14,7 @@ class MemberListViewModel: ObservableObject {
     func refreshGroup(groupId: String) async throws {
         do {
             let newGroup = try await GroupService.fetchGroup(groupId: groupId)
-            group = newGroup
+            self.group = newGroup
         } catch {
             print("DEBUG: Failed to fetch group with error \(error.localizedDescription)")
         }

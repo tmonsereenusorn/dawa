@@ -58,8 +58,6 @@ class GroupService {
             let isCurrentUserAMember = group.memberList?.contains { $0.id == uid } ?? true
             
             if !isCurrentUserAMember {
-                try await FirestoreConstants.GroupsCollection.document(groupId).updateData(["numMembers": FieldValue.increment(Int64(1))])
-                
                 // Add user to group's user member list
                 let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
                 try await groupMembersRef.document(uid).setData(["permissions":"Member"])
@@ -67,11 +65,42 @@ class GroupService {
                 // Add group to user's groups list
                 let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
                 try await groupsRef.document(groupId).setData([:])
+                
+                try await FirestoreConstants.GroupsCollection.document(groupId).updateData(["numMembers": FieldValue.increment(Int64(1))])
             } else {
                 print("User is already a member")
             }
         } catch {
             print("DEBUG: Failed to join group with error \(error.localizedDescription)")
+        }
+    }
+    
+    @MainActor
+    static func leaveGroup(uid: String, groupId: String) async throws -> Bool {
+        do {
+            let group = try await GroupService.fetchGroup(groupId: groupId)
+            
+            let isCurrentUserAMember = group.memberList?.contains { $0.id == uid } ?? false
+            
+            if isCurrentUserAMember {
+                // Delete user from group's user member list
+                let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
+                try await groupMembersRef.document(uid).delete()
+                
+                // Delete group to user's groups list
+                let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
+                try await groupsRef.document(groupId).delete()
+                
+                try await FirestoreConstants.GroupsCollection.document(groupId).updateData(["numMembers": FieldValue.increment(Int64(-1))])
+                
+                return true
+            } else {
+                print("User is not a member")
+                return false
+            }
+        } catch {
+            print("DEBUG: Failed to leave group with error \(error.localizedDescription)")
+            return false
         }
     }
     
@@ -196,7 +225,11 @@ class GroupService {
     
     @MainActor
     static func changeGroupPermissions(groupId: String, forUserId uid: String, toPermission permission: String) async throws {
-        try await FirestoreConstants.GroupsCollection.document(groupId).collection("members").document(uid).setData(["permissions": permission], merge: true)
+        do {
+            try await FirestoreConstants.GroupsCollection.document(groupId).collection("members").document(uid).setData(["permissions": permission], merge: true)
+        } catch {
+            print("DEBUG: Failed to change permissions for user ID: \(uid) in group ID: \(groupId)")
+        }
     }
     
     private static func mapGroups(fromSnapshot snapshot: QuerySnapshot) -> [Groups] {

@@ -45,15 +45,5 @@ class FeedViewModel: ObservableObject {
             activity.didJoin = await ActivityService.checkIfUserJoinedActivity(activityId: activityId)
             self.activities.append(activity)
         }
-//        self.activities = try await ActivityService.fetchActivities(groupId: groupId)
-//
-//        for i in 0 ..< activities.count {
-//            let uid = activities[i].userId
-//            let activityId = activities[i].id
-//            if let user = try? await UserService.fetchUser(uid: uid) {
-//                self.activities[i].user = user
-//            }
-//            self.activities[i].didJoin = await ActivityService.checkIfUserJoinedActivity(activityId: activityId)
-//        }
     }
 }

@@ -9,7 +9,13 @@ import SwiftUI
 
 struct GroupRowView: View {
     @EnvironmentObject var groupsViewModel: GroupsViewModel
+    @EnvironmentObject var contentViewModel: ContentViewModel
     @Binding var group: Groups
+    
+    private var isCurrentUserOwner: Bool {
+        guard let currentUser = contentViewModel.currentUser else { return false }
+        return group.memberList?.contains(where: { $0.id == currentUser.id && ($0.groupPermissions == "Owner") }) ?? false
+    }
     
     var body: some View {
         HStack {
@@ -19,10 +25,28 @@ struct GroupRowView: View {
                 
             Spacer()
             
-            NavigationLink {
-                GroupView(group: $group)
+            Menu {
+                NavigationLink {
+                    GroupView(group: $group)
+                } label: {
+                    Text("View Group")
+                }
+                
+                if isCurrentUserOwner {
+                    Button(role: .destructive) {
+                        
+                    } label: {
+                        Text("Delete group")
+                    }
+                } else {
+                    Button(role: .destructive) {
+                        
+                    } label: {
+                        Text("Leave group")
+                    }
+                }
             } label: {
-                Image(systemName: "chevron.right")
+                Image(systemName: "ellipsis")
             }
             
         }
