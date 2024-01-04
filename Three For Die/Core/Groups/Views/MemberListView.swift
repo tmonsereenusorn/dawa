@@ -13,16 +13,11 @@ struct MemberListView: View {
     @Environment(\.presentationMode) var mode
     @State private var inviteMembers: Bool = false
     @EnvironmentObject var contentViewModel: ContentViewModel
-    @State var members: [User]
+    @EnvironmentObject var groupsViewModel: GroupsViewModel
     
     private var isCurrentUserAdmin: Bool {
         guard let currentUser = contentViewModel.currentUser else { return false }
         return group.memberList?.contains(where: { $0.id == currentUser.id && ($0.groupPermissions == "Admin" || $0.groupPermissions == "Owner") }) ?? false
-    }
-    
-    init(group: Binding<Groups>) {
-        self._group = group
-        self._members = State(initialValue: group.wrappedValue.memberList ?? [])
     }
     
     var body: some View {
@@ -67,7 +62,7 @@ struct MemberListView: View {
             }
             
             List() {
-                ForEach(members, id: \.id) { member in
+                ForEach(group.memberList ?? [], id: \.id) { member in
                     Menu {
                         NavigationLink {
                             ProfileView(user: member)
@@ -80,11 +75,14 @@ struct MemberListView: View {
                                 if member.groupPermissions == "Admin" {
                                     Button {
                                         Task {
-                                            try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Member")
-                                            try await viewModel.refreshGroup(groupId: group.id)
-                                            if let newGroup = viewModel.group {
-                                                self.group = newGroup
-                                                self.members = newGroup.memberList ?? []
+                                            if try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Member") {
+                                                try await viewModel.refreshGroup(groupId: group.id)
+                                                if let newGroup = viewModel.group {
+                                                    if let index = groupsViewModel.groups.firstIndex(where: { $0.id == group.id }) {
+                                                        groupsViewModel.groups[index] = newGroup
+                                                    }
+                                                    self.group = newGroup
+                                                }
                                             }
                                         }
                                     } label: {
@@ -95,11 +93,14 @@ struct MemberListView: View {
                                 if member.groupPermissions == "Member"{
                                     Button {
                                         Task {
-                                            try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Admin")
-                                            try await viewModel.refreshGroup(groupId: group.id)
-                                            if let newGroup = viewModel.group {
-                                                self.group = newGroup
-                                                self.members = newGroup.memberList ?? []
+                                            if try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Admin") {
+                                                try await viewModel.refreshGroup(groupId: group.id)
+                                                if let newGroup = viewModel.group {
+                                                    if let index = groupsViewModel.groups.firstIndex(where: { $0.id == group.id }) {
+                                                        groupsViewModel.groups[index] = newGroup
+                                                    }
+                                                    self.group = newGroup
+                                                }
                                             }
                                         }
                                     } label: {
@@ -111,11 +112,14 @@ struct MemberListView: View {
                             if member.groupPermissions != "Owner" {
                                 Button(role: .destructive) {
                                     Task {
-                                        try await GroupService.leaveGroup(uid: member.id, groupId: group.id)
-                                        try await viewModel.refreshGroup(groupId: group.id)
-                                        if let newGroup = viewModel.group {
-                                            self.group = newGroup
-                                            self.members = newGroup.memberList ?? []
+                                        if try await GroupService.leaveGroup(uid: member.id, groupId: group.id) {
+                                            try await viewModel.refreshGroup(groupId: group.id)
+                                            if let newGroup = viewModel.group {
+                                                if let index = groupsViewModel.groups.firstIndex(where: { $0.id == group.id }) {
+                                                    groupsViewModel.groups[index] = newGroup
+                                                }
+                                                self.group = newGroup
+                                            }
                                         }
                                     }
                                 } label: {

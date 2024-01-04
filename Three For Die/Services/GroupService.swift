@@ -204,7 +204,6 @@ class GroupService {
             for await user in group {
                 if let user = user {
                     users.append(user)
-                    print("Appended user")
                 }
             }
         }
@@ -224,11 +223,13 @@ class GroupService {
     }
     
     @MainActor
-    static func changeGroupPermissions(groupId: String, forUserId uid: String, toPermission permission: String) async throws {
+    static func changeGroupPermissions(groupId: String, forUserId uid: String, toPermission permission: String) async throws -> Bool {
         do {
             try await FirestoreConstants.GroupsCollection.document(groupId).collection("members").document(uid).setData(["permissions": permission], merge: true)
+            return true
         } catch {
             print("DEBUG: Failed to change permissions for user ID: \(uid) in group ID: \(groupId)")
+            return false
         }
     }
     

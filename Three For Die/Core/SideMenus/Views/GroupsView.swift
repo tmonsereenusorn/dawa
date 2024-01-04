@@ -43,7 +43,7 @@ struct GroupsView: View {
                                     try await feedViewModel.fetchActivities(groupId: group.id)
                                 }
                             } label: {
-                                GroupRowView(group: $viewModel.groups[index])
+                                GroupRowView(group: viewModel.groups[index])
                             }
                         }
                     }

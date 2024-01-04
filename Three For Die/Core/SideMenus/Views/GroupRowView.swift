@@ -10,7 +10,11 @@ import SwiftUI
 struct GroupRowView: View {
     @EnvironmentObject var groupsViewModel: GroupsViewModel
     @EnvironmentObject var contentViewModel: ContentViewModel
-    @Binding var group: Groups
+    @State var group: Groups
+    
+    init(group: Groups) {
+        self._group = State(initialValue: group)
+    }
     
     private var isCurrentUserOwner: Bool {
         guard let currentUser = contentViewModel.currentUser else { return false }
