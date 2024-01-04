@@ -50,6 +50,23 @@ class GroupService {
         }
     }
     
+    static func deleteGroup(groupId: String) async throws -> Bool {
+        do {
+            let group = try await GroupService.fetchGroup(groupId: groupId)
+            
+            for member in group.memberList! {
+                let memberGroupsRef = FirestoreConstants.UserCollection.document(member.id).collection("user-groups")
+                try await memberGroupsRef.document(groupId).delete()
+            }
+            
+            try await FirestoreConstants.GroupsCollection.document(groupId).delete()
+            return true
+        } catch {
+            print("DEBUG: Failed to delete group with error \(error.localizedDescription)")
+            return false
+        }
+    }
+    
     @MainActor
     static func joinGroup(uid: String, groupId: String) async throws {
         do {

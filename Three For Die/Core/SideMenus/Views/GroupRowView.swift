@@ -10,6 +10,7 @@ import SwiftUI
 struct GroupRowView: View {
     @EnvironmentObject var groupsViewModel: GroupsViewModel
     @EnvironmentObject var contentViewModel: ContentViewModel
+    @StateObject var viewModel = GroupRowViewModel()
     @State var group: Groups
     
     init(group: Groups) {
@@ -38,13 +39,21 @@ struct GroupRowView: View {
                 
                 if isCurrentUserOwner {
                     Button(role: .destructive) {
-                        
+                        Task {
+                            if try await GroupService.deleteGroup(groupId: group.id) {
+                                await groupsViewModel.fetchUserGroups()
+                            }
+                        }
                     } label: {
                         Text("Delete group")
                     }
                 } else {
                     Button(role: .destructive) {
-                        
+                        Task {
+                            if try await viewModel.leaveGroup(groupId: group.id) {
+                                await groupsViewModel.fetchUserGroups()
+                            }
+                        }
                     } label: {
                         Text("Leave group")
                     }
