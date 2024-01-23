@@ -22,7 +22,8 @@ class GroupInviteRowViewModel: ObservableObject {
     
     func deleteGroupInvitation(groupInvite: GroupInvite) async throws {
         do {
-            try await InviteService.deleteGroupInvitation(groupInviteId: groupInvite.id)
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            try await InviteService.deleteGroupInvitation(uid: uid, groupInviteId: groupInvite.id, groupId: groupInvite.forGroupId)
         } catch {
             print("DEBUG: Error deleting group invitation")
         }

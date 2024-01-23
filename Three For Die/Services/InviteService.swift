@@ -60,6 +60,8 @@ class InviteService {
                 return
             }
             
+            let newInviteId = FirestoreConstants.UserCollection.document().documentID
+            
             let invite = GroupInvite(fromUserId: fromUid,
                                      toUserId: toUid,
                                      forGroupId: forGroupId,
@@ -70,16 +72,18 @@ class InviteService {
             
             let encodedInvite = try Firestore.Encoder().encode(invite)
             
-            try await FirestoreConstants.UserCollection.document(toUid).collection("group-invites").addDocument(data: encodedInvite)
+            try await FirestoreConstants.UserCollection.document(toUid).collection("group-invites").document(newInviteId).setData(encodedInvite)
+            
+            try await FirestoreConstants.GroupsCollection.document(forGroupId).collection("outgoing-invites").document(newInviteId).setData(encodedInvite)
         } catch {
             print("DEBUG: Failed to send group invite to user id: \(toUid) with error \(error.localizedDescription)")
         }
     }
     
-    static func deleteGroupInvitation(groupInviteId: String) async throws {
+    static func deleteGroupInvitation(uid: String, groupInviteId: String, groupId: String) async throws {
         do {
-            guard let uid = Auth.auth().currentUser?.uid else { return }
             try await FirestoreConstants.UserCollection.document(uid).collection("group-invites").document(groupInviteId).delete()
+            try await FirestoreConstants.GroupsCollection.document(groupId).collection("outgoing-invites").document(groupInviteId).delete()
         } catch {
             print("DEBUG: Error deleting group invitation")
         }

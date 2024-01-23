@@ -55,8 +55,13 @@ class GroupService {
             let group = try await GroupService.fetchGroup(groupId: groupId)
             
             for member in group.memberList! {
-                let memberGroupsRef = FirestoreConstants.UserCollection.document(member.id).collection("user-groups")
-                try await memberGroupsRef.document(groupId).delete()
+                try await leaveGroup(uid: member.id, groupId: groupId)
+            }
+            
+            let outgoingInvites = try await GroupService.fetchOutgoingInvites(groupId: groupId)
+            
+            for outgoingInvite in outgoingInvites {
+                try await InviteService.deleteGroupInvitation(uid: outgoingInvite.toUserId, groupInviteId: outgoingInvite.id, groupId: groupId)
             }
             
             try await FirestoreConstants.GroupsCollection.document(groupId).delete()
@@ -104,7 +109,7 @@ class GroupService {
                 let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
                 try await groupMembersRef.document(uid).delete()
                 
-                // Delete group to user's groups list
+                // Delete group from user's groups list
                 let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
                 try await groupsRef.document(groupId).delete()
                 
@@ -198,6 +203,11 @@ class GroupService {
             }
             completion(group)
         }
+    }
+    
+    static func fetchOutgoingInvites(groupId: String) async throws -> [GroupInvite] {
+        let snapshot = try await FirestoreConstants.GroupsCollection.document(groupId).collection("outgoing-invites").getDocuments()
+        return snapshot.documents.compactMap({ try? $0.data(as: GroupInvite.self)})
     }
     
     @MainActor
