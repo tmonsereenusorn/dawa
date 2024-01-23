@@ -193,7 +193,7 @@ class GroupService {
     static func fetchGroup(withGroupId groupId: String, completion: @escaping(Groups) -> Void) {
         FirestoreConstants.GroupsCollection.document(groupId).getDocument() { snapshot, _ in
             guard let group = try? snapshot?.data(as: Groups.self) else {
-                print("DEBUG: Failed to map group")
+                print("DEBUG: Failed to map group with id: \(groupId)")
                 return
             }
             completion(group)
@@ -237,6 +237,22 @@ class GroupService {
         
         let snapshot = try await query.getDocuments()
         return mapGroups(fromSnapshot: snapshot)
+    }
+    
+    static func requestToJoinGroup(groupId: String) async throws {
+        do {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            
+            let request = MemberRequest(fromUserId: uid, 
+                                        toGroupId: groupId,
+                                        timestamp: Timestamp())
+            
+            let encodedRequest = try Firestore.Encoder().encode(request)
+            
+            try await FirestoreConstants.GroupsCollection.document(groupId).collection("member-requests").addDocument(data: encodedRequest)
+        } catch {
+            print("DEBUG: Failed to send request to join group")
+        }
     }
     
     @MainActor

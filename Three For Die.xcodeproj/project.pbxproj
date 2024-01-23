@@ -110,6 +110,7 @@
 		85C09D7B2A8657D800D51576 /* InboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C09D7A2A8657D800D51576 /* InboxView.swift */; };
 		85C09D7D2A86589C00D51576 /* InboxRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C09D7C2A86589C00D51576 /* InboxRowView.swift */; };
 		85C09D7F2A865EC800D51576 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C09D7E2A865EC800D51576 /* ChatView.swift */; };
+		85C159B72B5F280800B422E8 /* MemberRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C159B62B5F280800B422E8 /* MemberRequest.swift */; };
 		85C854CE2A4167B00057F55F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 85C854CD2A4167B00057F55F /* GoogleService-Info.plist */; };
 		85C854D12A418EBF0057F55F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D02A418EBF0057F55F /* ContentView.swift */; };
 		85C854D42A418F290057F55F /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D32A418F290057F55F /* SignUpView.swift */; };
@@ -206,6 +207,7 @@
 		85C09D7A2A8657D800D51576 /* InboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxView.swift; sourceTree = "<group>"; };
 		85C09D7C2A86589C00D51576 /* InboxRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxRowView.swift; sourceTree = "<group>"; };
 		85C09D7E2A865EC800D51576 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		85C159B62B5F280800B422E8 /* MemberRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRequest.swift; sourceTree = "<group>"; };
 		85C854CD2A4167B00057F55F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		85C854D02A418EBF0057F55F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		85C854D32A418F290057F55F /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -347,6 +349,7 @@
 				85B241BE2A87BCA1001EAA59 /* Message.swift */,
 				8501F2472A8AC689000CC58B /* UserActivity.swift */,
 				85465CA02AFB49FB0052568C /* GroupInvite.swift */,
+				85C159B62B5F280800B422E8 /* MemberRequest.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -797,6 +800,7 @@
 				850B074F2B06DA5C00A4FAF5 /* GroupInvitesViewModel.swift in Sources */,
 				85B2B2392A81240C00986708 /* CircularProfileImageView.swift in Sources */,
 				85301E562AE496CA004052C2 /* EditGroupViewModel.swift in Sources */,
+				85C159B72B5F280800B422E8 /* MemberRequest.swift in Sources */,
 				85B3F7F62A5DFD7D004734E8 /* AddActivityViewModel.swift in Sources */,
 				850B07532B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift in Sources */,
 				85B3CA622A839D1100690ED9 /* ActivityViewModel.swift in Sources */,

@@ -50,11 +50,23 @@ class InviteService {
         do {
             guard let fromUid = Auth.auth().currentUser?.uid else { return }
             
+            let recipientInvitesSnapshot = try await FirestoreConstants.UserCollection.document(toUid).collection("group-invites").getDocuments()
+            
+            let recipientInvites = recipientInvitesSnapshot.documents.compactMap({ try? $0.data(as: GroupInvite.self)})
+            print(recipientInvites)
+            
+            if recipientInvites.contains(where: { $0.forGroupId == forGroupId }) {
+                print("returning")
+                return
+            }
+            
             let invite = GroupInvite(fromUserId: fromUid,
                                      toUserId: toUid,
                                      forGroupId: forGroupId,
                                      status: "Pending",
                                      timestamp: Timestamp())
+            
+            
             
             let encodedInvite = try Firestore.Encoder().encode(invite)
             
