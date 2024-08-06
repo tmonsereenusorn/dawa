@@ -29,6 +29,9 @@
 		850B07512B06EF2700A4FAF5 /* GroupInviteRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07502B06EF2700A4FAF5 /* GroupInviteRowView.swift */; };
 		850B07532B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07522B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift */; };
 		850B07552B0B176700A4FAF5 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07542B0B176700A4FAF5 /* AppError.swift */; };
+		8521E61C2C62849C008D449E /* TextFieldModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8521E61B2C62849C008D449E /* TextFieldModifier.swift */; };
+		8521E61E2C628546008D449E /* ButtonModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8521E61D2C628546008D449E /* ButtonModifier.swift */; };
+		8521E6202C62A37F008D449E /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 8521E61F2C62A37F008D449E /* .gitignore */; };
 		85301E542AE495D0004052C2 /* EditGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85301E532AE495D0004052C2 /* EditGroupView.swift */; };
 		85301E562AE496CA004052C2 /* EditGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85301E552AE496CA004052C2 /* EditGroupViewModel.swift */; };
 		85307F952AF0675700987A3C /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85307F942AF0675700987A3C /* MemberListView.swift */; };
@@ -160,6 +163,9 @@
 		850B07502B06EF2700A4FAF5 /* GroupInviteRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInviteRowView.swift; sourceTree = "<group>"; };
 		850B07522B06FB4300A4FAF5 /* GroupInviteRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInviteRowViewModel.swift; sourceTree = "<group>"; };
 		850B07542B0B176700A4FAF5 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
+		8521E61B2C62849C008D449E /* TextFieldModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldModifier.swift; sourceTree = "<group>"; };
+		8521E61D2C628546008D449E /* ButtonModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonModifier.swift; sourceTree = "<group>"; };
+		8521E61F2C62A37F008D449E /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		85301E532AE495D0004052C2 /* EditGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupView.swift; sourceTree = "<group>"; };
 		85301E552AE496CA004052C2 /* EditGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupViewModel.swift; sourceTree = "<group>"; };
 		85307F942AF0675700987A3C /* MemberListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListView.swift; sourceTree = "<group>"; };
@@ -280,6 +286,7 @@
 		3892408E29A187260005AA3D = {
 			isa = PBXGroup;
 			children = (
+				8521E61F2C62A37F008D449E /* .gitignore */,
 				3892409929A187260005AA3D /* Three For Die */,
 				3892409829A187260005AA3D /* Products */,
 			);
@@ -374,6 +381,8 @@
 			children = (
 				8501F2452A8AA3FB000CC58B /* Constants.swift */,
 				856FE1582A9D126C00E9224B /* PhotosPickerHelper.swift */,
+				8521E61B2C62849C008D449E /* TextFieldModifier.swift */,
+				8521E61D2C628546008D449E /* ButtonModifier.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -764,6 +773,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8521E6202C62A37F008D449E /* .gitignore in Resources */,
 				389240A329A187260005AA3D /* Preview Assets.xcassets in Resources */,
 				3892409F29A187260005AA3D /* Assets.xcassets in Resources */,
 				85C854CE2A4167B00057F55F /* GoogleService-Info.plist in Resources */,
@@ -783,6 +793,7 @@
 				389240C029A1B7F40005AA3D /* AddActivityView.swift in Sources */,
 				85D9BAF02A3AC1AD00E11652 /* Colors.swift in Sources */,
 				8554ADD82A7F9D8F007E47B0 /* FormInputView.swift in Sources */,
+				8521E61C2C62849C008D449E /* TextFieldModifier.swift in Sources */,
 				85E1CB302A87E786004AB405 /* ChatViewModel.swift in Sources */,
 				85D9BAEC2A3AC0A800E11652 /* FeedView.swift in Sources */,
 				85B3CCA82A826E680082B561 /* AuthError.swift in Sources */,
@@ -847,6 +858,7 @@
 				85C8BDD22A7254230059932C /* CreateGroupViewModel.swift in Sources */,
 				85C854D12A418EBF0057F55F /* ContentView.swift in Sources */,
 				85B3CA5E2A8393D100690ED9 /* ActivityView.swift in Sources */,
+				8521E61E2C628546008D449E /* ButtonModifier.swift in Sources */,
 				856758002AE0A2390006F843 /* GroupView.swift in Sources */,
 				85C8BDD02A7251730059932C /* Groups.swift in Sources */,
 				85B3CCAD2A8273160082B561 /* VerifyEmailViewModel.swift in Sources */,

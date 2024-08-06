@@ -14,24 +14,34 @@ struct LoginView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                // Logo (Placeholder title for now)
-                Text("3 For Die")
-                    .font(.largeTitle)
+                Spacer()
+                
+                Image("dawa_login_logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 150, height: 150)
+                    .padding()
                 
                 // Form fields
-                VStack(spacing: 24) {
-                    InputView(text: $viewModel.email,
-                              title: "Email Address",
-                              placeholder: "name@example.com")
-                    .autocapitalization(.none)
+                VStack {
+                    TextField("Enter your email", text: $viewModel.email)
+                        .autocapitalization(.none)
+                        .modifier(TextFieldModifier())
                     
-                    InputView(text: $viewModel.password,
-                              title: "Password",
-                              placeholder: "Enter your password",
-                              isSecureField: true)
+                    SecureField("Enter your password", text: $viewModel.password)
+                        .modifier(TextFieldModifier())
+                    
+                    Button {
+                        print("Show forgot password")
+                    } label: {
+                        Text("Forgot Password?")
+                            .font(.footnote)
+                            .fontWeight(.semibold)
+                            .padding(.top)
+                            .padding(.trailing, 28)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                .padding(.horizontal)
-                .padding(.top, 12)
                 
                 // Login button
                 Button {
@@ -39,21 +49,15 @@ struct LoginView: View {
                         Task { try await viewModel.login() }
                     }
                 } label: {
-                    HStack {
-                        Text("SIGN IN")
-                            .fontWeight(.semibold)
-                        Image(systemName: "arrow.right")
-                    }
-                    .foregroundColor(.white)
-                    .frame(width: UIScreen.main.bounds.width - 32, height: 48)
+                    Text("Login")
+                        .modifier(ButtonModifier())
                 }
-                .background(Color(.systemBlue))
                 .disabled(!viewModel.formIsValid)
                 .opacity(viewModel.formIsValid ? 1.0 : 0.5)
-                .cornerRadius(10)
-                .padding(.top, 24)
                 
                 Spacer()
+                
+                Divider()
                 
                 // Sign Up Button
                 NavigationLink {
@@ -62,13 +66,17 @@ struct LoginView: View {
                 } label: {
                     HStack(spacing: 3) {
                         Text("Don't have an account?")
+                            .foregroundColor(Color.theme.secondaryText)
+                        
                         Text("Sign Up")
-                            .fontWeight(.bold)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color.theme.primaryText)
                     }
-                    .font(.system(size: 14))
-                    .foregroundColor(.blue)
+                    .font(.footnote)
                 }
+                .padding(.vertical, 16)
             }
+            .background(Color.theme.background)
         }
         
     }
