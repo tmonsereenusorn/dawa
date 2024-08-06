@@ -36,11 +36,11 @@ class AuthService {
     }
     
     @MainActor
-    func createUser(withEmail email: String, password: String, fullname: String, username: String) async throws {
+    func createUser(withEmail email: String, password: String, username: String) async throws {
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             self.userSession = result.user
-            try await uploadUserData(email: email, fullname: fullname, username: username, id: result.user.uid)
+            try await uploadUserData(email: email, username: username, id: result.user.uid)
             try await loadUserData()
         } catch {
             print("DEBUG: Failed to login with error \(error.localizedDescription)")
@@ -96,9 +96,8 @@ class AuthService {
     // Private functions
     
     @MainActor
-    private func uploadUserData(email: String, fullname: String, username: String, id: String) async throws {
-        let user = User(fullname: fullname,
-                        email: email,
+    private func uploadUserData(email: String, username: String, id: String) async throws {
+        let user = User(email: email,
                         username: username,
                         bio: "",
                         profileImageUrl: nil)

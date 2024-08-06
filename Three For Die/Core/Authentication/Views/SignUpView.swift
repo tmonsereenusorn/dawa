@@ -17,38 +17,31 @@ struct SignUpView: View {
     
     var body: some View {
         VStack {
-            // Logo (Placeholder title for now)
-            Text("3 For Die")
-                .font(.largeTitle)
+            Spacer()
+            
+            Image("dawa_login_logo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 150, height: 150)
+                .padding()
             
             // Form fields
-            VStack(spacing: 24) {
-                InputView(text: $viewModel.email,
-                          title: "Email Address",
-                          placeholder: "name@example.com")
-                .autocapitalization(.none)
+            VStack {
+                TextField("Enter your email address", text: $viewModel.email)
+                    .autocapitalization(.none)
+                    .modifier(TextFieldModifier())
                 
-                InputView(text: $viewModel.username,
-                          title: "Username",
-                          placeholder: "Enter your username")
-                .autocapitalization(.none)
+                TextField("Choose a username", text: $viewModel.username)
+                    .autocapitalization(.none)
+                    .modifier(TextFieldModifier())
                 
-                InputView(text: $viewModel.fullname,
-                          title: "Full Name",
-                          placeholder: "Enter your name")
+                SecureField("Create a password", text: $viewModel.password)
+                    .modifier(TextFieldModifier())
                 
-                InputView(text: $viewModel.password,
-                          title: "Password",
-                          placeholder: "Enter your password",
-                          isSecureField: true)
-                
-                InputView(text: $viewModel.confirmPassword,
-                          title: "Confirm Password",
-                          placeholder: "Confirm your password",
-                          isSecureField: true)
+                SecureField("Confirm your password", text: $viewModel.confirmPassword)
+                    .modifier(TextFieldModifier())
             }
-            .padding(.horizontal)
-            .padding(.top, 12)
+            .padding(.bottom, 10)
             
             // Sign Up button
             Button {
@@ -56,34 +49,30 @@ struct SignUpView: View {
                     Task { try await viewModel.createUser() }
                 }
             } label: {
-                HStack {
-                    Text("SIGN UP")
-                        .fontWeight(.semibold)
-                    Image(systemName: "arrow.right")
-                }
-                .foregroundColor(.white)
-                .frame(width: UIScreen.main.bounds.width - 32, height: 48)
+                Text("Sign Up")
+                    .modifier(ButtonModifier())
             }
-            .background(Color(.systemBlue))
-            .cornerRadius(10)
-            .padding(.top, 24)
-            .disabled(!viewModel.formIsValid)
-            .opacity(viewModel.formIsValid ? 1.0 : 0.5)
             
             Spacer()
+            
+            Divider()
             
             Button {
                 dismiss()
             } label: {
                 HStack(spacing: 3) {
                     Text("Already have an account?")
-                    Text("Log in")
-                        .fontWeight(.bold)
+                        .foregroundColor(Color.theme.secondaryText)
+                    
+                    Text("Log In")
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color.theme.primaryText)
                 }
-                .font(.system(size: 14))
-                .foregroundColor(.blue)
+                .font(.footnote)
             }
+            .padding(.vertical, 16)
 
         }
+        .background(Color.theme.background)
     }
 }

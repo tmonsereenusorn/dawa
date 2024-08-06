@@ -24,7 +24,7 @@ struct LoginView: View {
                 
                 // Form fields
                 VStack {
-                    TextField("Enter your email", text: $viewModel.email)
+                    TextField("Enter your email address", text: $viewModel.email)
                         .autocapitalization(.none)
                         .modifier(TextFieldModifier())
                     
@@ -39,6 +39,7 @@ struct LoginView: View {
                             .fontWeight(.semibold)
                             .padding(.top)
                             .padding(.trailing, 28)
+                            .foregroundColor(Color.theme.primaryText)
                     }
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 }

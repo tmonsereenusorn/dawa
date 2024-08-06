@@ -11,7 +11,6 @@ import FirebaseAuth
 class SignUpViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
-    @Published var fullname = ""
     @Published var username = ""
     @Published var confirmPassword = ""
     @Published var showAlert = false
@@ -20,7 +19,7 @@ class SignUpViewModel: ObservableObject {
     @MainActor
     func createUser() async throws {
         do {
-            try await AuthService.shared.createUser(withEmail: email, password: password, fullname: fullname, username: username)
+            try await AuthService.shared.createUser(withEmail: email, password: password, username: username)
         } catch {
             let authError = AuthErrorCode.Code(rawValue: (error as NSError).code)
             self.showAlert = true
@@ -36,6 +35,5 @@ extension SignUpViewModel: AuthenticationFormProtocol {
         && !password.isEmpty
         && password.count > 5
         && confirmPassword == password
-        && !fullname.isEmpty
     }
 }

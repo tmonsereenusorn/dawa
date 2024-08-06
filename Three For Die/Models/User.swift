@@ -4,7 +4,6 @@ import FirebaseFirestoreSwift
 
 struct User: Identifiable, Codable, Hashable {
     @DocumentID var uid: String?
-    let fullname: String
     let email: String
     var username: String
     let bio: String
@@ -30,5 +29,5 @@ struct User: Identifiable, Codable, Hashable {
 }
 
 extension User {
-    static var MOCK_USER = User(fullname: "Kobe Bryant", email: "test@gmail.com", username: "username", bio: "Sample bio")
+    static var MOCK_USER = User(email: "test@gmail.com", username: "username", bio: "Sample bio")
 }

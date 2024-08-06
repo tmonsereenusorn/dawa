@@ -62,8 +62,7 @@ class UserService {
             guard let oldUserProfile = try? snapshot.data(as: User.self) else { return }
             
             
-            var newUserProfile = User(fullname: oldUserProfile.fullname,
-                                      email: oldUserProfile.email,
+            var newUserProfile = User(email: oldUserProfile.email,
                                       username: username.lowercased(),
                                       bio: bio,
                                       profileImageUrl: oldUserProfile.profileImageUrl)
