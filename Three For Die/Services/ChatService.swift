@@ -1,53 +1,57 @@
-//
-//  ChatService.swift
-//  Three For Die
-//
-//  Created by Tee Monsereenusorn on 8/29/23.
-//
-
 import Foundation
 import Firebase
 
 class ChatService {
     let activity: Activity
     private let fetchLimit = 50
-    
     private var firestoreListener: ListenerRegistration?
     
     init(activity: Activity) {
         self.activity = activity
     }
     
-    func observeMessages(completion: @escaping([Message]) -> Void) {
-        guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        let activityId = activity.id
-        
-        let query = FirestoreConstants.ActivitiesCollection
-            .document(activityId)
-            .collection("messages")
-            .limit(toLast: fetchLimit)
-            .order(by: "timestamp", descending: false)
-        
-        self.firestoreListener = query.addSnapshotListener { snapshot, _ in
-            guard let changes = snapshot?.documentChanges.filter({ $0.type == .added }) else { return }
-            var messages = changes.compactMap{ try? $0.document.data(as: Message.self) }
+    // Async stream property for observing messages
+    var messagesStream: AsyncStream<[Message]> {
+        AsyncStream { continuation in
+            guard let currentUid = Auth.auth().currentUser?.uid else {
+                continuation.finish()
+                return
+            }
+            let activityId = activity.id
             
-            let group = DispatchGroup()
-            for (index, message) in messages.enumerated() where message.fromUserId != currentUid {
-                group.enter()
+            let query = FirestoreConstants.ActivitiesCollection
+                .document(activityId)
+                .collection("messages")
+                .limit(toLast: fetchLimit)
+                .order(by: "timestamp", descending: false)
+            
+            self.firestoreListener = query.addSnapshotListener { snapshot, _ in
+                guard let changes = snapshot?.documentChanges.filter({ $0.type == .added }) else { return }
+                var messages = changes.compactMap { try? $0.document.data(as: Message.self) }
                 
-                UserService.fetchUser(withUid: message.fromUserId) { user in
-                    messages[index].user = user
-                    group.leave()
+                let group = DispatchGroup()
+                for (index, message) in messages.enumerated() where message.fromUserId != currentUid {
+                    group.enter()
+                    
+                    UserService.fetchUser(withUid: message.fromUserId) { user in
+                        messages[index].user = user
+                        group.leave()
+                    }
+                }
+                
+                group.notify(queue: .main) {
+                    continuation.yield(messages)
                 }
             }
             
-            group.notify(queue: .main) {
-                completion(messages)
+            continuation.onTermination = { [weak self] _ in
+                self?.firestoreListener?.remove()
+                self?.firestoreListener = nil
             }
         }
     }
     
+    // Sending a message
     func sendMessage(type: MessageType) async throws {
         switch type {
         case .text(let messageText):
@@ -58,6 +62,7 @@ class ChatService {
         }
     }
     
+    // Uploading a message
     private func uploadMessage(_ messageText: String, imageUrl: String? = nil) async throws {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         let activityId = activity.id
@@ -75,10 +80,10 @@ class ChatService {
         
         // Add recent message ID to activity
         let messageId = messageRef.documentID
-        try? await FirestoreConstants.ActivitiesCollection.document(activityId).setData(["recentMessageId": messageId], merge: true)
+        try await FirestoreConstants.ActivitiesCollection.document(activityId).setData(["recentMessageId": messageId], merge: true)
         
         // Add recent message ID to each participant's activity
-        guard let activityParticipantsSnapshot = try? await FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants").getDocuments() else { return }
+        let activityParticipantsSnapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants").getDocuments()
         for doc in activityParticipantsSnapshot.documents {
             let participantId = doc.documentID
             try await FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId).setData(

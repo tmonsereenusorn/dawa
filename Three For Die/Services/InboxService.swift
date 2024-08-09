@@ -9,29 +9,40 @@ import Foundation
 import Firebase
 
 class InboxService {
-    @Published var documentChanges = [DocumentChange]()
     static let shared = InboxService()
     private var firestoreListener: ListenerRegistration?
     
-    // need to call this thru shared instance to setup the observer
-    func observeRecentMessages() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-        let query = FirestoreConstants.UserCollection
-            .document(uid)
-            .collection("user-activities")
-            .order(by: "timestamp", descending: true)
-        
-        self.firestoreListener = query.addSnapshotListener { snapshot, _ in
-            guard let changes = snapshot?.documentChanges else { return }
+    var changesStream: AsyncStream<[DocumentChange]> {
+        AsyncStream { continuation in
+            // Setup Firestore listener
+            guard let uid = Auth.auth().currentUser?.uid else {
+                continuation.finish()
+                return
+            }
             
-            self.documentChanges = changes
+            let query = FirestoreConstants.UserCollection
+                .document(uid)
+                .collection("user-activities")
+                .order(by: "timestamp", descending: true)
+            
+            self.firestoreListener = query.addSnapshotListener { snapshot, _ in
+                guard let changes = snapshot?.documentChanges else { return }
+                
+                // Yield the changes to the stream
+                continuation.yield(changes)
+            }
+            
+            // When the stream is finished, remove the listener
+            continuation.onTermination = { [weak self] _ in
+                self?.firestoreListener?.remove()
+                self?.firestoreListener = nil
+            }
         }
     }
     
     func reset() {
         self.firestoreListener?.remove()
         self.firestoreListener = nil
-        self.documentChanges.removeAll()
     }
 }
+

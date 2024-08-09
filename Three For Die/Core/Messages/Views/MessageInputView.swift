@@ -60,9 +60,10 @@ struct MessageInputView: View {
             }
             
             Button {
+                let currentText = messageText
+                messageText = ""
                 Task {
-                    try await viewModel.sendMessage(messageText)
-                    messageText = ""
+                    try await viewModel.sendMessage(currentText)
                 }
             } label: {
                 Text("Send")

@@ -11,6 +11,7 @@ import FirebaseFirestoreSwift
 import PhotosUI
 import SwiftUI
 
+@MainActor
 class ChatViewModel: ObservableObject {
     @Published var messages = [Message]()
     @Published var selectedItem: PhotosPickerItem? {
@@ -27,13 +28,13 @@ class ChatViewModel: ObservableObject {
     }
     
     func observeChatMessages() {
-        service.observeMessages { [weak self] messages in
-            guard let self = self else { return }
-            self.messages.append(contentsOf: messages)
+        Task {
+            for await newMessages in service.messagesStream {
+                self.messages.append(contentsOf: newMessages)
+            }
         }
     }
     
-    @MainActor
     func sendMessage(_ messageText: String) async throws {
         if let image = uiImage {
             try await service.sendMessage(type: .image(image))
@@ -58,11 +59,9 @@ class ChatViewModel: ObservableObject {
 
 extension ChatViewModel {
     
-    @MainActor
     func loadImage() async throws {
         guard let uiImage = try await PhotosPickerHelper.loadImage(fromItem: selectedItem) else { return }
         self.uiImage = uiImage
         messageImage = Image(uiImage: uiImage)
     }
-    
 }

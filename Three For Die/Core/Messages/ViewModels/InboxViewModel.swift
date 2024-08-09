@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import Firebase
 
+@MainActor
 class InboxViewModel: ObservableObject {
     @Published var user: User?
     @Published var userActivities = [UserActivity]()
@@ -18,85 +19,60 @@ class InboxViewModel: ObservableObject {
     
     init() {
         setupSubscribers()
-        InboxService.shared.observeRecentMessages()
+        startListeningForChanges()
     }
     
     private func setupSubscribers() {
-        UserService.shared.$currentUser.sink { [weak self] user in
-            self?.user = user
-        }.store(in: &cancellables)
-        
-        InboxService.shared.$documentChanges.sink { [weak self] changes in
-            guard let self = self, !changes.isEmpty else { return }
-            
-            if !self.didCompleteInitialLoad {
-                print("Doing initial load")
-                self.loadInitialMessages(fromChanges: changes)
-            } else {
-                self.updateMessages(fromChanges: changes)
+        UserService.shared.$currentUser
+            .assign(to: &$user)
+    }
+    
+    private func startListeningForChanges() {
+        Task {
+            for await changes in InboxService.shared.changesStream {
+                if !didCompleteInitialLoad {
+                    print("Doing initial load")
+                    loadInitialMessages(fromChanges: changes)
+                } else {
+                    processChanges(changes)
+                }
             }
-        }.store(in: &cancellables)
+        }
     }
     
     private func loadInitialMessages(fromChanges changes: [DocumentChange]) {
-        self.userActivities = changes.compactMap{ try? $0.document.data(as: UserActivity.self) }
-        
-        
-        for i in 0 ..< userActivities.count {
-            let userActivity = userActivities[i]
-            
-            // Attach activity to the user's activity
-            ActivityService.fetchActivity(withActivityId: userActivity.id) { [weak self] activity in
-                guard let self else { return }
-                
-                self.userActivities[i].activity = activity
-                
-                // Attach most recent message to the user's activity to display preview in inbox
-                if let messageId = activity.recentMessageId {
-                    MessageService.fetchMessage(withMessageId: messageId, activityId: userActivity.id) { [weak self] message in
-                        guard let self else { return }
-                        
-                        var newMessage = message
-                        
-                        UserService.fetchUser(withUid: message.fromUserId) { user in
-                            
-                            newMessage.user = user
-                            
-                            self.userActivities[i].recentMessage = newMessage
-                        }
-                    }
-                }
-            }
-        }
-        
-        self.didCompleteInitialLoad = true
+        self.userActivities = changes.compactMap { try? $0.document.data(as: UserActivity.self) }
+        updateUserActivities()
+        didCompleteInitialLoad = true
     }
     
-    private func updateMessages(fromChanges changes: [DocumentChange]) {
+    private func processChanges(_ changes: [DocumentChange]) {
         for change in changes {
-            if change.type == .added {
-                self.createNewConversation(fromChange: change)
-            } else if change.type == .modified {
-                self.updateMessagesFromExistingConversation(fromChange: change)
-            } else if change.type == .removed { // if removed
-                self.removeConversation(fromChange: change)
+            switch change.type {
+            case .added:
+                createOrUpdateConversation(fromChange: change, shouldInsert: true)
+            case .modified:
+                createOrUpdateConversation(fromChange: change, shouldInsert: false)
+            case .removed:
+                removeConversation(fromChange: change)
+            @unknown default:
+                break
             }
         }
     }
     
-    private func createNewConversation(fromChange change: DocumentChange) {
+    private func createOrUpdateConversation(fromChange change: DocumentChange, shouldInsert: Bool) {
         guard var userActivity = try? change.document.data(as: UserActivity.self) else { return }
         
         let dispatchGroup = DispatchGroup()
         
+        dispatchGroup.enter()
         ActivityService.fetchActivity(withActivityId: userActivity.id) { [weak self] activity in
-            guard let self else { return }
-            
-            dispatchGroup.enter()
+            guard let self = self else { return }
             userActivity.activity = activity
             
-            // Attach most recent message to the user's activity to display preview in inbox
             if let messageId = activity.recentMessageId {
+                dispatchGroup.enter()
                 MessageService.fetchMessage(withMessageId: messageId, activityId: activity.id) { message in
                     var newMessage = message
                     UserService.fetchUser(withUid: message.fromUserId) { user in
@@ -105,57 +81,49 @@ class InboxViewModel: ObservableObject {
                         dispatchGroup.leave()
                     }
                 }
-            } else {
-                dispatchGroup.leave()
             }
-            
-            dispatchGroup.notify(queue: .main) {
-                self.userActivities.insert(userActivity, at: 0)
-            }
+            dispatchGroup.leave()
         }
-    }
-    
-    private func updateMessagesFromExistingConversation(fromChange change: DocumentChange) {
-        guard var userActivity = try? change.document.data(as: UserActivity.self) else { return }
-        guard let index = self.userActivities.firstIndex(where: {
-            $0.id == userActivity.id
-        }) else { return }
         
-        let dispatchGroup = DispatchGroup()
-        
-        ActivityService.fetchActivity(withActivityId: userActivity.id) { [weak self] activity in
-            guard let self else { return }
-            
-            dispatchGroup.enter()
-            userActivity.activity = activity
-            
-            // Attach most recent message to the user's activity to display preview in inbox
-            if let messageId = activity.recentMessageId {
-                MessageService.fetchMessage(withMessageId: messageId, activityId: activity.id) { message in
-                    var newMessage = message
-                    UserService.fetchUser(withUid: message.fromUserId) { user in
-                        newMessage.user = user
-                        userActivity.recentMessage = newMessage
-                        dispatchGroup.leave()
-                    }
-                }
-            } else {
-                dispatchGroup.leave()
-            }
-            
-            dispatchGroup.notify(queue: .main) {
-                self.userActivities.remove(at: index)
+        dispatchGroup.notify(queue: .main) {
+            if shouldInsert {
                 self.userActivities.insert(userActivity, at: 0)
+            } else {
+                if let index = self.userActivities.firstIndex(where: { $0.id == userActivity.id }) {
+                    self.userActivities[index] = userActivity
+                }
             }
         }
     }
     
     private func removeConversation(fromChange change: DocumentChange) {
-        print("Attempting to remove conversation")
         guard let removedUserActivity = try? change.document.data(as: UserActivity.self) else { return }
         
         if let indexToRemove = userActivities.firstIndex(where: { $0.id == removedUserActivity.id }) {
             self.userActivities.remove(at: indexToRemove)
+        }
+    }
+    
+    private func updateUserActivities() {
+        for i in 0..<userActivities.count {
+            let userActivity = userActivities[i]
+            
+            ActivityService.fetchActivity(withActivityId: userActivity.id) { [weak self] activity in
+                guard let self = self else { return }
+                self.userActivities[i].activity = activity
+                
+                if let messageId = activity.recentMessageId {
+                    MessageService.fetchMessage(withMessageId: messageId, activityId: userActivity.id) { [weak self] message in
+                        guard let self = self else { return }
+                        
+                        var newMessage = message
+                        UserService.fetchUser(withUid: message.fromUserId) { user in
+                            newMessage.user = user
+                            self.userActivities[i].recentMessage = newMessage
+                        }
+                    }
+                }
+            }
         }
     }
 }
