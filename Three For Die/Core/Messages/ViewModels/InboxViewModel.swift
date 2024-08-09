@@ -55,8 +55,6 @@ class InboxViewModel: ObservableObject {
                 createOrUpdateConversation(fromChange: change, shouldInsert: false)
             case .removed:
                 removeConversation(fromChange: change)
-            @unknown default:
-                break
             }
         }
     }
@@ -93,6 +91,14 @@ class InboxViewModel: ObservableObject {
                     self.userActivities[index] = userActivity
                 }
             }
+            
+            self.userActivities.sort {
+                let date1 = $0.recentMessage?.timestamp.dateValue() ?? $0.activity?.timestamp.dateValue() ?? Date.distantPast
+                let date2 = $1.recentMessage?.timestamp.dateValue() ?? $1.activity?.timestamp.dateValue() ?? Date.distantPast
+                return date1 > date2
+            }
+            
+            self.objectWillChange.send()
         }
     }
     
