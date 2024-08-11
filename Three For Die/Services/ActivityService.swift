@@ -29,8 +29,11 @@ class ActivityService {
             
             // Add activity to user's activity list
             let activityId = activityRef.documentID
+            let userActivity = UserActivity(hasRead: false,
+                                            timestamp: Timestamp(date: Date()))
+            let encodedUserActivity = try Firestore.Encoder().encode(userActivity)
             let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
-            try await userActivitiesRef.document(activityId).setData(["timestamp": Timestamp()])
+            try await userActivitiesRef.document(activityId).setData(encodedUserActivity)
             
             // Add user to activity's participants list
             let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
@@ -100,8 +103,11 @@ class ActivityService {
             try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": FieldValue.increment(Int64(1))])
             
             // Update user's activities subcollection by adding activity ID to it
+            let userActivity = UserActivity(hasRead: false,
+                                            timestamp: Timestamp(date: Date()))
+            let encodedUserActivity = try Firestore.Encoder().encode(userActivity)
             let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
-            try await userActivitiesRef.document(activityId).setData(["timestamp": Timestamp()])
+            try await userActivitiesRef.document(activityId).setData(encodedUserActivity)
             
             // Update activity's participants subcollection by adding user ID to it
             let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")

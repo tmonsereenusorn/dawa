@@ -87,7 +87,21 @@ class ChatService {
         for doc in activityParticipantsSnapshot.documents {
             let participantId = doc.documentID
             try await FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId).setData(
-                ["recentMessageId": messageId, "timestamp": Timestamp()], merge: true)
+                ["recentMessageId": messageId, "timestamp": Timestamp(), "hasRead": false], merge: true)
+        }
+    }
+    
+    // Mark message as read
+    static func markAsRead(activityId: String) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let docRef = Firestore.firestore().collection("users").document(uid).collection("user-activities").document(activityId)
+        
+        docRef.updateData(["hasRead": true]) { error in
+            if let error = error {
+                print("Error marking as read: \(error)")
+            } else {
+                print("Activity marked as read.")
+            }
         }
     }
     

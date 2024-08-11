@@ -14,6 +14,8 @@ struct UserActivity: Identifiable, Codable, Hashable {
     var recentMessageId: String?
     var recentMessage: Message?
     var activity: Activity?
+    var hasRead: Bool
+    let timestamp: Timestamp
     
     var id: String {
         return activityId ?? NSUUID().uuidString

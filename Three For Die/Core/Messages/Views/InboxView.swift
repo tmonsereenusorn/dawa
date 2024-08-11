@@ -60,6 +60,11 @@ struct InboxView: View {
             .navigationDestination(for: UserActivity.self, destination: { userActivity in
                 if let activity = userActivity.activity {
                     ChatView(activity: activity)
+                        .onDisappear {
+                            if let activityId = userActivity.activity?.id {
+                                ChatService.markAsRead(activityId: activityId)
+                            }
+                        }
                 }
             })
             .listStyle(PlainListStyle())
