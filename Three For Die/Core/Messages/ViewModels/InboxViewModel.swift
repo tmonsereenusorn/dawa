@@ -13,7 +13,6 @@
 //
 
 import Foundation
-import Combine
 import Firebase
 
 @MainActor
@@ -22,7 +21,9 @@ class InboxViewModel: ObservableObject {
     @Published var userActivities = [UserActivity]()
     @Published var didCompleteInitialLoad = false
     
-    private var cancellables = Set<AnyCancellable>()
+    var hasUnreadMessages: Bool {
+        userActivities.contains { !$0.hasRead }
+    }
     
     init() {
         setupSubscribers()

@@ -16,6 +16,7 @@ struct MainTabView: View {
     @State var lastStoredOffset: CGFloat = 0
     @StateObject var groupsViewModel = GroupsViewModel()
     @StateObject var feedViewModel = FeedViewModel()
+    @StateObject var inboxViewModel = InboxViewModel()
     
     init() {
         UITabBar.appearance().isHidden = true
@@ -50,7 +51,7 @@ struct MainTabView: View {
                         HStack(spacing: 0) {
                             TabButton(image: "house")
                             
-                            TabButton(image: "message")
+                            TabButton(image: "message", hasUnread: inboxViewModel.hasUnreadMessages)
                             
                             TabButton(image: "bell")
                         }
@@ -106,20 +107,30 @@ struct MainTabView: View {
         }
         .environmentObject(groupsViewModel)
         .environmentObject(feedViewModel)
+        .environmentObject(inboxViewModel)
     }
     
     @ViewBuilder
-    func TabButton(image: String) -> some View {
+    func TabButton(image: String, hasUnread: Bool = false) -> some View {
         Button {
             withAnimation { currentTab = image }
         } label: {
-            Image(systemName: image)
-                .resizable()
-                .renderingMode(.template)
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 23, height: 23)
-                .foregroundColor(currentTab == image ? Color.theme.primaryText : Color.theme.secondaryText)
-                .frame(maxWidth: .infinity)
+            ZStack {
+                Image(systemName: image)
+                    .resizable()
+                    .renderingMode(.template)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 23, height: 23)
+                    .foregroundColor(currentTab == image ? Color.theme.primaryText : Color.theme.secondaryText)
+                    .frame(maxWidth: .infinity)
+                
+                if hasUnread {
+                    Circle()
+                        .fill(Color.red)
+                        .frame(width: 8, height: 8)
+                        .offset(x: 12, y: -12)
+                }
+            }
         }
     }
 }
