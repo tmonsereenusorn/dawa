@@ -62,7 +62,7 @@ struct InboxView: View {
                     ChatView(activity: activity)
                         .onDisappear {
                             if let activityId = userActivity.activity?.id {
-                                ChatService.markAsRead(activityId: activityId)
+                                viewModel.markAsRead(activityId: userActivity.id)
                             }
                         }
                 }

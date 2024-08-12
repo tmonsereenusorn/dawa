@@ -132,4 +132,11 @@ class InboxViewModel: ObservableObject {
             }
         }
     }
+    
+    func markAsRead(activityId: String) {
+        if let index = userActivities.firstIndex(where: { $0.id == activityId }) {
+            userActivities[index].hasRead = true
+            ChatService.markAsRead(activityId: activityId)
+        }
+    }
 }
