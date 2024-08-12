@@ -41,40 +41,45 @@ struct InboxView: View {
                 Divider()
             }
             
-            List {
-                ForEach(viewModel.userActivities, id: \.self) { userActivity in
-                    ZStack {
-                        NavigationLink(value: userActivity) {
-                            EmptyView()
-                        }
-                        .opacity(0.0)
-                        
-                        InboxRowView(userActivity: userActivity)
-                    }
-                }
-                .listRowInsets(EdgeInsets())
-                .padding(.vertical)
-                .padding(.trailing, 8)
-                .padding(.leading, 20)
-            }
-            .navigationDestination(for: UserActivity.self, destination: { userActivity in
-                if let activity = userActivity.activity {
-                    ChatView(activity: activity)
-                        .onDisappear {
-                            if let activityId = userActivity.activity?.id {
-                                viewModel.markAsRead(activityId: userActivity.id)
+            if viewModel.didCompleteInitialLoad {
+                List {
+                    ForEach(viewModel.userActivities, id: \.self) { userActivity in
+                        ZStack {
+                            NavigationLink(value: userActivity) {
+                                EmptyView()
                             }
+                            .opacity(0.0)
+                            
+                            InboxRowView(userActivity: userActivity)
                         }
+                    }
+                    .listRowInsets(EdgeInsets())
+                    .padding(.vertical)
+                    .padding(.trailing, 8)
+                    .padding(.leading, 20)
                 }
-            })
-            .listStyle(PlainListStyle())
-            .navigationTitle("Inbox")
-            .navigationBarTitleDisplayMode(.inline)
-            .overlay { if !viewModel.didCompleteInitialLoad { ProgressView() } }
-            .background(Color.theme.background)
+                .navigationDestination(for: UserActivity.self, destination: { userActivity in
+                    if let activity = userActivity.activity {
+                        ChatView(activity: activity)
+                            .onDisappear {
+                                if let activityId = userActivity.activity?.id {
+                                    viewModel.markAsRead(activityId: activityId)
+                                }
+                            }
+                    }
+                })
+                .listStyle(PlainListStyle())
+            } else {
+                // This will make the progress view take up the entire space
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         }
+        .navigationTitle("Inbox")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
+
 //
 //struct InboxView_Previews: PreviewProvider {
 //    static var previews: some View {

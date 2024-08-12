@@ -5,6 +5,13 @@
 //  Created by Tee Monsereenusorn on 8/15/23.
 //
 
+//
+//  InboxViewModel.swift
+//  Three For Die
+//
+//  Created by Tee Monsereenusorn on 8/15/23.
+//
+
 import Foundation
 import Combine
 import Firebase
@@ -13,9 +20,9 @@ import Firebase
 class InboxViewModel: ObservableObject {
     @Published var user: User?
     @Published var userActivities = [UserActivity]()
+    @Published var didCompleteInitialLoad = false
     
     private var cancellables = Set<AnyCancellable>()
-    var didCompleteInitialLoad = false
     
     init() {
         setupSubscribers()
@@ -32,64 +39,58 @@ class InboxViewModel: ObservableObject {
             for await changes in InboxService.shared.changesStream {
                 if !didCompleteInitialLoad {
                     print("Doing initial load")
-                    loadInitialMessages(fromChanges: changes)
+                    await loadInitialMessages(fromChanges: changes)
                 } else {
-                    processChanges(changes)
+                    await processChanges(changes)
                 }
             }
         }
     }
     
-    private func loadInitialMessages(fromChanges changes: [DocumentChange]) {
-        self.userActivities = changes.compactMap { try? $0.document.data(as: UserActivity.self) }
-        updateUserActivities()
-        didCompleteInitialLoad = true
+    private func loadInitialMessages(fromChanges changes: [DocumentChange]) async {
+        do {
+            self.userActivities = try changes.compactMap { try $0.document.data(as: UserActivity.self) }
+            await updateUserActivities()
+            await MainActor.run {
+                self.didCompleteInitialLoad = true
+            }
+        } catch {
+            print("Failed to load initial messages: \(error.localizedDescription)")
+        }
     }
     
-    private func processChanges(_ changes: [DocumentChange]) {
+    private func processChanges(_ changes: [DocumentChange]) async {
         for change in changes {
             switch change.type {
             case .added:
-                createOrUpdateConversation(fromChange: change, shouldInsert: true)
+                await createOrUpdateConversation(fromChange: change, shouldInsert: true)
             case .modified:
-                createOrUpdateConversation(fromChange: change, shouldInsert: false)
+                await createOrUpdateConversation(fromChange: change, shouldInsert: false)
             case .removed:
-                removeConversation(fromChange: change)
+                await removeConversation(fromChange: change)
             }
         }
     }
     
-    private func createOrUpdateConversation(fromChange change: DocumentChange, shouldInsert: Bool) {
-        guard var userActivity = try? change.document.data(as: UserActivity.self) else { return }
-        
-        let dispatchGroup = DispatchGroup()
-        
-        dispatchGroup.enter()
-        ActivityService.fetchActivity(withActivityId: userActivity.id) { [weak self] activity in
-            guard let self = self else { return }
-            userActivity.activity = activity
+    private func createOrUpdateConversation(fromChange change: DocumentChange, shouldInsert: Bool) async {
+        do {
+            var userActivity = try change.document.data(as: UserActivity.self)
             
-            if let messageId = activity.recentMessageId {
-                dispatchGroup.enter()
-                MessageService.fetchMessage(withMessageId: messageId, activityId: activity.id) { message in
-                    var newMessage = message
-                    UserService.fetchUser(withUid: message.fromUserId) { user in
-                        newMessage.user = user
-                        userActivity.recentMessage = newMessage
-                        dispatchGroup.leave()
+            if let activity = try await ActivityService.fetchActivity(activityId: userActivity.id) {
+                userActivity.activity = activity
+                
+                if let messageId = activity.recentMessageId {
+                    if var message = try await MessageService.fetchMessage(withMessageId: messageId, activityId: activity.id) {
+                        message.user = try await UserService.fetchUser(uid: message.fromUserId)
+                        userActivity.recentMessage = message
                     }
                 }
             }
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.notify(queue: .main) {
+            
             if shouldInsert {
                 self.userActivities.insert(userActivity, at: 0)
-            } else {
-                if let index = self.userActivities.firstIndex(where: { $0.id == userActivity.id }) {
-                    self.userActivities[index] = userActivity
-                }
+            } else if let index = self.userActivities.firstIndex(where: { $0.id == userActivity.id }) {
+                self.userActivities[index] = userActivity
             }
             
             self.userActivities.sort {
@@ -99,39 +100,59 @@ class InboxViewModel: ObservableObject {
             }
             
             self.objectWillChange.send()
+        } catch {
+            print("Failed to create or update conversation: \(error.localizedDescription)")
         }
     }
     
-    private func removeConversation(fromChange change: DocumentChange) {
-        guard let removedUserActivity = try? change.document.data(as: UserActivity.self) else { return }
-        
-        if let indexToRemove = userActivities.firstIndex(where: { $0.id == removedUserActivity.id }) {
-            self.userActivities.remove(at: indexToRemove)
-        }
-    }
-    
-    private func updateUserActivities() {
-        for i in 0..<userActivities.count {
-            let userActivity = userActivities[i]
+    private func removeConversation(fromChange change: DocumentChange) async {
+        do {
+            let removedUserActivity = try change.document.data(as: UserActivity.self)
             
-            ActivityService.fetchActivity(withActivityId: userActivity.id) { [weak self] activity in
-                guard let self = self else { return }
-                self.userActivities[i].activity = activity
-                
-                if let messageId = activity.recentMessageId {
-                    MessageService.fetchMessage(withMessageId: messageId, activityId: userActivity.id) { [weak self] message in
-                        guard let self = self else { return }
+            if let indexToRemove = userActivities.firstIndex(where: { $0.id == removedUserActivity.id }) {
+                self.userActivities.remove(at: indexToRemove)
+            }
+        } catch {
+            print("Failed to remove conversation: \(error.localizedDescription)")
+        }
+    }
+    
+    private func updateUserActivities() async {
+        await withTaskGroup(of: (Int, UserActivity?).self) { group in
+            for i in 0..<userActivities.count {
+                group.addTask {
+                    do {
+                        var updatedActivity = await self.userActivities[i]
                         
-                        var newMessage = message
-                        UserService.fetchUser(withUid: message.fromUserId) { user in
-                            newMessage.user = user
-                            self.userActivities[i].recentMessage = newMessage
+                        if let activity = try await ActivityService.fetchActivity(activityId: updatedActivity.id) {
+                            updatedActivity.activity = activity
+                            
+                            if let messageId = activity.recentMessageId {
+                                if var message = try await MessageService.fetchMessage(withMessageId: messageId, activityId: updatedActivity.id) {
+                                    message.user = try await UserService.fetchUser(uid: message.fromUserId)
+                                    updatedActivity.recentMessage = message
+                                }
+                            }
                         }
+                        
+                        return (i, updatedActivity)
+                    } catch {
+                        print("Failed to update user activities: \(error.localizedDescription)")
+                        return (i, nil)
+                    }
+                }
+            }
+            
+            for await (index, updatedActivity) in group {
+                if let updatedActivity = updatedActivity {
+                    await MainActor.run {
+                        self.userActivities[index] = updatedActivity
                     }
                 }
             }
         }
     }
+
     
     func markAsRead(activityId: String) {
         if let index = userActivities.firstIndex(where: { $0.id == activityId }) {

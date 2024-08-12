@@ -71,12 +71,15 @@ class ActivityService {
     static func fetchActivity(activityId: String) async throws -> Activity? {
         do {
             let snapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).getDocument()
-            return try snapshot.data(as: Activity.self)
+            var activity = try snapshot.data(as: Activity.self)
+            activity.group = try await GroupService.fetchGroup(groupId: activity.groupId)
+            return activity
         } catch {
             print("DEBUG: Failed to fetch activity with error \(error.localizedDescription)")
             return nil
         }
     }
+
     
     static func fetchActivity(withActivityId activityId: String, completion: @escaping(Activity) -> Void) {
         FirestoreConstants.ActivitiesCollection.document(activityId).getDocument() { snapshot, _ in
