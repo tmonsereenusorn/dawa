@@ -19,6 +19,7 @@ protocol NotificationBase: Codable {
     var timestamp: Timestamp { get }
     var message: String { get }
     var hasRead: Bool { get set }
+    var user: User? { get set }
 }
 
 struct ActivityJoinNotification: NotificationBase {

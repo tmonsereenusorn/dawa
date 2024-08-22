@@ -14,8 +14,9 @@ class NotificationsViewModel: ObservableObject {
     @Published var user: User?
     @Published var notifications = [NotificationBase]()
     
+    @Published var initialLoad = true
+    
     private var cancellables = Set<AnyCancellable>()
-    var didCompleteInitialLoad = false
     
     init() {
         setupSubscribers()
@@ -23,58 +24,76 @@ class NotificationsViewModel: ObservableObject {
     }
     
     private func setupSubscribers() {
-        // Subscribe to the current user changes
-        UserService.shared.$currentUser.sink { [weak self] user in
-            self?.user = user
-        }.store(in: &cancellables)
+        UserService.shared.$currentUser
+            .assign(to: \.user, on: self)
+            .store(in: &cancellables)
     }
     
     private func startListeningForChanges() {
         Task {
             for await changes in NotificationService.shared.changesStream {
-                for change in changes where change.type == .added {
-                    await handleAddedNotification(change)
+                if self.initialLoad {
+                    notifications = await processNotificationsInParallel(changes)
+                    self.objectWillChange.send()
+                    self.initialLoad = false
+                } else {
+                    await handleNewNotifications(changes)
                 }
             }
         }
     }
-    
-    private func handleAddedNotification(_ change: DocumentChange) async {
-        guard let typeString = change.document.data()["type"] as? String,
-              let notificationType = NotificationType(rawValue: typeString) else {
-            return
+
+    private func processNotificationsInParallel(_ changes: [DocumentChange]) async -> [NotificationBase] {
+        var notifications = [NotificationBase]()
+        
+        await withTaskGroup(of: NotificationBase?.self) { group in
+            for change in changes where change.type == .added {
+                group.addTask { await self.processNotification(change) }
+            }
+            
+            for await notification in group {
+                if let notification = notification {
+                    notifications.append(notification)
+                }
+            }
         }
         
-        switch notificationType {
-        case .activityJoin:
-            await handleActivityJoinNotification(change)
-        case .activityLeave:
-            await handleActivityLeaveNotification(change)
-        }
+        return notifications
     }
     
-    private func handleActivityJoinNotification(_ change: DocumentChange) async {
+    private func processNotification(_ change: DocumentChange) async -> NotificationBase? {
+        guard let typeString = change.document.data()["type"] as? String,
+              let notificationType = NotificationType(rawValue: typeString) else { return nil }
+        
         do {
-            var notification = try change.document.data(as: ActivityJoinNotification.self)
-            let user = try await UserService.fetchUser(uid: notification.joinedByUserId)
-            notification.user = user
-            addNotification(notification)
+            var notification: NotificationBase
+            let userId: String
+            
+            switch notificationType {
+            case .activityJoin:
+                notification = try change.document.data(as: ActivityJoinNotification.self)
+                userId = (notification as! ActivityJoinNotification).joinedByUserId
+            case .activityLeave:
+                notification = try change.document.data(as: ActivityLeaveNotification.self)
+                userId = (notification as! ActivityLeaveNotification).leftByUserId
+            }
+            
+            notification.user = try await UserService.fetchUser(uid: userId)
+            return notification
         } catch {
-            print("DEBUG: Failed to fetch user or decode ActivityJoinNotification - \(error)")
+            print("DEBUG: Failed to fetch user or decode \(notificationType)Notification - \(error)")
+            return nil
         }
     }
-    
-    private func handleActivityLeaveNotification(_ change: DocumentChange) async {
-        do {
-            var notification = try change.document.data(as: ActivityLeaveNotification.self)
-            let user = try await UserService.fetchUser(uid: notification.leftByUserId)
-            notification.user = user
-            addNotification(notification)
-        } catch {
-            print("DEBUG: Failed to fetch user or decode ActivityLeaveNotification - \(error)")
+
+    private func handleNewNotifications(_ changes: [DocumentChange]) async {
+        for change in changes where change.type == .added {
+            if let notification = await processNotification(change) {
+                addNotification(notification)
+            }
         }
     }
-    
+
     private func addNotification(_ notification: NotificationBase) {
         notifications.insert(notification, at: 0)
         self.objectWillChange.send()
@@ -85,10 +104,11 @@ class NotificationsViewModel: ObservableObject {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             for (index, notification) in notifications.enumerated() where !notification.hasRead {
                 if let notificationId = notification.id {
-                    // Update the notification in Firestore
-                    try await FirestoreConstants.UserCollection.document(uid).collection("notifications").document(notificationId).updateData(["hasRead": true])
+                    try await FirestoreConstants.UserCollection.document(uid)
+                        .collection("notifications")
+                        .document(notificationId)
+                        .updateData(["hasRead": true])
                     
-                    // Update the local notification object
                     notifications[index].hasRead = true
                 }
             }
@@ -96,3 +116,4 @@ class NotificationsViewModel: ObservableObject {
         }
     }
 }
+
