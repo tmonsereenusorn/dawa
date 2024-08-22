@@ -115,6 +115,7 @@
 		85C09D7F2A865EC800D51576 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C09D7E2A865EC800D51576 /* ChatView.swift */; };
 		85C159B72B5F280800B422E8 /* MemberRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C159B62B5F280800B422E8 /* MemberRequest.swift */; };
 		85C306E52C6AA21C00D2C2BC /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C306E42C6AA21C00D2C2BC /* Notification.swift */; };
+		85C306E72C7249E200D2C2BC /* NotificationRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C306E62C7249E200D2C2BC /* NotificationRowView.swift */; };
 		85C854CE2A4167B00057F55F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 85C854CD2A4167B00057F55F /* GoogleService-Info.plist */; };
 		85C854D12A418EBF0057F55F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D02A418EBF0057F55F /* ContentView.swift */; };
 		85C854D42A418F290057F55F /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D32A418F290057F55F /* SignUpView.swift */; };
@@ -216,6 +217,7 @@
 		85C09D7E2A865EC800D51576 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		85C159B62B5F280800B422E8 /* MemberRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRequest.swift; sourceTree = "<group>"; };
 		85C306E42C6AA21C00D2C2BC /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		85C306E62C7249E200D2C2BC /* NotificationRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRowView.swift; sourceTree = "<group>"; };
 		85C854CD2A4167B00057F55F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		85C854D02A418EBF0057F55F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		85C854D32A418F290057F55F /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -440,6 +442,7 @@
 				850B07452B06D28700A4FAF5 /* NotificationsView.swift */,
 				850B074B2B06DA2A00A4FAF5 /* GroupInvitesView.swift */,
 				850B07502B06EF2700A4FAF5 /* GroupInviteRowView.swift */,
+				85C306E62C7249E200D2C2BC /* NotificationRowView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -871,6 +874,7 @@
 				85B3F7F02A5D5142004734E8 /* SearchBar.swift in Sources */,
 				85307F952AF0675700987A3C /* MemberListView.swift in Sources */,
 				85C8BDD62A7256350059932C /* CreateGroupView.swift in Sources */,
+				85C306E72C7249E200D2C2BC /* NotificationRowView.swift in Sources */,
 				85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */,
 				85A4171B2A56D99100A9096A /* UserService.swift in Sources */,
 				856FE1572A9D0BED00E9224B /* ChatService.swift in Sources */,

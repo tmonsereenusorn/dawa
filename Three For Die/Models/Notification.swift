@@ -14,18 +14,20 @@ enum NotificationType: String, Codable {
 }
 
 protocol NotificationBase: Codable {
-    var id: String { get }
+    var id: String? { get }
     var type: NotificationType { get }
     var timestamp: Timestamp { get }
     var message: String { get }
+    var hasRead: Bool { get set }
 }
 
 struct ActivityJoinNotification: NotificationBase {
-    var id: String
+    @DocumentID var id: String?
     var type: NotificationType
     var timestamp: Timestamp
     var activityId: String
     var joinedByUserId: String
+    var hasRead: Bool = false
     var user: User?
 
     // Computed property to generate the message based on available data
@@ -38,23 +40,22 @@ struct ActivityJoinNotification: NotificationBase {
     }
 
     // Initializer
-    init(id: String, activityId: String, joinedByUserId: String, user: User? = nil) {
-        self.id = id
+    init(activityId: String, joinedByUserId: String) {
         self.type = .activityJoin
         self.timestamp = Timestamp()
         self.activityId = activityId
         self.joinedByUserId = joinedByUserId
-        self.user = user
     }
 }
 
 // ActivityLeaveNotification struct
 struct ActivityLeaveNotification: NotificationBase {
-    var id: String
+    @DocumentID var id: String?
     var type: NotificationType
     var timestamp: Timestamp
     var activityId: String
     var leftByUserId: String
+    var hasRead: Bool = false
     var user: User?
 
     // Computed property to generate the message based on available data
@@ -67,12 +68,10 @@ struct ActivityLeaveNotification: NotificationBase {
     }
 
     // Initializer
-    init(id: String, activityId: String, leftByUserId: String, user: User? = nil) {
-        self.id = id
+    init(activityId: String, leftByUserId: String) {
         self.type = .activityLeave
         self.timestamp = Timestamp()
         self.activityId = activityId
         self.leftByUserId = leftByUserId
-        self.user = user
     }
 }

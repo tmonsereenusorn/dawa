@@ -79,4 +79,20 @@ class NotificationsViewModel: ObservableObject {
         notifications.insert(notification, at: 0)
         self.objectWillChange.send()
     }
+    
+    func markAllNotificationsAsRead() {
+        Task {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            for (index, notification) in notifications.enumerated() where !notification.hasRead {
+                if let notificationId = notification.id {
+                    // Update the notification in Firestore
+                    try await FirestoreConstants.UserCollection.document(uid).collection("notifications").document(notificationId).updateData(["hasRead": true])
+                    
+                    // Update the local notification object
+                    notifications[index].hasRead = true
+                }
+            }
+            self.objectWillChange.send()
+        }
+    }
 }

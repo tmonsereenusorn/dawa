@@ -97,30 +97,40 @@ class ActivityService {
     @MainActor
     static func joinActivity(activityId: String, completion: @escaping() -> Void) async throws {
         do {
-            guard var activity = try await ActivityService.fetchActivity(activityId: activityId) else { return }
+            guard let activity = try await ActivityService.fetchActivity(activityId: activityId) else { return }
             guard activity.numCurrent < activity.numRequired else { return }
             guard let uid = Auth.auth().currentUser?.uid else { return }
             guard uid != activity.userId else { return } // Host of activity is already in activity
-            
+
             // Update activity by incrementing numCurrent
             try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": FieldValue.increment(Int64(1))])
-            
+
             // Update user's activities subcollection by adding activity ID to it
-            let userActivity = UserActivity(hasRead: false,
-                                            timestamp: Timestamp(date: Date()))
+            let userActivity = UserActivity(hasRead: false, timestamp: Timestamp(date: Date()))
             let encodedUserActivity = try Firestore.Encoder().encode(userActivity)
             let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
             try await userActivitiesRef.document(activityId).setData(encodedUserActivity)
             
-            // Update activity's participants subcollection by adding user ID to it
+            // Fetch all current participants in the activity
             let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
-            try await activityParticipantsRef.document(uid).setData([:])
+            let activityParticipantsSnapshot = try await activityParticipantsRef.getDocuments()
+            let participantIds = activityParticipantsSnapshot.documents.map { $0.documentID }
             
+            // Send notifications to all current participants
+            let joinNotification = ActivityJoinNotification(activityId: activityId, joinedByUserId: uid)
+            try await NotificationService.shared.sendNotification(notification: joinNotification, to: participantIds)
+
+            // Finally, add the new user to the participants subcollection
+            try await activityParticipantsRef.document(uid).setData([:])
+
+            // Call completion handler
             completion()
+            
         } catch {
             print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
         }
     }
+
     
     @MainActor
     static func checkIfUserJoinedActivity(activityId: String) async -> Bool {
@@ -148,11 +158,21 @@ class ActivityService {
             let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
             try await userActivitiesRef.document(activityId).delete()
             
-            // Update activity's participants subcollection by removing user ID from it
+            // Remove the user from the participants subcollection
             let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
             try await activityParticipantsRef.document(uid).delete()
             
+            // Fetch all remaining participants in the activity
+            let activityParticipantsSnapshot = try await activityParticipantsRef.getDocuments()
+            let participantIds = activityParticipantsSnapshot.documents.map { $0.documentID }
+            
+            // Send notifications to all remaining participants
+            let leaveNotification = ActivityLeaveNotification(activityId: activityId, leftByUserId: uid)
+            try await NotificationService.shared.sendNotification(notification: leaveNotification, to: participantIds)
+            
+            // Call completion handler
             completion()
+            
         } catch {
             print("DEBUG: Failed to leave activity with error \(error.localizedDescription)")
         }

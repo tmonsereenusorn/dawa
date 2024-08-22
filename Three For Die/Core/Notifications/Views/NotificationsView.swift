@@ -60,6 +60,15 @@ struct NotificationsView: View {
             
             Divider()
             
+            // List of Notifications
+            List(viewModel.notifications, id: \.id) { notification in
+                NotificationRowView(notification: notification)
+            }
+            .listStyle(PlainListStyle())
+            .onAppear {
+                viewModel.markAllNotificationsAsRead()
+            }
+            
             Spacer()
         }
     }

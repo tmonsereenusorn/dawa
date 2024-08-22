@@ -38,6 +38,17 @@ class NotificationService {
             }
         }
     }
+    
+    func sendNotification<T: NotificationBase>(notification: T, to userIds: [String]) async throws {
+        for userId in userIds {
+            let notificationRef = FirestoreConstants.UserCollection
+                .document(userId)
+                .collection("notifications")
+                .document()
+            
+            try await notificationRef.setData(from: notification)
+        }
+    }
 
     func reset() {
         self.firestoreListener?.remove()
