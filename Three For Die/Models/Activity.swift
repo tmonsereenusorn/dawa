@@ -23,7 +23,7 @@ struct Activity: Identifiable, Codable, Hashable {
     var status: String
     
     var recentMessageId: String?
-    var user: User?
+    var host: User?
     var group: Groups?
     var didJoin: Bool? = false
     

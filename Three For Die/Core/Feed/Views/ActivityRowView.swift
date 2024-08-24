@@ -17,11 +17,11 @@ struct ActivityRowView: View {
     }
     
     var body: some View {
-        if let user = viewModel.activity.user {
+        if let hostUser = viewModel.activity.host {
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    CircularProfileImageView(user: user, size: .xxxSmall)
-                    Text(user.username)
+                    CircularProfileImageView(user: hostUser, size: .xxxSmall)
+                    Text(hostUser.username)
                         .foregroundColor(Color.theme.primaryText)
                         .font(.system(size: 12))
                     Text(viewModel.activity.timestamp.dateValue().timeAgoDisplay())

@@ -63,8 +63,15 @@ struct NotificationsView: View {
             if !viewModel.initialLoad {
                 // List of Notifications
                 List(viewModel.notifications, id: \.id) { notification in
-                    NotificationRowView(notification: notification)
-                        .listRowInsets(EdgeInsets())
+                    if let activity = notification.activity {
+                        NavigationLink(destination: ActivityView (activity: activity)) {
+                            NotificationRowView(notification: notification)
+                        }
+                        .listRowInsets(EdgeInsets()) // Remove List padding
+                    } else {
+                        NotificationRowView(notification: notification)
+                            .listRowInsets(EdgeInsets()) // Remove List padding
+                    }
                 }
                 .listStyle(PlainListStyle())
                 

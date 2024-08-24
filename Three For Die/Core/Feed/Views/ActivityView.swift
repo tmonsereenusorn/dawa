@@ -19,7 +19,7 @@ struct ActivityView: View {
     }
     
     var body: some View {
-        if let user = viewModel.activity.user {
+        if let hostUser = viewModel.activity.host {
             VStack(alignment: .leading, spacing: 12) {
                 // Header and buttons
                 HStack(alignment: .top) {
@@ -35,7 +35,7 @@ struct ActivityView: View {
                     
                     Spacer()
                     
-                    if user.isCurrentUser {
+                    if hostUser.isCurrentUser {
                         Button {
                             Task {
                                 try await viewModel.closeActivity()

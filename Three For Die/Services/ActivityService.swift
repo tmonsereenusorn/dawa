@@ -68,11 +68,12 @@ class ActivityService {
     }
     
     @MainActor
-    static func fetchActivity(activityId: String) async throws -> Activity? {
+static func fetchActivity(activityId: String) async throws -> Activity? {
         do {
             let snapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).getDocument()
             var activity = try snapshot.data(as: Activity.self)
             activity.group = try await GroupService.fetchGroup(groupId: activity.groupId)
+            activity.host = try await UserService.fetchUser(uid: activity.userId)
             return activity
         } catch {
             print("DEBUG: Failed to fetch activity with error \(error.localizedDescription)")

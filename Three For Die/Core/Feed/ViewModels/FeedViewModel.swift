@@ -46,7 +46,7 @@ class FeedViewModel: ObservableObject {
                         let activityId = activity.id
                         
                         if let user = try? await UserService.fetchUser(uid: uid) {
-                            activity.user = user
+                            activity.host = user
                         }
                         
                         activity.didJoin = await ActivityService.checkIfUserJoinedActivity(activityId: activityId)
