@@ -22,17 +22,17 @@ struct NotificationRowView: View {
             // Notification message
             Text(notification.message)
                 .font(.body)
-                .foregroundColor(notification.hasRead ? .secondary : .primary)
+                .foregroundColor(notification.hasRead ? Color.theme.secondaryText : Color.theme.primaryText)
             
             Spacer()
             
             // Timestamp
             Text(notification.timestamp.dateValue().timeAgoDisplay())
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.theme.secondaryText)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 8)
-        .background(notification.hasRead ? Color.clear : Color.blue.opacity(0.1))
     }
     
     private func notificationIcon(for type: NotificationType) -> String {

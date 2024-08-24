@@ -64,16 +64,18 @@ struct NotificationsView: View {
                 // List of Notifications
                 List(viewModel.notifications, id: \.id) { notification in
                     NotificationRowView(notification: notification)
+                        .background(notification.hasRead ? Color.clear : Color.blue.opacity(0.1))
                 }
                 .listStyle(PlainListStyle())
-                .onAppear {
-                    viewModel.markAllNotificationsAsRead()
-                }
+                
             } else {
                 ProgressView()
             }
             
             Spacer()
+        }
+        .onDisappear {
+            viewModel.markAllNotificationsAsRead()
         }
     }
 }

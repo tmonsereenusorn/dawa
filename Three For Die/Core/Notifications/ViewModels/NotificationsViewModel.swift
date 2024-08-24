@@ -102,18 +102,33 @@ class NotificationsViewModel: ObservableObject {
     func markAllNotificationsAsRead() {
         Task {
             guard let uid = Auth.auth().currentUser?.uid else { return }
-            for (index, notification) in notifications.enumerated() where !notification.hasRead {
-                if let notificationId = notification.id {
-                    try await FirestoreConstants.UserCollection.document(uid)
-                        .collection("notifications")
-                        .document(notificationId)
-                        .updateData(["hasRead": true])
-                    
-                    notifications[index].hasRead = true
+
+            await withTaskGroup(of: Void.self) { group in
+                for (index, notification) in notifications.enumerated() where !notification.hasRead {
+                    if let notificationId = notification.id {
+                        group.addTask {
+                            do {
+                                // Update the notification in Firestore
+                                try await FirestoreConstants.UserCollection.document(uid)
+                                    .collection("notifications")
+                                    .document(notificationId)
+                                    .updateData(["hasRead": true])
+
+                                // Safely update the notification's read status on the main thread
+                                await MainActor.run {
+                                    self.notifications[index].hasRead = true
+                                }
+                            } catch {
+                                print("Failed to mark notification as read: \(error)")
+                            }
+                        }
+                    }
                 }
             }
+
             self.objectWillChange.send()
         }
     }
+
 }
 
