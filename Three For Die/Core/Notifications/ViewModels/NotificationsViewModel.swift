@@ -58,6 +58,8 @@ class NotificationsViewModel: ObservableObject {
             }
         }
         
+        notifications.sort { $0.timestamp.dateValue() > $1.timestamp.dateValue() }
+        
         return notifications
     }
     
