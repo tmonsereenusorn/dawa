@@ -31,8 +31,12 @@ struct NotificationRowView: View {
                 .font(.caption)
                 .foregroundColor(Color.theme.secondaryText)
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 8)
+        .background(notification.hasRead ? Color.clear : Color.blue.opacity(0.1))
+        .cornerRadius(10)
+        .padding(.horizontal, 2)
     }
     
     private func notificationIcon(for type: NotificationType) -> String {
@@ -44,6 +48,7 @@ struct NotificationRowView: View {
         }
     }
 }
+
 //
 //
 //#Preview {
