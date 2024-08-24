@@ -70,17 +70,21 @@ class NotificationsViewModel: ObservableObject {
         do {
             var notification: NotificationBase
             let userId: String
+            let activityId: String
             
             switch notificationType {
             case .activityJoin:
                 notification = try change.document.data(as: ActivityJoinNotification.self)
                 userId = (notification as! ActivityJoinNotification).joinedByUserId
+                activityId = (notification as! ActivityJoinNotification).activityId
             case .activityLeave:
                 notification = try change.document.data(as: ActivityLeaveNotification.self)
                 userId = (notification as! ActivityLeaveNotification).leftByUserId
+                activityId = (notification as! ActivityLeaveNotification).activityId
             }
             
             notification.user = try await UserService.fetchUser(uid: userId)
+            notification.activity = try await ActivityService.fetchActivity(activityId: activityId)
             return notification
         } catch {
             print("DEBUG: Failed to fetch user or decode \(notificationType)Notification - \(error)")
@@ -91,14 +95,10 @@ class NotificationsViewModel: ObservableObject {
     private func handleNewNotifications(_ changes: [DocumentChange]) async {
         for change in changes where change.type == .added {
             if let notification = await processNotification(change) {
-                addNotification(notification)
+                notifications.insert(notification, at: 0)
+                self.objectWillChange.send()
             }
         }
-    }
-
-    private func addNotification(_ notification: NotificationBase) {
-        notifications.insert(notification, at: 0)
-        self.objectWillChange.send()
     }
     
     func markAllNotificationsAsRead() {

@@ -7,6 +7,7 @@
 
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import SwiftUI
 
 enum NotificationType: String, Codable {
     case activityJoin = "activity_join"
@@ -17,9 +18,10 @@ protocol NotificationBase: Codable {
     var id: String? { get }
     var type: NotificationType { get }
     var timestamp: Timestamp { get }
-    var message: String { get }
+    var message: Text { get }
     var hasRead: Bool { get set }
     var user: User? { get set }
+    var activity: Activity? { get set }
 }
 
 struct ActivityJoinNotification: NotificationBase {
@@ -30,13 +32,14 @@ struct ActivityJoinNotification: NotificationBase {
     var joinedByUserId: String
     var hasRead: Bool = false
     var user: User?
+    var activity: Activity?
 
     // Computed property to generate the message based on available data
-    var message: String {
-        if let username = user?.username {
-            return "\(username) has joined your activity."
+    var message: Text {
+        if let username = user?.username, let activityTitle = activity?.title {
+            return Text("\(username) has joined ") + Text(activityTitle).bold() + Text(".")
         } else {
-            return "User \(joinedByUserId) has joined your activity."
+            return Text("User \(joinedByUserId) has joined your activity.")
         }
     }
 
@@ -58,13 +61,14 @@ struct ActivityLeaveNotification: NotificationBase {
     var leftByUserId: String
     var hasRead: Bool = false
     var user: User?
+    var activity: Activity?
 
     // Computed property to generate the message based on available data
-    var message: String {
-        if let username = user?.username {
-            return "\(username) has left your activity."
+    var message: Text {
+        if let username = user?.username, let activityTitle = activity?.title {
+            return Text("\(username) has left ") + Text(activityTitle).bold() + Text(".")
         } else {
-            return "User \(leftByUserId) has left your activity."
+            return Text("User \(leftByUserId) has left your activity.")
         }
     }
 

@@ -20,7 +20,7 @@ struct NotificationRowView: View {
                 .padding(.trailing, 8)
             
             // Notification message
-            Text(notification.message)
+            notification.message
                 .font(.body)
                 .foregroundColor(notification.hasRead ? Color.theme.secondaryText : Color.theme.primaryText)
             
