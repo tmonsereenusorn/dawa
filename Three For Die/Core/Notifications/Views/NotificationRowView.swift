@@ -27,7 +27,7 @@ struct NotificationRowView: View {
             Spacer()
             
             // Timestamp
-            Text(notification.timestamp.dateValue(), style: .time)
+            Text(notification.timestamp.dateValue().timeAgoDisplay())
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
