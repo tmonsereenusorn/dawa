@@ -17,6 +17,7 @@ struct MainTabView: View {
     @StateObject var groupsViewModel = GroupsViewModel()
     @StateObject var feedViewModel = FeedViewModel()
     @StateObject var inboxViewModel = InboxViewModel()
+    @StateObject var notificationsViewModel = NotificationsViewModel()
     
     init() {
         UITabBar.appearance().isHidden = true
@@ -53,7 +54,7 @@ struct MainTabView: View {
                             
                             TabButton(image: "message", hasUnread: inboxViewModel.hasUnreadMessages)
                             
-                            TabButton(image: "bell")
+                            TabButton(image: "bell", hasUnread: notificationsViewModel.hasUnreadNotifications)
                         }
                         .padding(.top, 15)
                     }
@@ -108,6 +109,7 @@ struct MainTabView: View {
         .environmentObject(groupsViewModel)
         .environmentObject(feedViewModel)
         .environmentObject(inboxViewModel)
+        .environmentObject(notificationsViewModel)
     }
     
     @ViewBuilder

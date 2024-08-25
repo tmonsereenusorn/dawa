@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct InboxView: View {
-    @StateObject var viewModel = InboxViewModel()
+    @EnvironmentObject var viewModel: InboxViewModel
     @Binding var showLeftMenu: Bool
     @Binding var showRightMenu: Bool
     @EnvironmentObject var groupsViewModel: GroupsViewModel

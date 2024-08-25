@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct NotificationsView: View {
-    @StateObject var viewModel = NotificationsViewModel()
+    @EnvironmentObject var viewModel: NotificationsViewModel
     @Binding var showLeftMenu: Bool
     @Binding var showRightMenu: Bool
     @EnvironmentObject var groupsViewModel: GroupsViewModel
@@ -82,7 +82,9 @@ struct NotificationsView: View {
             Spacer()
         }
         .onDisappear {
-            viewModel.markAllNotificationsAsRead()
+            Task {
+                await viewModel.markAllNotificationsAsRead()
+            }
         }
     }
 }

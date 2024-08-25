@@ -13,8 +13,11 @@ import Firebase
 class NotificationsViewModel: ObservableObject {
     @Published var user: User?
     @Published var notifications = [NotificationBase]()
-    
     @Published var initialLoad = true
+    
+    var hasUnreadNotifications: Bool {
+        notifications.contains { !$0.hasRead }
+    }
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -101,36 +104,33 @@ class NotificationsViewModel: ObservableObject {
         }
     }
     
-    func markAllNotificationsAsRead() {
-        Task {
-            guard let uid = Auth.auth().currentUser?.uid else { return }
+    func markAllNotificationsAsRead() async {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
 
-            await withTaskGroup(of: Void.self) { group in
-                for (index, notification) in notifications.enumerated() where !notification.hasRead {
-                    if let notificationId = notification.id {
-                        group.addTask {
-                            do {
-                                // Update the notification in Firestore
-                                try await FirestoreConstants.UserCollection.document(uid)
-                                    .collection("notifications")
-                                    .document(notificationId)
-                                    .updateData(["hasRead": true])
-
-                                // Safely update the notification's read status on the main thread
-                                await MainActor.run {
-                                    self.notifications[index].hasRead = true
-                                }
-                            } catch {
-                                print("Failed to mark notification as read: \(error)")
+        await withTaskGroup(of: Void.self) { group in
+            for (index, notification) in notifications.enumerated() where !notification.hasRead {
+                if let notificationId = notification.id {
+                    group.addTask {
+                        do {
+                            // Safely update the notification's read status on the main thread
+                            await MainActor.run {
+                                self.notifications[index].hasRead = true
                             }
+                            
+                            // Update the notification in Firestore
+                            try await FirestoreConstants.UserCollection.document(uid)
+                                .collection("notifications")
+                                .document(notificationId)
+                                .updateData(["hasRead": true])
+                        } catch {
+                            print("Failed to mark notification as read: \(error)")
                         }
                     }
                 }
             }
-
-            self.objectWillChange.send()
         }
     }
+
 
 }
 
