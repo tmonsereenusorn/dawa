@@ -10,6 +10,7 @@ import Foundation
 class ActivityViewModel: ObservableObject {
     @Published var activity: Activity
     @Published var participants = [User]()
+    @Published var isLoading = false
     
     init(activity: Activity) {
         self.activity = activity
@@ -41,6 +42,10 @@ class ActivityViewModel: ObservableObject {
     
     @MainActor
     func joinActivity() async throws{
+        guard !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+        
         do {
             try await ActivityService.joinActivity(activityId: self.activity.id) {
                 
@@ -53,10 +58,12 @@ class ActivityViewModel: ObservableObject {
     
     @MainActor
     func leaveActivity() async throws {
+        guard !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+        
         do {
-            try await ActivityService.leaveActivity(activity: self.activity) {
-                
-            }
+            try await ActivityService.leaveActivity(activity: self.activity)
             try await refreshActivity()
         } catch {
             print("DEBUG: Failed to leave activity with error \(error.localizedDescription)")
@@ -65,6 +72,10 @@ class ActivityViewModel: ObservableObject {
     
     @MainActor
     func closeActivity() async throws {
+        guard !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+        
         do {
             try await ActivityService.closeActivity(activity: self.activity)
         } catch {

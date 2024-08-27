@@ -145,7 +145,7 @@ static func fetchActivity(activityId: String) async throws -> Activity? {
     }
     
     @MainActor
-    static func leaveActivity(activity: Activity, completion: @escaping() -> Void) async throws {
+    static func leaveActivity(activity: Activity) async throws {
         do {
             guard activity.numCurrent > 0 else { return }
             guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -170,9 +170,6 @@ static func fetchActivity(activityId: String) async throws -> Activity? {
             // Send notifications to all remaining participants
             let leaveNotification = ActivityLeaveNotification(activityId: activityId, leftByUserId: uid)
             try await NotificationService.shared.sendNotification(notification: leaveNotification, to: participantIds)
-            
-            // Call completion handler
-            completion()
             
         } catch {
             print("DEBUG: Failed to leave activity with error \(error.localizedDescription)")
