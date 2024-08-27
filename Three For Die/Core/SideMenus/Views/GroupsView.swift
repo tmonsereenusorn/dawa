@@ -14,6 +14,7 @@ struct GroupsView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
+            // Header
             HStack {
                 Text("Groups")
                     .font(.title2).bold()
@@ -22,16 +23,24 @@ struct GroupsView: View {
                 
                 Spacer()
                 
-                NavigationLink {
-                    GroupSearchView()
-                } label: {
-                    Image(systemName: "plus")
-                        .foregroundColor(Color.theme.primaryText)
+                VStack {
+                    NavigationLink {
+                        GroupSearchView()
+                    } label: {
+                        HStack {
+                            Text("Join Groups")
+                                .font(.caption)
+                                .foregroundColor(Color.theme.secondaryText)
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(Color.theme.primaryText)
+                        }
+                    }
                 }
             }
             
             Divider()
             
+            // Groups List
             if viewModel.fetchedGroups {
                 ScrollView {
                     LazyVStack {
@@ -63,23 +72,27 @@ struct GroupsView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             
-            
             Spacer()
             
-            Divider()
-            
-            Button {
-                creatingGroup.toggle()
-            } label: {
-                HStack {
-                    Image(systemName: "plus.app")
+            VStack {
+                Divider()
+                
+                Button {
+                    creatingGroup.toggle()
+                } label: {
                     Text("Create Group")
-                    Spacer()
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.white)
+                        .background(Color.theme.appTheme)
+                        .cornerRadius(10)
+                        .font(.body).bold()
                 }
-                .foregroundColor(Color.theme.primaryText)
-            }
-            .popover(isPresented: $creatingGroup) {
-                CreateGroupView()
+                .padding(.horizontal)
+                .padding(.bottom, 20)
+                .popover(isPresented: $creatingGroup) {
+                    CreateGroupView()
+                }
             }
         }
         .padding(10)
@@ -98,7 +111,7 @@ extension View {
         return UIScreen.main.bounds
     }
 }
-//
+
 //#Preview {
 //    GroupsView()
 //}
