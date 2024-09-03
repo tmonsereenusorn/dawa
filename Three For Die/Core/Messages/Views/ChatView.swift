@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct ChatView: View {
+    @Environment(\.presentationMode) var mode
     @State private var messageText = ""
     @State private var isInitialLoad = false
+    @State private var navigateToActivityView = false
     @StateObject var viewModel: ChatViewModel
     private let activity: Activity
     
@@ -20,35 +22,38 @@ struct ChatView: View {
     
     var body: some View {
         VStack {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVStack {
-                        VStack {
-                            VStack(spacing: 4) {
-                                Text(activity.title)
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
-                                
-                                Text("Group Chat")
-                                    .font(.footnote)
-                                    .foregroundColor(.gray)
+            if viewModel.messages.isEmpty {
+                Spacer()
+                VStack(spacing: 8) {
+                    Text("No messages yet.")
+                        .font(.system(size: 24, weight: .semibold))
+                    
+                    Text("Start a conversation!")
+                        .font(.system(size: 20, weight: .regular))
+                }
+                .foregroundColor(Color.theme.secondaryText)
+                .multilineTextAlignment(.center)
+                .padding()
+                Spacer()
+            } else {
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack {
+                            ForEach(viewModel.messages.indices, id: \.self) { index in
+                                ChatMessageCell(message: viewModel.messages[index],
+                                                nextMessage: viewModel.nextMessage(forIndex: index),
+                                                prevMessage: viewModel.prevMessage(forIndex: index))
+                                    .id(viewModel.messages[index].id)
                             }
                         }
-                        
-                        ForEach(viewModel.messages.indices, id: \.self) { index in
-                            ChatMessageCell(message: viewModel.messages[index],
-                                            nextMessage: viewModel.nextMessage(forIndex: index),
-                                            prevMessage: viewModel.prevMessage(forIndex: index))
-                                .id(viewModel.messages[index].id)
-                        }
+                        .padding(.vertical)
                     }
-                    .padding(.vertical)
-                }
-                .onChange(of: viewModel.messages) { newValue in
-                    guard let lastMessage = newValue.last else { return }
-            
-                    withAnimation(.spring()) {
-                        proxy.scrollTo(lastMessage.id)
+                    .onChange(of: viewModel.messages) { newValue in
+                        guard let lastMessage = newValue.last else { return }
+                
+                        withAnimation(.spring()) {
+                            proxy.scrollTo(lastMessage.id)
+                        }
                     }
                 }
             }
@@ -61,7 +66,30 @@ struct ChatView: View {
             viewModel.removeChatListener()
         }
         .navigationTitle(activity.title)
+        .navigationBarBackButtonHidden(true)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    mode.wrappedValue.dismiss()
+                } label: {
+                    Image(systemName: "arrow.left")
+                        .imageScale(.large)
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    navigateToActivityView = true
+                }) {
+                    Image(systemName: "info.circle")
+                        .imageScale(.large)
+                }
+            }
+        }
+        .navigationDestination(isPresented: $navigateToActivityView) {
+            ActivityView(activity: activity)
+        }
+        .tint(Color.theme.primaryText)
     }
 }
 
