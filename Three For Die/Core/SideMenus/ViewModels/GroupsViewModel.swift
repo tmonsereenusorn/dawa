@@ -14,7 +14,7 @@ class GroupsViewModel: ObservableObject {
     
     init() {
         Task {
-            try await fetchCurrentGroup(groupId: "iYBzqoXOHI3rSwl4y1aW")
+            try await fetchCurrentGroup(handle: "stanford")
             await fetchUserGroups()
         }
     }
@@ -27,7 +27,7 @@ class GroupsViewModel: ObservableObject {
     }
     
     @MainActor
-    func fetchCurrentGroup(groupId: String) async throws {
-        self.currSelectedGroup = try await GroupService.fetchGroup(groupId: groupId)
+    func fetchCurrentGroup(handle: String) async throws {
+        self.currSelectedGroup = try await GroupService.findGroupByHandle(handle)
     }
 }

@@ -21,6 +21,7 @@
 		8501F24C2A8B6EA0000CC58B /* InboxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8501F24B2A8B6EA0000CC58B /* InboxViewModel.swift */; };
 		8503FCFC2A52D8A60024F98B /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8503FCFB2A52D8A60024F98B /* GroupsView.swift */; };
 		8503FCFE2A52D95D0024F98B /* GroupRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8503FCFD2A52D95D0024F98B /* GroupRowView.swift */; };
+		85059B782C8F5E43003D39A3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 85059B772C8F5E43003D39A3 /* GoogleService-Info.plist */; };
 		850B07462B06D28700A4FAF5 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07452B06D28700A4FAF5 /* NotificationsView.swift */; };
 		850B07482B06D3B100A4FAF5 /* NotificationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07472B06D3B100A4FAF5 /* NotificationsViewModel.swift */; };
 		850B074A2B06D43900A4FAF5 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B07492B06D43900A4FAF5 /* NotificationService.swift */; };
@@ -116,7 +117,6 @@
 		85C159B72B5F280800B422E8 /* MemberRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C159B62B5F280800B422E8 /* MemberRequest.swift */; };
 		85C306E52C6AA21C00D2C2BC /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C306E42C6AA21C00D2C2BC /* Notification.swift */; };
 		85C306E72C7249E200D2C2BC /* NotificationRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C306E62C7249E200D2C2BC /* NotificationRowView.swift */; };
-		85C854CE2A4167B00057F55F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 85C854CD2A4167B00057F55F /* GoogleService-Info.plist */; };
 		85C854D12A418EBF0057F55F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D02A418EBF0057F55F /* ContentView.swift */; };
 		85C854D42A418F290057F55F /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C854D32A418F290057F55F /* SignUpView.swift */; };
 		85C8BDCE2A7251190059932C /* GroupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C8BDCD2A7251190059932C /* GroupService.swift */; };
@@ -157,6 +157,7 @@
 		8501F24B2A8B6EA0000CC58B /* InboxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxViewModel.swift; sourceTree = "<group>"; };
 		8503FCFB2A52D8A60024F98B /* GroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsView.swift; sourceTree = "<group>"; };
 		8503FCFD2A52D95D0024F98B /* GroupRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRowView.swift; sourceTree = "<group>"; };
+		85059B772C8F5E43003D39A3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		850B07452B06D28700A4FAF5 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		850B07472B06D3B100A4FAF5 /* NotificationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewModel.swift; sourceTree = "<group>"; };
 		850B07492B06D43900A4FAF5 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -218,7 +219,6 @@
 		85C159B62B5F280800B422E8 /* MemberRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRequest.swift; sourceTree = "<group>"; };
 		85C306E42C6AA21C00D2C2BC /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		85C306E62C7249E200D2C2BC /* NotificationRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRowView.swift; sourceTree = "<group>"; };
-		85C854CD2A4167B00057F55F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		85C854D02A418EBF0057F55F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		85C854D32A418F290057F55F /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		85C8BDCD2A7251190059932C /* GroupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupService.swift; sourceTree = "<group>"; };
@@ -316,7 +316,7 @@
 				389240A029A187260005AA3D /* Three_For_Die.entitlements */,
 				3892409A29A187260005AA3D /* ThreeForDieApp.swift */,
 				3892409E29A187260005AA3D /* Assets.xcassets */,
-				85C854CD2A4167B00057F55F /* GoogleService-Info.plist */,
+				85059B772C8F5E43003D39A3 /* GoogleService-Info.plist */,
 				389240A129A187260005AA3D /* Preview Content */,
 			);
 			path = "Three For Die";
@@ -780,9 +780,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				8521E6202C62A37F008D449E /* .gitignore in Resources */,
+				85059B782C8F5E43003D39A3 /* GoogleService-Info.plist in Resources */,
 				389240A329A187260005AA3D /* Preview Assets.xcassets in Resources */,
 				3892409F29A187260005AA3D /* Assets.xcassets in Resources */,
-				85C854CE2A4167B00057F55F /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1029,7 +1029,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "threefordie.Three-For-Die";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dawa-app.dawa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -1067,7 +1067,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "threefordie.Three-For-Die";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dawa-app.dawa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";

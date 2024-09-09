@@ -20,10 +20,8 @@ class CreateGroupViewModel: ObservableObject {
     @MainActor
     func createGroup(name: String, handle: String) async throws {
         do {
-            try await service.createGroup(groupName: name, handle: handle.lowercased()) { groupId in
-                self.groupId = groupId
-                self.didCreateGroup = true
-            }
+            self.groupId = try await GroupService.createGroup(groupName: name, handle: handle.lowercased())
+            self.didCreateGroup = true
         } catch AppError.groupHandleAlreadyExists {
             showGroupHandleErrorMessage = true
             print("Group handle already exists. Please choose a different handle.")

@@ -17,9 +17,9 @@ class VerifyEmailViewModel: ObservableObject {
         }
     }
     
-    func refreshUser() async throws {
+    func refreshUserVerificationStatus() async throws {
         do {
-            try await AuthService.shared.refreshUser()
+            try await AuthService.shared.refreshUserVerificationStatus()
         } catch {
             print("DEBUG: Refreshing user failed with error \(error.localizedDescription)")
         }

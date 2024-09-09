@@ -11,9 +11,9 @@ import Firebase
 class GroupService {
     
     @MainActor
-    func createGroup(groupName: String, handle: String, completion: @escaping(String) -> Void) async throws {
+    static func createGroup(groupName: String, handle: String) async throws -> String {
         do {
-            // Check if group handle already exists
+            // Check if the group handle already exists
             let querySnapshot = try await FirestoreConstants.GroupsCollection
                 .whereField("handle", isEqualTo: handle)
                 .getDocuments()
@@ -22,8 +22,8 @@ class GroupService {
                 throw AppError.groupHandleAlreadyExists
             }
             
-            // Upload group to firestore
-            guard let uid = Auth.auth().currentUser?.uid else { return }
+            // Upload group to Firestore
+            guard let uid = Auth.auth().currentUser?.uid else { return "" }
             let group = Groups(name: groupName,
                                handle: handle,
                                numMembers: 1)
@@ -34,19 +34,19 @@ class GroupService {
             
             // Add user to group's user member list
             let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
-            try await groupMembersRef.document(uid).setData(["permissions":"Owner"])
+            try await groupMembersRef.document(uid).setData(["permissions": "Owner"])
             
             // Add group to user's groups list
             let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
             try await groupsRef.document(groupId).setData([:])
             
-            completion(groupId)
-            
+            return groupId
         } catch let error as AppError {
             print(error.localizedDescription)
             throw error
         } catch {
             print("DEBUG: Failed to create group with error \(error.localizedDescription)")
+            throw error
         }
     }
     
@@ -55,7 +55,7 @@ class GroupService {
             let group = try await GroupService.fetchGroup(groupId: groupId)
             
             for member in group.memberList! {
-                try await leaveGroup(uid: member.id, groupId: groupId)
+                let _ = try await leaveGroup(uid: member.id, groupId: groupId)
             }
             
             let outgoingInvites = try await GroupService.fetchOutgoingInvites(groupId: groupId)
@@ -273,6 +273,28 @@ class GroupService {
         } catch {
             print("DEBUG: Failed to change permissions for user ID: \(uid) in group ID: \(groupId)")
             return false
+        }
+    }
+    
+    @MainActor
+    static func findGroupByHandle(_ handle: String) async throws -> Groups? {
+        do {
+            let querySnapshot = try await FirestoreConstants.GroupsCollection
+                .whereField("handle", isEqualTo: handle)
+                .limit(to: 1)
+                .getDocuments()
+            
+            if let document = querySnapshot.documents.first {
+                var group = try document.data(as: Groups.self)
+                let members = await fetchGroupMembers(groupId: group.id)
+                group.memberList = members
+                return group
+            } else {
+                return nil
+            }
+        } catch {
+            print("DEBUG: Failed to find group with handle \(handle): \(error.localizedDescription)")
+            throw error
         }
     }
     

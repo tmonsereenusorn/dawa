@@ -84,9 +84,21 @@ class AuthService {
     }
     
     @MainActor
-    func refreshUser() async throws {
+    func refreshUserVerificationStatus() async throws {
         do {
             try await self.userSession?.reload()
+            
+            // If user has verified email, add user to Stanford group
+            if let user = Auth.auth().currentUser, user.isEmailVerified {
+                let stanfordGroup = try await GroupService.findGroupByHandle("stanford")
+                
+                if stanfordGroup == nil {
+                    let _ = try await GroupService.createGroup(groupName: "Stanford University", handle: "stanford")
+                } else {
+                    try await GroupService.joinGroup(uid: user.uid, groupId: stanfordGroup!.id)
+                }
+            }
+            
             self.userSession = Auth.auth().currentUser
         } catch {
             print("DEBUG: Error refreshing user: \(error.localizedDescription)")

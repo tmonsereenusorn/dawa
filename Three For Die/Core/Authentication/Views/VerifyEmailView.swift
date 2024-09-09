@@ -6,17 +6,22 @@
 //
 
 import SwiftUI
+import Combine
 
 struct VerifyEmailView: View {
-    let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 5, on: .main, in: .common)
     @EnvironmentObject var contentViewModel: ContentViewModel
     @StateObject var viewModel = VerifyEmailViewModel()
-    
+    @State private var timerCancellable: Cancellable? = nil
+    @State private var isSendingEmail = false
+
     var body: some View {
         VStack {
-            // Logo (Placeholder title for now)
-            Text("3 For Die")
-                .font(.largeTitle)
+            Image("dawa_login_logo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 150, height: 150)
+                .padding()
             
             Spacer()
             
@@ -30,10 +35,17 @@ struct VerifyEmailView: View {
             
             VStack {
                 Button {
-                    Task { try await viewModel.sendVerificationEmail() }
+                    isSendingEmail = true
+                    Task {
+                        try await viewModel.sendVerificationEmail()
+                        isSendingEmail = false
+                    }
                 } label: {
                     HStack {
-                        Text("Resend Email")
+                        if isSendingEmail {
+                            ProgressView()
+                        }
+                        Text(isSendingEmail ? "Sending..." : "Resend Email")
                             .fontWeight(.semibold)
                     }
                     .foregroundColor(.white)
@@ -62,20 +74,37 @@ struct VerifyEmailView: View {
             
             Spacer()
         }
-        .task {
-            do {
+        .onAppear {
+            isSendingEmail = true
+            Task {
                 try await viewModel.sendVerificationEmail()
-            } catch {
-                print("Failed to send verification email")
+                isSendingEmail = false
+            }
+            
+            timerCancellable = timer.autoconnect().sink { _ in
+                Task {
+                    try await viewModel.refreshUserVerificationStatus()
+                    
+                    // Check if the user's email is verified
+                    if let userSession = contentViewModel.userSession, userSession.isEmailVerified {
+                        // Stop the timer when email is verified
+                        stopTimer()
+                    }
+                }
             }
         }
-        .onReceive(timer) { time in
-            Task {
-                try await viewModel.refreshUser()
-            }
+        .onDisappear {
+            // Stop timer if the view is dismissed
+            stopTimer()
         }
     }
+    
+    private func stopTimer() {
+        timerCancellable?.cancel()
+        timerCancellable = nil
+    }
 }
+
 
 //struct VerifyEmailView_Previews: PreviewProvider {
 //    static var previews: some View {
