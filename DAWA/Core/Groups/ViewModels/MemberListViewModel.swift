@@ -1,6 +1,6 @@
 //
 //  MemberListViewModel.swift
-//  Three For Die
+//  DAWA
 //
 //  Created by Tee Monsereenusorn on 10/30/23.
 //

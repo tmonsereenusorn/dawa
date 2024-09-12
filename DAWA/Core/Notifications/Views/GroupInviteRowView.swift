@@ -1,6 +1,6 @@
 //
 //  GroupInviteRowView.swift
-//  Three For Die
+//  DAWA
 //
 //  Created by Tee Monsereenusorn on 11/16/23.
 //

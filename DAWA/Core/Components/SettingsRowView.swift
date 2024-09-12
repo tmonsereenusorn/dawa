@@ -1,6 +1,6 @@
 //
 //  SettingsRowView.swift
-//  Three For Die
+//  DAWA
 //
 //  Created by Tee Monsereenusorn on 6/23/23.
 //

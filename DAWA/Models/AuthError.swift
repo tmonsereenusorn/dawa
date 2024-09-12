@@ -1,6 +1,6 @@
 //
 //  AuthError.swift
-//  Three For Die
+//  DAWA
 //
 //  Created by Tee Monsereenusorn on 8/8/23.
 //

@@ -1,6 +1,6 @@
 //
 //  VerifyEmailView.swift
-//  Three For Die
+//  DAWA
 //
 //  Created by Tee Monsereenusorn on 6/28/23.
 //

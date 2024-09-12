@@ -1,13 +1,6 @@
 //
 //  InboxViewModel.swift
-//  Three For Die
-//
-//  Created by Tee Monsereenusorn on 8/15/23.
-//
-
-//
-//  InboxViewModel.swift
-//  Three For Die
+//  DAWA
 //
 //  Created by Tee Monsereenusorn on 8/15/23.
 //
