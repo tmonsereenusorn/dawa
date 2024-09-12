@@ -4,7 +4,7 @@ import FirebaseFirestore
 import FirebaseAuth
 
 @main
-struct Three_For_DieApp: App {
+struct DAWAApp: App {
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
