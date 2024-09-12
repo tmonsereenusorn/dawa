@@ -141,7 +141,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3892409729A187260005AA3D /* Three For Die.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Three For Die.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3892409729A187260005AA3D /* DAWA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DAWA.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3892409A29A187260005AA3D /* ThreeForDieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreeForDieApp.swift; sourceTree = "<group>"; };
 		3892409E29A187260005AA3D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		389240A229A187260005AA3D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -299,7 +299,7 @@
 		3892409829A187260005AA3D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3892409729A187260005AA3D /* Three For Die.app */,
+				3892409729A187260005AA3D /* DAWA.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -683,9 +683,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3892409629A187260005AA3D /* Three For Die */ = {
+		3892409629A187260005AA3D /* DAWA */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 389240A629A187260005AA3D /* Build configuration list for PBXNativeTarget "Three For Die" */;
+			buildConfigurationList = 389240A629A187260005AA3D /* Build configuration list for PBXNativeTarget "DAWA" */;
 			buildPhases = (
 				3892409329A187260005AA3D /* Sources */,
 				3892409429A187260005AA3D /* Frameworks */,
@@ -695,7 +695,7 @@
 			);
 			dependencies = (
 			);
-			name = "Three For Die";
+			name = DAWA;
 			packageProductDependencies = (
 				85B3C1C62A4987AB0041B3FF /* FirebaseAnalytics */,
 				85B3C1C82A4987AB0041B3FF /* FirebaseAnalyticsOnDeviceConversion */,
@@ -733,7 +733,7 @@
 				858979CB2AE09E8000C8E6D6 /* FirebaseAppCheck */,
 			);
 			productName = "Three For Die";
-			productReference = 3892409729A187260005AA3D /* Three For Die.app */;
+			productReference = 3892409729A187260005AA3D /* DAWA.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -751,7 +751,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3892409229A187260005AA3D /* Build configuration list for PBXProject "Three For Die" */;
+			buildConfigurationList = 3892409229A187260005AA3D /* Build configuration list for PBXProject "DAWA" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -769,7 +769,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3892409629A187260005AA3D /* Three For Die */,
+				3892409629A187260005AA3D /* DAWA */,
 			);
 		};
 /* End PBXProject section */
@@ -1082,7 +1082,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3892409229A187260005AA3D /* Build configuration list for PBXProject "Three For Die" */ = {
+		3892409229A187260005AA3D /* Build configuration list for PBXProject "DAWA" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				389240A429A187260005AA3D /* Debug */,
@@ -1091,7 +1091,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		389240A629A187260005AA3D /* Build configuration list for PBXNativeTarget "Three For Die" */ = {
+		389240A629A187260005AA3D /* Build configuration list for PBXNativeTarget "DAWA" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				389240A729A187260005AA3D /* Debug */,
