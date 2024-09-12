@@ -144,7 +144,6 @@
 		3892409729A187260005AA3D /* Three For Die.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Three For Die.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3892409A29A187260005AA3D /* ThreeForDieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreeForDieApp.swift; sourceTree = "<group>"; };
 		3892409E29A187260005AA3D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		389240A029A187260005AA3D /* Three_For_Die.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Three_For_Die.entitlements; sourceTree = "<group>"; };
 		389240A229A187260005AA3D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		389240B429A19D170005AA3D /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		389240BB29A1B3960005AA3D /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -314,7 +313,6 @@
 				85D9BAEE2A3AC1AD00E11652 /* Styles */,
 				85D9BAF12A3AC2F100E11652 /* Extensions */,
 				8501F2442A8AA3E7000CC58B /* Utils */,
-				389240A029A187260005AA3D /* Three_For_Die.entitlements */,
 				3892409A29A187260005AA3D /* ThreeForDieApp.swift */,
 				3892409E29A187260005AA3D /* Assets.xcassets */,
 				85E4BDB22C9313BF0023A69E /* DAWA.entitlements */,
