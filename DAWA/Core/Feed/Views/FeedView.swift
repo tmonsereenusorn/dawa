@@ -90,6 +90,13 @@ struct FeedView: View{
                     }
                 }
             }
+            .onChange(of: groupsViewModel.currSelectedGroup?.id) { newGroupId in
+                if let groupId = newGroupId {
+                    Task {
+                        try? await viewModel.fetchActivities(groupId: groupId)
+                    }
+                }
+            }
         } else {
             ProgressView("Loading Feed...")
         }

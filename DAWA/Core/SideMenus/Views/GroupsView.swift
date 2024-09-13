@@ -48,9 +48,6 @@ struct GroupsView: View {
                             Button {
                                 let group = viewModel.groups[index]
                                 viewModel.currSelectedGroup = group
-                                Task {
-                                    try await feedViewModel.fetchActivities(groupId: group.id)
-                                }
                             } label: {
                                 GroupRowView(group: viewModel.groups[index])
                             }

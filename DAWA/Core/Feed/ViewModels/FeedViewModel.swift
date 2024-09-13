@@ -23,12 +23,6 @@ class FeedViewModel: ObservableObject {
         }
     }
 
-    init() {
-        Task {
-            try await fetchActivities(groupId: "iYBzqoXOHI3rSwl4y1aW")
-        }
-    }
-
     @MainActor
     func fetchActivities(groupId: String) async throws {
         self.activities = []
