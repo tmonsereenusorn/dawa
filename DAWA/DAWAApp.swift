@@ -20,8 +20,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
+        
         UNUserNotificationCenter.current().delegate = self
         Messaging.messaging().delegate = self
+        
         checkAndRegisterForPushNotifications()
         return true
     }
@@ -54,7 +56,24 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.banner, .sound])
+        // This is called when a notification is received while the app is in the foreground
+        let userInfo = notification.request.content.userInfo
+        
+        // Handle the notification data
+        PushNotificationHandler.shared.handleNotification(userInfo: userInfo)
+        
+        // Don't present a visual notification when the app is in the foreground
+        completionHandler([])
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        // This is called when the user taps on a notification (app was in background)
+        let userInfo = response.notification.request.content.userInfo
+        
+        // Handle the notification data
+        PushNotificationHandler.shared.handleNotification(userInfo: userInfo)
+        
+        completionHandler()
     }
 
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
@@ -68,25 +87,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let userRef = Firestore.firestore().collection("users").document(userId)
 
         userRef.getDocument { document, error in
-            if let error = error {
-                print("Error fetching user document: \(error.localizedDescription)")
-                return
-            }
-            
             var fcmTokens = (document?.data()?["fcmTokens"] as? [[String: String]]) ?? []
-            
-            // Remove existing entry for this device if it exists
             fcmTokens.removeAll { $0["deviceId"] == deviceId }
-            
-            // Add the new token
-            fcmTokens.append(["deviceId": deviceId, "token": fcmToken])
-            
+            fcmTokens.append(["token": fcmToken, "deviceId": deviceId])
+
             userRef.setData(["fcmTokens": fcmTokens], merge: true) { error in
-                if let error = error {
-                    print("Error updating FCM token: \(error.localizedDescription)")
-                } else {
-                    print("FCM token successfully added/updated for device: \(deviceId)")
-                }
+                if let error = error { print("Error: \(error.localizedDescription)") }
+                else { print("FCM token successfully added.") }
             }
         }
     }
