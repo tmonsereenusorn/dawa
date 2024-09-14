@@ -10,7 +10,6 @@ import SwiftUI
 struct ChatView: View {
     @Environment(\.presentationMode) var mode
     @State private var messageText = ""
-    @State private var isInitialLoad = false
     @State private var navigateToActivityView = false
     @StateObject var viewModel: ChatViewModel
     private let activity: Activity
@@ -43,16 +42,23 @@ struct ChatView: View {
                                 ChatMessageCell(message: viewModel.messages[index],
                                                 nextMessage: viewModel.nextMessage(forIndex: index),
                                                 prevMessage: viewModel.prevMessage(forIndex: index))
-                                    .id(viewModel.messages[index].id)
+                                    .id(viewModel.messages[index].id) // Unique ID for scrolling
                             }
                         }
                         .padding(.vertical)
                     }
-                    .onChange(of: viewModel.messages) { newValue in
-                        guard let lastMessage = newValue.last else { return }
-                
-                        withAnimation(.spring()) {
-                            proxy.scrollTo(lastMessage.id)
+                    .onAppear {
+                        if let lastMessage = viewModel.messages.last {
+                            withAnimation(.spring()) {
+                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                            }
+                        }
+                    }
+                    .onChange(of: viewModel.messages) { _ in
+                        if let lastMessage = viewModel.messages.last {
+                            withAnimation(.spring()) {
+                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                            }
                         }
                     }
                 }

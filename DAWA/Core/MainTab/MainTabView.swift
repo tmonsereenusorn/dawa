@@ -82,6 +82,10 @@ struct MainTabView: View {
             }
             .frame(width: getRect().width + 2 * sideBarWidth)
             .offset(x: offset)
+            .onChange(of: PushNotificationHandler.shared.tappedActivityId) { activityId in
+                currentTab = "message"
+                PushNotificationHandler.shared.tappedActivityId = nil
+            }
         }
         .animation(.easeOut, value: offset == 0)
         .onChange(of: showLeftMenu) { newValue in

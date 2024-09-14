@@ -60,7 +60,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let userInfo = notification.request.content.userInfo
         
         // Handle the notification data
-        PushNotificationHandler.shared.handleNotification(userInfo: userInfo)
+        PushNotificationHandler.shared.handleReceivedNotification(userInfo: userInfo)
         
         // Don't present a visual notification when the app is in the foreground
         completionHandler([])
@@ -71,7 +71,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let userInfo = response.notification.request.content.userInfo
         
         // Handle the notification data
-        PushNotificationHandler.shared.handleNotification(userInfo: userInfo)
+        PushNotificationHandler.shared.handleTappedNotification(userInfo: userInfo)
         
         completionHandler()
     }

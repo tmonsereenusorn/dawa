@@ -73,6 +73,9 @@ def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore
                 title=notification_title,
                 body=notification_body
             ),
+            data={
+                'activityId': activity_id
+            },
             token=token
         )
         try:
