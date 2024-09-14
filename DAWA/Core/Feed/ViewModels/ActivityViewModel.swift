@@ -14,9 +14,6 @@ class ActivityViewModel: ObservableObject {
     
     init(activity: Activity) {
         self.activity = activity
-        Task {
-            await fetchActivityParticipants()
-        }
     }
     
     @MainActor
@@ -29,19 +26,22 @@ class ActivityViewModel: ObservableObject {
     @MainActor
     func refreshActivity() async throws {
         do {
+            isLoading = true
             let activityId = activity.id
             if let newActivity = try await ActivityService.fetchActivity(activityId: activityId) {
                 activity.numCurrent = newActivity.numCurrent
                 activity.didJoin = await ActivityService.checkIfUserJoinedActivity(activityId: activityId)
             }
             await fetchActivityParticipants()
+            isLoading = false
         } catch {
             print("DEBUG: Failed to fetch activity with error \(error.localizedDescription)")
+            isLoading = false
         }
     }
     
     @MainActor
-    func joinActivity() async throws{
+    func joinActivity() async throws {
         guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }

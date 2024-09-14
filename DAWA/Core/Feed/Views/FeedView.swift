@@ -45,8 +45,6 @@ struct FeedView: View{
                     Divider()
                 }
                 
-                
-                
                 ZStack(alignment: .bottomTrailing) {
                     List {
                         SearchBar(text: $viewModel.searchText)

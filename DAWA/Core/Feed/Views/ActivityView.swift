@@ -24,13 +24,9 @@ struct ActivityView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         // Header
-                        HStack {
-                            backButton
-                            
-                            Spacer()
-                        }
-                        .padding(.horizontal)
-                        .padding(.top, 10)
+                        header
+                            .padding(.horizontal)
+                            .padding(.top, 10)
                         
                         // Main Activity Content
                         VStack(spacing: 10) {
@@ -56,6 +52,11 @@ struct ActivityView: View {
                 .background(Color.theme.background)
                 .blur(radius: viewModel.isLoading ? 3.0 : 0)
                 .disabled(viewModel.isLoading)
+                .onAppear {
+                    Task {
+                        try? await viewModel.refreshActivity()
+                    }
+                }
                 
                 // Button at the bottom
                 VStack {
@@ -73,14 +74,29 @@ struct ActivityView: View {
         }
     }
     
-    private var backButton: some View {
-        Button {
-            mode.wrappedValue.dismiss()
-        } label: {
-            Image(systemName: "arrow.left")
-                .resizable()
-                .frame(width: 20, height: 16)
-                .foregroundColor(Color.theme.primaryText)
+    private var header: some View {
+        HStack {
+            Button {
+                mode.wrappedValue.dismiss()
+            } label: {
+                Image(systemName: "arrow.left")
+                    .resizable()
+                    .frame(width: 20, height: 16)
+                    .foregroundColor(Color.theme.primaryText)
+            }
+            
+            Spacer()
+            
+            Button {
+                Task {
+                    try? await viewModel.refreshActivity()
+                }
+            } label: {
+                Image(systemName: "arrow.clockwise")
+                    .resizable()
+                    .frame(width: 20, height: 20)
+                    .foregroundColor(Color.theme.primaryText)
+            }
         }
     }
     

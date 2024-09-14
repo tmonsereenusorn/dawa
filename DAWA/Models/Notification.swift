@@ -39,7 +39,7 @@ struct ActivityJoinNotification: NotificationBase {
         if let username = user?.username, let activityTitle = activity?.title {
             return Text("\(username) has joined ") + Text(activityTitle).bold() + Text(".")
         } else {
-            return Text("User \(joinedByUserId) has joined your activity.")
+            return Text("A user has joined your activity.")
         }
     }
 
