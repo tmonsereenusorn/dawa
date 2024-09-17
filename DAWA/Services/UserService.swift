@@ -78,7 +78,7 @@ class UserService {
             }
             
             let encodedUser = try Firestore.Encoder().encode(newUserProfile)
-            try await FirestoreConstants.UserCollection.document(uid).setData(encodedUser)
+            try await FirestoreConstants.UserCollection.document(uid).setData(encodedUser, merge: true)
             try await fetchCurrentUser()
         } catch {
             print("DEBUG: Failed to edit user with error \(error.localizedDescription)")

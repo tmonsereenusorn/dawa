@@ -89,3 +89,171 @@ def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore
     if invalid_tokens:
         user_ref.update({'fcmTokens': firestore.ArrayRemove(invalid_tokens)})
         print(f"Removed invalid tokens: {invalid_tokens}")
+
+@firestore_fn.on_document_created(document="activities/{activityId}/participants/{participantId}")
+def send_participant_joined_notification(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> None:
+    db = get_firestore_client()
+
+    activity_id = event.params['activityId']
+    participant_id = event.params['participantId']
+    
+    activity_ref = db.collection('activities').document(activity_id)
+    activity_doc = activity_ref.get()
+
+    if not activity_doc.exists:
+        print(f"Activity document not found: {activity_id}")
+        return
+
+    activity_data = activity_doc.to_dict()
+    activity_title = activity_data.get('title', 'Activity')
+
+    # Fetch the participant's user data
+    participant_user_ref = db.collection('users').document(participant_id)
+    participant_user_doc = participant_user_ref.get()
+
+    if not participant_user_doc.exists:
+        print(f"User document not found: {participant_id}")
+        return
+
+    participant_user_data = participant_user_doc.to_dict()
+    participant_username = participant_user_data.get('username', 'Unknown User')
+
+    notification_body = f"{participant_username} has joined the activity."
+
+    # Get all participants of the activity
+    participants_ref = activity_ref.collection('participants')
+    participants_docs = participants_ref.stream()
+
+    for participant_doc in participants_docs:
+        participant_data = participant_doc.to_dict()
+        user_id = participant_doc.id
+
+        user_ref = db.collection('users').document(user_id)
+        user_doc = user_ref.get()
+
+        if not user_doc.exists:
+            print(f"User document not found for participant: {user_id}")
+            continue
+
+        user_data = user_doc.to_dict()
+        fcm_tokens = user_data.get('fcmTokens', [])
+
+        if not fcm_tokens:
+            print(f"No FCM tokens for user: {user_id}")
+            continue
+
+        invalid_tokens = []
+        for token_info in fcm_tokens:
+            if not isinstance(token_info, dict) or 'token' not in token_info or 'deviceId' not in token_info:
+                print(f"Invalid token format: {token_info}")
+                invalid_tokens.append(token_info)
+                continue
+
+            token = token_info['token']
+            device_id = token_info['deviceId']
+
+            message = messaging.Message(
+                notification=messaging.Notification(
+                    title=f"{activity_title}",
+                    body=notification_body
+                ),
+                data={
+                    'activityId': activity_id
+                },
+                token=token
+            )
+            try:
+                response = messaging.send(message)
+                print(f"Sent message to device {device_id} with token {token}: {response}")
+            except Exception as e:
+                print(f"Error sending to device {device_id} with token {token}: {str(e)}")
+                if isinstance(e, messaging.ApiCallError) and e.code == 'messaging/registration-token-not-registered':
+                    invalid_tokens.append(token_info)
+
+        if invalid_tokens:
+            user_ref.update({'fcmTokens': firestore.ArrayRemove(invalid_tokens)})
+            print(f"Removed invalid tokens: {invalid_tokens}")
+
+@firestore_fn.on_document_deleted(document="activities/{activityId}/participants/{participantId}")
+def send_participant_left_notification(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> None:
+    db = get_firestore_client()
+
+    activity_id = event.params['activityId']
+    participant_id = event.params['participantId']
+
+    activity_ref = db.collection('activities').document(activity_id)
+    activity_doc = activity_ref.get()
+
+    if not activity_doc.exists:
+        print(f"Activity document not found: {activity_id}")
+        return
+
+    activity_data = activity_doc.to_dict()
+    activity_title = activity_data.get('title', 'Activity')
+
+    # Fetch the participant's user data
+    participant_user_ref = db.collection('users').document(participant_id)
+    participant_user_doc = participant_user_ref.get()
+
+    if not participant_user_doc.exists:
+        print(f"User document not found: {participant_id}")
+        return
+
+    participant_user_data = participant_user_doc.to_dict()
+    participant_username = participant_user_data.get('username', 'Unknown User')
+
+    notification_body = f"{participant_username} has left the activity."
+
+    # Get all participants of the activity
+    participants_ref = activity_ref.collection('participants')
+    participants_docs = participants_ref.stream()
+
+    for participant_doc in participants_docs:
+        participant_data = participant_doc.to_dict()
+        user_id = participant_doc.id
+
+        user_ref = db.collection('users').document(user_id)
+        user_doc = user_ref.get()
+
+        if not user_doc.exists:
+            print(f"User document not found for participant: {user_id}")
+            continue
+
+        user_data = user_doc.to_dict()
+        fcm_tokens = user_data.get('fcmTokens', [])
+
+        if not fcm_tokens:
+            print(f"No FCM tokens for user: {user_id}")
+            continue
+
+        invalid_tokens = []
+        for token_info in fcm_tokens:
+            if not isinstance(token_info, dict) or 'token' not in token_info or 'deviceId' not in token_info:
+                print(f"Invalid token format: {token_info}")
+                invalid_tokens.append(token_info)
+                continue
+
+            token = token_info['token']
+            device_id = token_info['deviceId']
+
+            message = messaging.Message(
+                notification=messaging.Notification(
+                    title=f"{activity_title}",
+                    body=notification_body
+                ),
+                data={
+                    'activityId': activity_id
+                },
+                token=token
+            )
+            try:
+                response = messaging.send(message)
+                print(f"Sent message to device {device_id} with token {token}: {response}")
+            except Exception as e:
+                print(f"Error sending to device {device_id} with token {token}: {str(e)}")
+                if isinstance(e, messaging.ApiCallError) and e.code == 'messaging/registration-token-not-registered':
+                    invalid_tokens.append(token_info)
+
+        if invalid_tokens:
+            user_ref.update({'fcmTokens': firestore.ArrayRemove(invalid_tokens)})
+            print(f"Removed invalid tokens: {invalid_tokens}")
