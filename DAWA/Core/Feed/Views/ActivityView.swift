@@ -51,7 +51,7 @@ struct ActivityView: View {
                         }
                         .padding(.horizontal)
                     }
-                    .padding(.bottom, 100) // Add extra padding to make space for the button
+                    .padding(.bottom, 100)
                 }
                 .navigationBarHidden(true)
                 .background(Color.theme.background)
@@ -63,13 +63,11 @@ struct ActivityView: View {
                     }
                 }
                 
-                // Button at the bottom
                 VStack {
                     Spacer()
                     actionButton(for: hostUser)
                         .padding(.horizontal)
                     
-                    // "Go back" text button
                     Button(action: {
                         mode.wrappedValue.dismiss()
                     }) {
