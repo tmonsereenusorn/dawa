@@ -14,6 +14,11 @@ struct ActivityView: View {
     @EnvironmentObject var feedViewModel: FeedViewModel
     @EnvironmentObject var groupsViewModel: GroupsViewModel
     
+    // State variables for confirmation dialogs
+    @State private var showJoinConfirmation: Bool = false
+    @State private var showLeaveConfirmation: Bool = false
+    @State private var showCloseConfirmation: Bool = false
+    
     init(activity: Activity) {
         self.viewModel = ActivityViewModel(activity: activity)
     }
@@ -63,7 +68,18 @@ struct ActivityView: View {
                     Spacer()
                     actionButton(for: hostUser)
                         .padding(.horizontal)
-                        .padding(.bottom, 20)
+                    
+                    // "Go back" text button
+                    Button(action: {
+                        mode.wrappedValue.dismiss()
+                    }) {
+                        Text("Go back to activity feed")
+                            .foregroundColor(Color.theme.secondaryText)
+                            .font(.footnote)
+                            .underline()
+                    }
+                    .padding(.top, 8)
+                    .padding(.bottom, 20)
                 }
             }
             
@@ -71,6 +87,35 @@ struct ActivityView: View {
                 ProgressView()
                     .scaleEffect(1.5)
             }
+        }
+        // Confirmation modals
+        .confirmationDialog("Are you sure?", isPresented: $showCloseConfirmation, titleVisibility: .visible) {
+            Button("Close Activity", role: .destructive) {
+                Task {
+                    try await viewModel.closeActivity()
+                    try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
+                }
+                mode.wrappedValue.dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .confirmationDialog("Are you sure you want to leave?", isPresented: $showLeaveConfirmation, titleVisibility: .visible) {
+            Button("Leave Activity", role: .destructive) {
+                Task {
+                    try await viewModel.leaveActivity()
+                    try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .confirmationDialog("Are you sure you want to join?", isPresented: $showJoinConfirmation, titleVisibility: .visible) {
+            Button("Join Activity", role: .none) {
+                Task {
+                    try await viewModel.joinActivity()
+                    try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
+                }
+            }
+            Button("Cancel", role: .cancel) {}
         }
     }
     
@@ -104,11 +149,7 @@ struct ActivityView: View {
         Group {
             if hostUser.isCurrentUser {
                 Button {
-                    Task {
-                        try await viewModel.closeActivity()
-                        try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
-                    }
-                    mode.wrappedValue.dismiss()
+                    showCloseConfirmation = true
                 } label: {
                     Text("Close activity")
                         .padding()
@@ -121,10 +162,7 @@ struct ActivityView: View {
             } else {
                 if viewModel.activity.didJoin ?? false {
                     Button {
-                        Task {
-                            try await viewModel.leaveActivity()
-                            try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
-                        }
+                        showLeaveConfirmation = true
                     } label: {
                         Text("Leave activity")
                             .padding()
@@ -136,10 +174,7 @@ struct ActivityView: View {
                     }
                 } else {
                     Button {
-                        Task {
-                            try await viewModel.joinActivity()
-                            try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
-                        }
+                        showJoinConfirmation = true
                     } label: {
                         Text("Join Activity")
                             .padding()
