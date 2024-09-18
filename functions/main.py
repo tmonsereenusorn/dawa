@@ -22,8 +22,24 @@ def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore
 
     user_id, activity_id = event.params['userId'], event.params['activityId']
     
-    user_ref = db.collection('users').document(user_id)
     activity_ref = db.collection('activities').document(activity_id)
+    
+    recent_message_id = after_data.get('recentMessageId')
+    message_doc = activity_ref.collection('messages').document(recent_message_id).get()
+
+    if not message_doc.exists:
+        print(f"Message document not found: {recent_message_id}")
+        return
+
+    message_data = message_doc.to_dict()
+    from_user_id = message_data.get('fromUserId')
+
+    # Move this check here, right after we have the necessary information
+    if from_user_id == user_id:
+        print(f"Skipping notification as the sender and receiver are the same: {user_id}")
+        return
+
+    user_ref = db.collection('users').document(user_id)
     
     user_doc = user_ref.get()
     activity_doc = activity_ref.get()
@@ -39,15 +55,7 @@ def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore
         print(f"No FCM tokens for user: {user_id}")
         return
 
-    recent_message_id = after_data.get('recentMessageId')
-    message_doc = activity_ref.collection('messages').document(recent_message_id).get()
-
-    if not message_doc.exists:
-        print(f"Message document not found: {recent_message_id}")
-        return
-
-    message_data = message_doc.to_dict()
-    from_user_doc = db.collection('users').document(message_data.get('fromUserId')).get()
+    from_user_doc = db.collection('users').document(from_user_id).get()
 
     if not from_user_doc.exists:
         print(f"Sender document not found")
@@ -127,6 +135,9 @@ def send_participant_joined_notification(event: firestore_fn.Event[firestore_fn.
     for participant_doc in participants_docs:
         participant_data = participant_doc.to_dict()
         user_id = participant_doc.id
+
+        if user_id == participant_id:
+            continue
 
         user_ref = db.collection('users').document(user_id)
         user_doc = user_ref.get()
@@ -211,6 +222,9 @@ def send_participant_left_notification(event: firestore_fn.Event[firestore_fn.Do
     for participant_doc in participants_docs:
         participant_data = participant_doc.to_dict()
         user_id = participant_doc.id
+
+        if user_id == participant_id:
+            continue
 
         user_ref = db.collection('users').document(user_id)
         user_doc = user_ref.get()
