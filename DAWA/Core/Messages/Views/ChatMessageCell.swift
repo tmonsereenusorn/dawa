@@ -90,7 +90,7 @@ struct ChatMessageCell: View {
                 Spacer()
             }
         }
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 0)
     }
 }
 

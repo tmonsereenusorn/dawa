@@ -54,8 +54,9 @@ struct MessageInputView: View {
                         .padding(.leading, 4)
                         .padding(.trailing, 48)
                         .background(Color.theme.secondaryBackground)
-                        .clipShape(Capsule())
+                        .cornerRadius(20)
                         .font(.subheadline)
+                        .lineLimit(1...3)
                 }
             }
             
@@ -78,7 +79,7 @@ struct MessageInputView: View {
                     .stroke(Color(.systemGray4), lineWidth: 1)
             }
         }
-        .padding(.horizontal)
+        .padding(.horizontal, 10)
         .padding(.bottom, 8)
     }
 }
