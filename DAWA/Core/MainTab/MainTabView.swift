@@ -132,7 +132,7 @@ struct MainTabView: View {
                 
                 if hasUnread {
                     Circle()
-                        .fill(Color.red)
+                        .fill(Color.theme.appTheme)
                         .frame(width: 8, height: 8)
                         .offset(x: 12, y: -12)
                 }

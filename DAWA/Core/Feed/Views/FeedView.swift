@@ -78,7 +78,7 @@ struct FeedView: View{
                             .resizable ()
                             .renderingMode(.template)
                             .frame (width: UIScreen.main.bounds.width / 8, height: UIScreen.main.bounds.width / 8)
-                            .foregroundColor(Color.theme.secondaryText)
+                            .foregroundColor(Color.theme.appTheme)
                     }
                     .background(Color.theme.background)
                     .clipShape(Circle())

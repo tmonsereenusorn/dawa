@@ -30,16 +30,20 @@ struct SignUpView: View {
                 TextField("Enter your email address", text: $viewModel.email)
                     .autocapitalization(.none)
                     .modifier(TextFieldModifier())
+                    .padding(.horizontal, 24)
                 
                 TextField("Choose a username", text: $viewModel.username)
                     .autocapitalization(.none)
                     .modifier(TextFieldModifier())
+                    .padding(.horizontal, 24)
                 
                 SecureField("Create a password", text: $viewModel.password)
                     .modifier(TextFieldModifier())
+                    .padding(.horizontal, 24)
                 
                 SecureField("Confirm your password", text: $viewModel.confirmPassword)
                     .modifier(TextFieldModifier())
+                    .padding(.horizontal, 24)
             }
             .padding(.bottom, 10)
             

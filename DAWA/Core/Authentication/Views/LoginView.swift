@@ -27,9 +27,11 @@ struct LoginView: View {
                     TextField("Enter your email address", text: $viewModel.email)
                         .autocapitalization(.none)
                         .modifier(TextFieldModifier())
+                        .padding(.horizontal, 24)
                     
                     SecureField("Enter your password", text: $viewModel.password)
                         .modifier(TextFieldModifier())
+                        .padding(.horizontal, 24)
                     
                     Button {
                         print("Show forgot password")
