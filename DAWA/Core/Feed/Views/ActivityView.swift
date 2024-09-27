@@ -182,6 +182,8 @@ struct ActivityView: View {
                             .cornerRadius(10)
                             .font(.headline).bold()
                     }
+                    .disabled(viewModel.activity.numRequired > 0 && viewModel.activity.numCurrent >= viewModel.activity.numRequired)
+                    .opacity((viewModel.activity.numRequired > 0 && viewModel.activity.numCurrent >= viewModel.activity.numRequired) ? 0.5 : 1.0)
                 }
             }
         }
@@ -212,9 +214,15 @@ struct ActivityView: View {
     
     private var participantsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Participants (\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired))")
-                .foregroundColor(Color.theme.primaryText)
-                .font(.headline)
+            if viewModel.activity.numRequired == 0 {
+                Text("Participants (\(viewModel.activity.numCurrent) / ∞)")
+                    .foregroundColor(Color.theme.primaryText)
+                    .font(.headline)
+            } else {
+                Text("Participants (\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired))")
+                    .foregroundColor(Color.theme.primaryText)
+                    .font(.headline)
+            }
             
             LazyVStack(spacing: 16) {
                 ForEach(viewModel.participants) { participant in

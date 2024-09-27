@@ -99,7 +99,7 @@ static func fetchActivity(activityId: String) async throws -> Activity? {
     static func joinActivity(activityId: String, completion: @escaping() -> Void) async throws {
         do {
             guard let activity = try await ActivityService.fetchActivity(activityId: activityId) else { return }
-            guard activity.numCurrent < activity.numRequired else { return }
+            guard activity.numRequired == 0 || activity.numCurrent < activity.numRequired else { return }
             guard let uid = Auth.auth().currentUser?.uid else { return }
             guard uid != activity.userId else { return } // Host of activity is already in activity
 

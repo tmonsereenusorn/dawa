@@ -56,21 +56,14 @@ struct ActivityRowView: View {
                         .foregroundColor(Color.theme.secondaryText)
                     Spacer()
                     HStack {
-                        if viewModel.activity.numRequired <= 5 {
-                            ForEach(0..<viewModel.activity.numCurrent, id: \.self) { i in
-                                Image(systemName: "circle.fill")
-                                    .renderingMode(.template)
-                                    .foregroundColor(.green)
-                            }
-                            if viewModel.activity.numCurrent < viewModel.activity.numRequired {
-                                ForEach(viewModel.activity.numCurrent...(viewModel.activity.numRequired - 1),   id: \.self) { i in
-                                    Image(systemName: "circle.fill")
-                                        .foregroundColor(CustomColors.gray_1)
-                                }
-                            }
+                        if viewModel.activity.numRequired == 0 {
+                            Text("Participants: \(viewModel.activity.numCurrent) / ∞")
+                                .foregroundColor(Color.theme.secondaryText)
+                                .font(.system(size: 12))
                         } else {
-                            Text("\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired)")
-                                .foregroundColor(Color.theme.primaryText)
+                            Text("Participants: \(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired)")
+                                .foregroundColor(Color.theme.secondaryText)
+                                .font(.system(size: 12))
                         }
                     }
                 }

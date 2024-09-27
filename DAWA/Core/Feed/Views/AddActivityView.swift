@@ -5,6 +5,7 @@ import Combine
 struct AddActivityView: View {
     @State private var title = ""
     @State private var numRequired = ""
+    @State private var unlimitedParticipants = false
     @State private var notes = ""
     @State private var location = ""
     @State private var showWarningMessage = false
@@ -91,25 +92,29 @@ struct AddActivityView: View {
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(Color.theme.primaryText)
-                    TextField("Number of additional people needed", text: $numRequired)
-                        .keyboardType(.numberPad)
-                        .modifier(TextFieldModifier())
-                        .padding(.horizontal, 0)
-                        .onReceive(Just(numRequired)) { newValue in
-                            let filtered = newValue.filter { "0123456789".contains($0) }
-                            if filtered != newValue {
-                                self.numRequired = filtered
+
+                    if !unlimitedParticipants {
+                        TextField("Number of additional people needed", text: $numRequired)
+                            .keyboardType(.numberPad)
+                            .modifier(TextFieldModifier())
+                            .padding(.horizontal, 0)
+                            .onReceive(Just(numRequired)) { newValue in
+                                let filtered = newValue.filter { "0123456789".contains($0) }
+                                if filtered != newValue {
+                                    self.numRequired = filtered
+                                }
                             }
-                            if Int(filtered) ?? 0 > 30 {
-                                self.numRequired = "30"
-                                self.showWarningMessage = true
-                            }
-                        }
-                    
-                    if showWarningMessage {
-                        Text("Warning: Max number of people is 30")
-                            .font(.caption)
-                            .foregroundColor(.red)
+                    } else {
+                        Text("Unlimited Participants")
+                            .modifier(TextFieldModifier())
+                            .padding(.horizontal, 0)
+                            .foregroundColor(.gray)
+                    }
+
+                    // Toggle for Unlimited Participants
+                    HStack {
+                        Toggle("Unlimited Participants", isOn: $unlimitedParticipants)
+                            .toggleStyle(SwitchToggleStyle(tint: Color.theme.appTheme))
                     }
                 }
                 
@@ -166,11 +171,12 @@ struct AddActivityView: View {
                 VStack {
                     Button {
                         Task {
+                            let participantsRequired = unlimitedParticipants ? -1 : Int(numRequired)!
                             try await viewModel.addActivity(groupId: groupsViewModel.currSelectedGroup!.id,
                                                             title: title,
                                                             location: location,
                                                             notes: notes,
-                                                            numRequired: Int(numRequired)!,
+                                                            numRequired: participantsRequired,
                                                             category: selectedTag)
                             try await feedViewModel.fetchActivities(groupId: groupsViewModel.currSelectedGroup!.id)
                         }
@@ -211,7 +217,7 @@ extension AddActivityView: AddActivityFormProtocol {
     var formIsValid: Bool {
         return !title.isEmpty
         && !location.isEmpty
-        && !numRequired.isEmpty
+        && (unlimitedParticipants || (!numRequired.isEmpty && Int(numRequired)! > 0))
     }
 }
 

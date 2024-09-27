@@ -23,10 +23,10 @@ struct InboxRowView: View {
                         .fontWeight(userActivity.hasRead ? .regular : .bold)  // Bold if unread
                         .foregroundColor(Color.theme.primaryText)
                     
-                    // Red dot indicator for unread messages
+                    // Indicator for unread messages
                     if !userActivity.hasRead {
                         Circle()
-                            .fill(Color.red)
+                            .fill(Color.theme.appTheme)
                             .frame(width: 8, height: 8)
                     }
                 }
