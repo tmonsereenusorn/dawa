@@ -253,17 +253,28 @@ class GroupService {
         do {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             
-            let request = MemberRequest(fromUserId: uid, 
+            let pendingRequestSnapshot = try await FirestoreConstants.UserCollection.document(uid).collection("pending-requests").document(groupId).getDocument()
+            if pendingRequestSnapshot.exists {
+                print("DEBUG: User already has a pending request to join group \(groupId)")
+                return
+            }
+            
+            let request = MemberRequest(fromUserId: uid,
                                         toGroupId: groupId,
                                         timestamp: Timestamp())
             
             let encodedRequest = try Firestore.Encoder().encode(request)
             
             try await FirestoreConstants.GroupsCollection.document(groupId).collection("member-requests").addDocument(data: encodedRequest)
+            
+            try await FirestoreConstants.UserCollection.document(uid).collection("pending-requests").document(groupId).setData([:])
+            
         } catch {
             print("DEBUG: Failed to send request to join group")
+            throw error
         }
     }
+
     
     @MainActor
     static func changeGroupPermissions(groupId: String, forUserId uid: String, toPermission permission: String) async throws -> Bool {
@@ -294,6 +305,21 @@ class GroupService {
             }
         } catch {
             print("DEBUG: Failed to find group with handle \(handle): \(error.localizedDescription)")
+            throw error
+        }
+    }
+    
+    @MainActor
+    static func fetchPendingRequests() async throws -> [String] {
+        guard let uid = Auth.auth().currentUser?.uid else { return [] }
+
+        do {
+            let querySnapshot = try await FirestoreConstants.UserCollection.document(uid).collection("pending-requests").getDocuments()
+            let groupIds = querySnapshot.documents.compactMap { $0.documentID }
+            
+            return groupIds
+        } catch {
+            print("Error fetching pending requests: \(error)")
             throw error
         }
     }

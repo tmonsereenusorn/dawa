@@ -47,14 +47,46 @@ struct GroupSearchView: View {
                             
                             Spacer()
                             
-                            if !groupsViewModel.groups.contains(where: { $0.id == group.id }) {
+                            if groupsViewModel.groups.contains(where: { $0.id == group.id }) {
+                                // User is already a member
+                                Text("Joined")
+                                    .font(.footnote)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(Color.green)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 6)
+                                    .background(Color(.systemGray6))
+                                    .cornerRadius(8)
+                            } else if viewModel.pendingRequests.contains(group.id) {
+                                // User has already sent a request to join
+                                Text("Request Sent")
+                                    .font(.footnote)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(Color.orange)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 6)
+                                    .background(Color(.systemGray6))
+                                    .cornerRadius(8)
+                            } else {
+                                // User can request to join
                                 Button("Request to Join") {
-                                    
+                                    Task {
+                                        do {
+                                            try await GroupService.requestToJoinGroup(groupId: group.id)
+                                            // Update pending requests list after sending a request
+                                            await viewModel.fetchPendingRequests()
+                                        } catch {
+                                            print("Error: \(error)")
+                                        }
+                                    }
                                 }
-                                .padding()
-                                .foregroundColor(.white) // Text color
-                                .background(Color.blue) // System blue background
-                                .cornerRadius(10)
+                                .font(.footnote)
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color.theme.appTheme)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(Color(.systemGray6))
+                                .cornerRadius(8)
                             }
                         }
                         
