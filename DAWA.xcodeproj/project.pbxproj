@@ -38,6 +38,8 @@
 		85301E562AE496CA004052C2 /* EditGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85301E552AE496CA004052C2 /* EditGroupViewModel.swift */; };
 		85307F952AF0675700987A3C /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85307F942AF0675700987A3C /* MemberListView.swift */; };
 		85307F972AF06BC100987A3C /* MemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85307F962AF06BC100987A3C /* MemberListViewModel.swift */; };
+		8542049E2CABD3B200291609 /* MemberRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8542049D2CABD3B200291609 /* MemberRequestsView.swift */; };
+		854204A02CABD3DB00291609 /* MemberRequestsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8542049F2CABD3DB00291609 /* MemberRequestsViewModel.swift */; };
 		8542D2352B1430E400A28172 /* GroupSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8542D2342B1430E400A28172 /* GroupSearchView.swift */; };
 		8542D2372B14372E00A28172 /* GroupSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8542D2362B14372E00A28172 /* GroupSearchViewModel.swift */; };
 		85465C9D2AFB21B20052568C /* InviteUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85465C9C2AFB21B20052568C /* InviteUsersView.swift */; };
@@ -174,6 +176,8 @@
 		85301E552AE496CA004052C2 /* EditGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupViewModel.swift; sourceTree = "<group>"; };
 		85307F942AF0675700987A3C /* MemberListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListView.swift; sourceTree = "<group>"; };
 		85307F962AF06BC100987A3C /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
+		8542049D2CABD3B200291609 /* MemberRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRequestsView.swift; sourceTree = "<group>"; };
+		8542049F2CABD3DB00291609 /* MemberRequestsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRequestsViewModel.swift; sourceTree = "<group>"; };
 		8542D2342B1430E400A28172 /* GroupSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupSearchView.swift; sourceTree = "<group>"; };
 		8542D2362B14372E00A28172 /* GroupSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupSearchViewModel.swift; sourceTree = "<group>"; };
 		85465C9C2AFB21B20052568C /* InviteUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteUsersView.swift; sourceTree = "<group>"; };
@@ -534,6 +538,7 @@
 				85301E552AE496CA004052C2 /* EditGroupViewModel.swift */,
 				85307F962AF06BC100987A3C /* MemberListViewModel.swift */,
 				85465CA22AFB53710052568C /* InviteUsersViewModel.swift */,
+				8542049F2CABD3DB00291609 /* MemberRequestsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -545,6 +550,7 @@
 				85301E532AE495D0004052C2 /* EditGroupView.swift */,
 				85307F942AF0675700987A3C /* MemberListView.swift */,
 				85465C9C2AFB21B20052568C /* InviteUsersView.swift */,
+				8542049D2CABD3B200291609 /* MemberRequestsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -861,6 +867,8 @@
 				850B074C2B06DA2A00A4FAF5 /* GroupInvitesView.swift in Sources */,
 				850B07482B06D3B100A4FAF5 /* NotificationsViewModel.swift in Sources */,
 				85967A7D2B46F7A2009777AD /* GroupRowViewModel.swift in Sources */,
+				8542049E2CABD3B200291609 /* MemberRequestsView.swift in Sources */,
+				854204A02CABD3DB00291609 /* MemberRequestsViewModel.swift in Sources */,
 				85B3CCB02A8278FA0082B561 /* RightSideMenuViewModel.swift in Sources */,
 				85B241C12A87BE38001EAA59 /* MessageService.swift in Sources */,
 				850B074A2B06D43900A4FAF5 /* NotificationService.swift in Sources */,

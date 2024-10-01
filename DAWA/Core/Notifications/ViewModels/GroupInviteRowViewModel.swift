@@ -14,7 +14,6 @@ class GroupInviteRowViewModel: ObservableObject {
         do {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             try await GroupService.joinGroup(uid: uid, groupId: groupInvite.forGroupId)
-            try await deleteGroupInvitation(groupInvite: groupInvite)
         } catch {
             print("DEBUG: Error accepting group invitation")
         }

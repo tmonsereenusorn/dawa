@@ -12,6 +12,7 @@ struct GroupView: View {
     @Environment(\.presentationMode) var mode
     @Binding var group: Groups
     @State private var editingGroup: Bool = false
+    @State private var showMemberRequests: Bool = false
     
     private var isCurrentUserAdmin: Bool {
         guard let currentUser = contentViewModel.currentUser else { return false }
@@ -33,15 +34,30 @@ struct GroupView: View {
                 
                 Spacer()
                 
-                if (isCurrentUserAdmin) {
-                    Button {
-                        editingGroup.toggle()
-                    } label: {
-                        Text("Edit Group")
-                            .font(.subheadline).bold()
-                            .frame(width: 120, height: 32)
-                            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
-                            .foregroundColor(Color.theme.primaryText)
+                if isCurrentUserAdmin {
+                    HStack(spacing: 16) {
+                        Button {
+                            editingGroup.toggle()
+                        } label: {
+                            Text("Edit Group")
+                                .font(.subheadline).bold()
+                                .frame(width: 120, height: 32)
+                                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
+                                .foregroundColor(Color.theme.primaryText)
+                        }
+
+                        Button {
+                            showMemberRequests.toggle()
+                        } label: {
+                            Image(systemName: "person.3.fill")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(Color.theme.primaryText)
+                                .padding()
+                                .background(Color.theme.secondaryBackground)
+                                .clipShape(Circle())
+                                .shadow(radius: 2)
+                        }
                     }
                 }
             }
@@ -80,13 +96,15 @@ struct GroupView: View {
             
             Spacer()
             
-            
         }
         .padding()
         .navigationBarHidden(true)
         .background(Color.theme.background)
         .popover(isPresented: $editingGroup) {
             EditGroupView(group: $group)
+        }
+        .sheet(isPresented: $showMemberRequests) {
+            MemberRequestsView(group: $group)
         }
     }
 }

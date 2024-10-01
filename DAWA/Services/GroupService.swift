@@ -75,25 +75,55 @@ class GroupService {
     @MainActor
     static func joinGroup(uid: String, groupId: String) async throws {
         do {
+            // Fetch the group details to ensure the group exists
             let group = try await GroupService.fetchGroup(groupId: groupId)
             
+            // Check if the user is already a member of the group
             let isCurrentUserAMember = group.memberList?.contains { $0.id == uid } ?? true
             
             if !isCurrentUserAMember {
                 // Add user to group's user member list
                 let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
-                try await groupMembersRef.document(uid).setData(["permissions":"Member"])
+                try await groupMembersRef.document(uid).setData(["permissions": "Member"])
                 
                 // Add group to user's groups list
                 let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
                 try await groupsRef.document(groupId).setData([:])
                 
+                // Update the group's number of members
                 try await FirestoreConstants.GroupsCollection.document(groupId).updateData(["numMembers": FieldValue.increment(Int64(1))])
+                
+                // Check if a pending member request exists and delete it
+                let memberRequestRef = FirestoreConstants.GroupsCollection.document(groupId).collection("member-requests").whereField("fromUserId", isEqualTo: uid)
+                let memberRequestSnapshot = try await memberRequestRef.getDocuments()
+                for document in memberRequestSnapshot.documents {
+                    try await document.reference.delete()
+                }
+                
+                // Delete the pending request from the user's collection
+                let pendingRequestRef = FirestoreConstants.UserCollection.document(uid).collection("pending-requests").document(groupId)
+                let pendingRequestSnapshot = try await pendingRequestRef.getDocument()
+                if pendingRequestSnapshot.exists {
+                    try await pendingRequestRef.delete()
+                }
+                
+                // Check if a group invitation exists and delete it
+                let inviteSnapshot = try await FirestoreConstants.UserCollection.document(uid).collection("group-invites").whereField("forGroupId", isEqualTo: groupId).getDocuments()
+                for document in inviteSnapshot.documents {
+                    // Delete the user invite document
+                    try await document.reference.delete()
+                    
+                    // Delete the corresponding group outgoing invite document
+                    let inviteId = document.documentID
+                    try await FirestoreConstants.GroupsCollection.document(groupId).collection("outgoing-invites").document(inviteId).delete()
+                }
+                
             } else {
                 print("User is already a member")
             }
         } catch {
             print("DEBUG: Failed to join group with error \(error.localizedDescription)")
+            throw error
         }
     }
     
@@ -320,6 +350,59 @@ class GroupService {
             return groupIds
         } catch {
             print("Error fetching pending requests: \(error)")
+            throw error
+        }
+    }
+    
+    @MainActor
+    static func fetchMemberRequests(groupId: String) async throws -> [MemberRequest] {
+        do {
+            let snapshot = try await FirestoreConstants.GroupsCollection.document(groupId).collection("member-requests").getDocuments()
+            let requests = snapshot.documents.compactMap { try? $0.data(as: MemberRequest.self) }
+            
+            var detailedRequests: [MemberRequest] = []
+            
+            for request in requests {
+                if let userSnapshot = try? await FirestoreConstants.UserCollection.document(request.fromUserId).getDocument(),
+                   let user = try? userSnapshot.data(as: User.self) {
+                    var detailedRequest = request
+                    detailedRequest.user = user
+                    detailedRequests.append(detailedRequest)
+                }
+            }
+            
+            return detailedRequests
+        } catch {
+            print("Error fetching member requests: \(error)")
+            throw error
+        }
+    }
+    
+    @MainActor
+    static func rejectMemberRequest(requestId: String, groupId: String) async throws {
+        do {
+            // Fetch the member request to get the user ID
+            let requestSnapshot = try await FirestoreConstants.GroupsCollection.document(groupId).collection("member-requests").document(requestId).getDocument()
+            guard let request = try? requestSnapshot.data(as: MemberRequest.self) else {
+                print("Error: Member request not found")
+                return
+            }
+
+            let uid = request.fromUserId
+            
+            // Delete the pending request from the group's member-requests collection
+            try await requestSnapshot.reference.delete()
+            
+            // Delete the pending request from the user's pending-requests collection
+            let pendingRequestRef = FirestoreConstants.UserCollection.document(uid).collection("pending-requests").document(groupId)
+            let pendingRequestSnapshot = try await pendingRequestRef.getDocument()
+            if pendingRequestSnapshot.exists {
+                try await pendingRequestRef.delete()
+            }
+            
+            print("Member request rejected successfully")
+        } catch {
+            print("Error rejecting member request: \(error)")
             throw error
         }
     }
