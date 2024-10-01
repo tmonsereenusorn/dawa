@@ -65,7 +65,6 @@ struct MemberRequestsView: View {
                             Button {
                                 Task {
                                     do {
-                                        print("Triggered accept button")
                                         try await viewModel.acceptRequest(userId: request.fromUserId, groupId: group.id)
                                         await viewModel.fetchRequests(groupId: group.id)
                                     } catch {
@@ -84,7 +83,6 @@ struct MemberRequestsView: View {
                             Button {
                                 Task {
                                     do {
-                                        print("Triggered reject button")
                                         try await viewModel.rejectRequest(requestId: request.id, groupId: group.id)
                                         await viewModel.fetchRequests(groupId: group.id)
                                     } catch {
