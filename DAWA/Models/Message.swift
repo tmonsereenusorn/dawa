@@ -9,9 +9,10 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-enum MessageType {
-    case text(String)
-    case image(UIImage)
+enum MessageType: String, Codable {
+    case text
+    case image
+    case system
 }
 
 struct Message: Identifiable, Codable, Hashable {
@@ -21,6 +22,7 @@ struct Message: Identifiable, Codable, Hashable {
     let messageText: String
     let timestamp: Timestamp
     var imageUrl: String?
+    let messageType: MessageType
     
     var user: User?
     
@@ -33,6 +35,10 @@ struct Message: Identifiable, Codable, Hashable {
     }
     
     var isImageMessage: Bool {
-        return imageUrl != nil
+        return messageType == .image
+    }
+    
+    var isSystemMessage: Bool {
+        return messageType == .system
     }
 }

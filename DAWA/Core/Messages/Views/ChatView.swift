@@ -21,50 +21,7 @@ struct ChatView: View {
     
     var body: some View {
         VStack {
-            if viewModel.messages.isEmpty {
-                Spacer()
-                VStack(spacing: 8) {
-                    Text("No messages yet.")
-                        .font(.system(size: 24, weight: .semibold))
-                    
-                    Text("Start a conversation!")
-                        .font(.system(size: 20, weight: .regular))
-                }
-                .foregroundColor(Color.theme.secondaryText)
-                .multilineTextAlignment(.center)
-                .padding()
-                Spacer()
-            } else {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack {
-                            ForEach(viewModel.messages.indices, id: \.self) { index in
-                                ChatMessageCell(message: viewModel.messages[index],
-                                                nextMessage: viewModel.nextMessage(forIndex: index),
-                                                prevMessage: viewModel.prevMessage(forIndex: index))
-                                    .id(viewModel.messages[index].id) // Unique ID for scrolling
-                            }
-                        }
-                        .padding(.vertical)
-                    }
-                    .onAppear {
-                        if let lastMessage = viewModel.messages.last {
-                            withAnimation(.spring()) {
-                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                            }
-                        }
-                    }
-                    .onChange(of: viewModel.messages) { _ in
-                        if let lastMessage = viewModel.messages.last {
-                            withAnimation(.spring()) {
-                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                            }
-                        }
-                    }
-                }
-            }
-            
-            Spacer()
+            ChatContent(viewModel: viewModel)
             
             MessageInputView(messageText: $messageText, viewModel: viewModel)
         }
@@ -76,26 +33,105 @@ struct ChatView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    mode.wrappedValue.dismiss()
-                } label: {
-                    Image(systemName: "arrow.left")
-                        .imageScale(.large)
-                }
+                BackButton(mode: mode)
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    navigateToActivityView = true
-                }) {
-                    Image(systemName: "info.circle")
-                        .imageScale(.large)
-                }
+                InfoButton(navigateToActivityView: $navigateToActivityView)
             }
         }
         .navigationDestination(isPresented: $navigateToActivityView) {
             ActivityView(activity: activity)
         }
         .tint(Color.theme.primaryText)
+    }
+}
+
+struct ChatContent: View {
+    @ObservedObject var viewModel: ChatViewModel
+    
+    var body: some View {
+        if viewModel.messages.isEmpty {
+            EmptyMessagesView()
+        } else {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack {
+                        ForEach(viewModel.messages.indices, id: \.self) { index in
+                            MessageCell(message: viewModel.messages[index],
+                                        nextMessage: viewModel.nextMessage(forIndex: index),
+                                        prevMessage: viewModel.prevMessage(forIndex: index))
+                        }
+                    }
+                    .padding(.vertical)
+                }
+                .onAppear { scrollToBottom(proxy: proxy) }
+                .onChange(of: viewModel.messages) { _ in scrollToBottom(proxy: proxy) }
+            }
+        }
+    }
+    
+    private func scrollToBottom(proxy: ScrollViewProxy) {
+        if let lastMessage = viewModel.messages.last {
+            withAnimation(.spring()) {
+                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+            }
+        }
+    }
+}
+
+struct EmptyMessagesView: View {
+    var body: some View {
+        Spacer()
+        VStack(spacing: 8) {
+            Text("No messages yet.")
+                .font(.system(size: 24, weight: .semibold))
+            Text("Start a conversation!")
+                .font(.system(size: 20, weight: .regular))
+        }
+        .foregroundColor(Color.theme.secondaryText)
+        .multilineTextAlignment(.center)
+        .padding()
+        Spacer()
+    }
+}
+
+struct MessageCell: View {
+    let message: Message
+    var nextMessage: Message?
+    var prevMessage: Message?
+    
+    var body: some View {
+        if message.messageType == .system {
+            SystemMessageCell(message: message)
+        } else {
+            ChatMessageCell(message: message, nextMessage: nextMessage, prevMessage: prevMessage)
+        }
+    }
+}
+
+struct BackButton: View {
+    @Binding var mode: PresentationMode
+    
+    var body: some View {
+        Button {
+            $mode.wrappedValue.dismiss()
+        } label: {
+            Image(systemName: "arrow.left")
+                .imageScale(.large)
+        }
+    }
+}
+
+struct InfoButton: View {
+    @Binding var navigateToActivityView: Bool
+    
+    var body: some View {
+        Button(action: {
+            navigateToActivityView = true
+        }) {
+            Image(systemName: "info.circle")
+                .imageScale(.large)
+        }
     }
 }
 

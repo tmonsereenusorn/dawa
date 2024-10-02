@@ -1,10 +1,3 @@
-//
-//  ChatViewModel.swift
-//  DAWA
-//
-//  Created by Tee Monsereenusorn on 8/12/23.
-//
-
 import Foundation
 import Firebase
 import FirebaseFirestoreSwift
@@ -37,11 +30,16 @@ class ChatViewModel: ObservableObject {
     
     func sendMessage(_ messageText: String) async throws {
         if let image = uiImage {
-            try await service.sendMessage(type: .image(image))
+            try await service.sendMessage(messageText: messageText, type: .image, image: image)
             messageImage = nil
+            uiImage = nil
         } else {
-            try await service.sendMessage(type: .text(messageText))
+            try await service.sendMessage(messageText: messageText, type: .text)
         }
+    }
+    
+    func sendSystemMessage(_ messageText: String) async throws {
+        try await service.sendMessage(messageText: messageText, type: .system)
     }
     
     func nextMessage(forIndex index: Int) -> Message? {
@@ -58,7 +56,6 @@ class ChatViewModel: ObservableObject {
 }
 
 extension ChatViewModel {
-    
     func loadImage() async throws {
         guard let uiImage = try await PhotosPickerHelper.loadImage(fromItem: selectedItem) else { return }
         self.uiImage = uiImage

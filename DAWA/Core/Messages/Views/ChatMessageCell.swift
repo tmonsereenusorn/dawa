@@ -14,12 +14,6 @@ struct ChatMessageCell: View {
     var nextMessage: Message?
     var prevMessage: Message?
     
-    init(message: Message, nextMessage: Message?, prevMessage: Message?) {
-        self.message = message
-        self.nextMessage = nextMessage
-        self.prevMessage = prevMessage
-    }
-    
     private var shouldShowChatPartnerImage: Bool {
         if nextMessage == nil && !message.isFromCurrentUser { return true }
         guard let next = nextMessage else { return message.isFromCurrentUser }
@@ -58,16 +52,14 @@ struct ChatMessageCell: View {
                                 CircularProfileImageView(user: message.user, size: .xxSmall)
                             }
                         }
-                        
                     }
                     
                     if let imageUrl = message.imageUrl {
                         MessageImageView(imageUrlString: imageUrl)
-
                     } else {
                         VStack(alignment: .leading, spacing: 4) {
                             if shouldShowChatPartnerName {
-                                Text(message.user!.username)
+                                Text(message.user?.username ?? "Unknown")
                                     .font(.caption)
                                     .foregroundColor(Color.theme.secondaryText)
                                     .padding(.leading, shouldShowChatPartnerImage ? 12 : 44)
@@ -83,7 +75,6 @@ struct ChatMessageCell: View {
                                 .padding(.leading, shouldShowChatPartnerImage ? 0 : 32)
                         }
                     }
-                    
                 }
                 .padding(.horizontal)
                 
@@ -91,6 +82,22 @@ struct ChatMessageCell: View {
             }
         }
         .padding(.horizontal, 0)
+    }
+}
+
+struct SystemMessageCell: View {
+    let message: Message
+    
+    var body: some View {
+        Text(message.messageText)
+            .font(.system(size: 14, weight: .medium))
+            .foregroundColor(Color.theme.secondaryText)
+            .padding(.vertical, 4)
+            .padding(.horizontal, 12)
+            .background(Color.theme.background)
+            .cornerRadius(16)
+            .padding(.vertical, 4)
+            .frame(maxWidth: .infinity)
     }
 }
 

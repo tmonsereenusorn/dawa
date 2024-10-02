@@ -10,7 +10,6 @@ class ChatService {
         self.activity = activity
     }
     
-    // Async stream property for observing messages
     var messagesStream: AsyncStream<[Message]> {
         AsyncStream { continuation in
             guard let currentUid = Auth.auth().currentUser?.uid else {
@@ -30,7 +29,7 @@ class ChatService {
                 var messages = changes.compactMap { try? $0.document.data(as: Message.self) }
                 
                 let group = DispatchGroup()
-                for (index, message) in messages.enumerated() where message.fromUserId != currentUid {
+                for (index, message) in messages.enumerated() where message.fromUserId != currentUid && message.messageType != .system {
                     group.enter()
                     
                     UserService.fetchUser(withUid: message.fromUserId) { user in
@@ -51,38 +50,39 @@ class ChatService {
         }
     }
     
-    // Sending a message
-    func sendMessage(type: MessageType) async throws {
-        switch type {
-        case .text(let messageText):
-            try await uploadMessage(messageText)
-        case .image(let uIImage):
-            let imageUrl = try await ImageUploader.uploadImage(image: uIImage, type: .message)
-            try await uploadMessage("Attachment: Image", imageUrl: imageUrl)
+    func sendMessage(messageText: String, type: MessageType, image: UIImage? = nil) async throws {
+        var imageUrl: String?
+        
+        if case .image = type, let uiImage = image {
+            imageUrl = try await ImageUploader.uploadImage(image: uiImage, type: .message)
         }
+        
+        try await ChatService.uploadMessage(toActivityId: activity.id, messageText: messageText, type: type, imageUrl: imageUrl)
     }
     
-    // Uploading a message
-    private func uploadMessage(_ messageText: String, imageUrl: String? = nil) async throws {
-        guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        let activityId = activity.id
+    static func sendSystemMessage(to activityId: String, messageText: String) async throws {
+        try await uploadMessage(toActivityId: activityId, messageText: messageText, type: .system, imageUrl: nil)
+    }
+    
+    private static func uploadMessage(toActivityId activityId: String, messageText: String, type: MessageType, imageUrl: String? = nil) async throws {
+        let currentUid = Auth.auth().currentUser?.uid ?? "UNKNOWN"
         
-        // Add message to activity's messages subcollection
         let messageRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("messages").document()
         let message = Message(fromUserId: currentUid,
                               toActivityId: activityId,
                               messageText: messageText,
                               timestamp: Timestamp(),
-                              imageUrl: imageUrl)
+                              imageUrl: imageUrl,
+                              messageType: type)
         
-        guard let messageData = try? Firestore.Encoder().encode(message) else { return }
+        guard let messageData = try? Firestore.Encoder().encode(message) else {
+            throw NSError(domain: "ChatService", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to encode message"])
+        }
         try await messageRef.setData(messageData)
         
-        // Add recent message ID to activity
         let messageId = messageRef.documentID
         try await FirestoreConstants.ActivitiesCollection.document(activityId).setData(["recentMessageId": messageId], merge: true)
         
-        // Add recent message ID to each participant's activity
         let activityParticipantsSnapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants").getDocuments()
         for doc in activityParticipantsSnapshot.documents {
             let participantId = doc.documentID
@@ -91,7 +91,6 @@ class ChatService {
         }
     }
     
-    // Mark message as read
     static func markAsRead(activityId: String) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let docRef = Firestore.firestore().collection("users").document(uid).collection("user-activities").document(activityId)

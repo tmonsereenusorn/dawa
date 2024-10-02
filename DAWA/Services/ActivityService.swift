@@ -68,7 +68,7 @@ class ActivityService {
     }
     
     @MainActor
-static func fetchActivity(activityId: String) async throws -> Activity? {
+    static func fetchActivity(activityId: String) async throws -> Activity? {
         do {
             let snapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).getDocument()
             var activity = try snapshot.data(as: Activity.self)
@@ -121,25 +121,19 @@ static func fetchActivity(activityId: String) async throws -> Activity? {
             let joinNotification = ActivityJoinNotification(activityId: activityId, joinedByUserId: uid)
             try await NotificationService.shared.sendNotification(notification: joinNotification, to: participantIds)
 
-            // Finally, add the new user to the participants subcollection
+            // Add the new user to the participants subcollection
             try await activityParticipantsRef.document(uid).setData([:])
+            
+            // Send a system message
+            let user = try await UserService.fetchUser(uid: uid)
+            let systemMessage = "\(user.username) has joined the activity."
+            try await ChatService.sendSystemMessage(to: activityId, messageText: systemMessage)
+
         } catch {
             print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
         }
     }
 
-    
-    @MainActor
-    static func checkIfUserJoinedActivity(activityId: String) async -> Bool {
-        guard let uid = Auth.auth().currentUser?.uid else { return false }
-        
-        guard let snapshot = try? await FirestoreConstants.UserCollection.document(uid)
-                                                      .collection("user-activities").document(activityId)
-                                                      .getDocument() else { return false }
-        
-        return snapshot.exists
-    }
-    
     @MainActor
     static func leaveActivity(activity: Activity) async throws {
         do {
@@ -167,9 +161,26 @@ static func fetchActivity(activityId: String) async throws -> Activity? {
             let leaveNotification = ActivityLeaveNotification(activityId: activityId, leftByUserId: uid)
             try await NotificationService.shared.sendNotification(notification: leaveNotification, to: participantIds)
             
+            // Send a system message
+            let user = try await UserService.fetchUser(uid: uid)
+            let systemMessage = "\(user.username) has left the activity."
+            try await ChatService.sendSystemMessage(to: activityId, messageText: systemMessage)
+            
         } catch {
             print("DEBUG: Failed to leave activity with error \(error.localizedDescription)")
         }
+    }
+
+    
+    @MainActor
+    static func checkIfUserJoinedActivity(activityId: String) async -> Bool {
+        guard let uid = Auth.auth().currentUser?.uid else { return false }
+        
+        guard let snapshot = try? await FirestoreConstants.UserCollection.document(uid)
+                                                      .collection("user-activities").document(activityId)
+                                                      .getDocument() else { return false }
+        
+        return snapshot.exists
     }
     
     @MainActor
