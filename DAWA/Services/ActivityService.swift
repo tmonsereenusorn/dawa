@@ -96,7 +96,7 @@ static func fetchActivity(activityId: String) async throws -> Activity? {
     }
     
     @MainActor
-    static func joinActivity(activityId: String, completion: @escaping() -> Void) async throws {
+    static func joinActivity(activityId: String) async throws {
         do {
             guard let activity = try await ActivityService.fetchActivity(activityId: activityId) else { return }
             guard activity.numRequired == 0 || activity.numCurrent < activity.numRequired else { return }
@@ -123,10 +123,6 @@ static func fetchActivity(activityId: String) async throws -> Activity? {
 
             // Finally, add the new user to the participants subcollection
             try await activityParticipantsRef.document(uid).setData([:])
-
-            // Call completion handler
-            completion()
-            
         } catch {
             print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
         }
@@ -192,18 +188,19 @@ static func fetchActivity(activityId: String) async throws -> Activity? {
     }
     
     @MainActor
-    static func fetchActivityParticipants(activity: Activity, completion: @escaping([User]) -> Void) async {
+    static func fetchActivityParticipants(activity: Activity) async throws -> [User] {
         var users: [User] = []
         
         let activityId = activity.id
-        guard let activityParticipantsSnapshot = try? await FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants").getDocuments() else { return }
+        let activityParticipantsSnapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants").getDocuments()
         
         for doc in activityParticipantsSnapshot.documents {
             let uid = doc.documentID
-            guard let userSnapshot = try? await FirestoreConstants.UserCollection.document(uid).getDocument() else { return }
-            guard let user = try? userSnapshot.data(as: User.self) else { return }
+            let userSnapshot = try await FirestoreConstants.UserCollection.document(uid).getDocument()
+            let user = try userSnapshot.data(as: User.self)
             users.append(user)
         }
-        completion(users)
+        
+        return users
     }
 }

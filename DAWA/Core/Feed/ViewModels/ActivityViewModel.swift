@@ -18,8 +18,11 @@ class ActivityViewModel: ObservableObject {
     
     @MainActor
     func fetchActivityParticipants() async {
-        await ActivityService.fetchActivityParticipants(activity: activity) { participants in
+        do {
+            let participants = try await ActivityService.fetchActivityParticipants(activity: self.activity)
             self.participants = participants
+        } catch {
+            print("Error fetching activity participants: \(error)")
         }
     }
     
@@ -47,9 +50,7 @@ class ActivityViewModel: ObservableObject {
         defer { isLoading = false }
         
         do {
-            try await ActivityService.joinActivity(activityId: self.activity.id) {
-                
-            }
+            try await ActivityService.joinActivity(activityId: self.activity.id)
             try await refreshActivity()
         } catch {
             print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
