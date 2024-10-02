@@ -1,5 +1,6 @@
 import firebase_admin
 from firebase_admin import firestore, messaging
+from firebase_admin.messaging import APNSConfig, APNSPayload, Aps, Message, Notification  # Add this line
 from firebase_functions import firestore_fn
 from google.cloud.firestore_v1.base_query import FieldFilter
 
@@ -9,6 +10,16 @@ if not firebase_admin._apps:
 
 def get_firestore_client():
     return firestore.client()
+
+def get_apns_config(thread_id):
+    return APNSConfig(
+        payload=APNSPayload(
+            aps=Aps(
+                sound='default',
+                thread_id=thread_id
+            )
+        )
+    )
 
 @firestore_fn.on_document_updated(document="users/{userId}/user-activities/{activityId}")
 def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore_fn.DocumentSnapshot]]) -> None:
@@ -39,6 +50,12 @@ def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore
         print(f"Skipping notification as the sender and receiver are the same: {user_id}")
         return
 
+    message_type = message_data.get('messageType')
+
+    if message_type == "system":
+        print(f"Skipping notification for system message: {user_id}")
+        return
+
     user_ref = db.collection('users').document(user_id)
     
     user_doc = user_ref.get()
@@ -64,7 +81,7 @@ def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore
     # Build notification content
     sender_username = from_user_doc.to_dict().get('username', 'Unknown User')
     notification_body = f"{sender_username}: {message_data.get('messageText', 'No Message Text')}"
-    notification_title = activity_doc.to_dict().get('title', 'New Message')
+    notification_title = f"{activity_doc.to_dict().get('title', 'Unidentified Activity')}"
 
     invalid_tokens = []
     for token_info in fcm_tokens:
@@ -76,11 +93,12 @@ def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore
         token = token_info['token']
         device_id = token_info['deviceId']
 
-        message = messaging.Message(
-            notification=messaging.Notification(
+        message = Message(
+            notification=Notification(
                 title=notification_title,
                 body=notification_body
             ),
+            apns=get_apns_config(f'{activity_id}'),  # Grouping DM notifications separately
             data={
                 'activityId': activity_id
             },
@@ -168,6 +186,7 @@ def send_participant_joined_notification(event: firestore_fn.Event[firestore_fn.
                     title=f"{activity_title}",
                     body=notification_body
                 ),
+                apns=get_apns_config(f'{activity_id}'),
                 data={
                     'activityId': activity_id
                 },
@@ -255,6 +274,7 @@ def send_participant_left_notification(event: firestore_fn.Event[firestore_fn.Do
                     title=f"{activity_title}",
                     body=notification_body
                 ),
+                apns=get_apns_config(f'{activity_id}'),
                 data={
                     'activityId': activity_id
                 },
