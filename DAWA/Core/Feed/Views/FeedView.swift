@@ -59,6 +59,7 @@ struct FeedView: View{
                                 ActivityRowView(activity: activity)
                             }
                         }
+                        .listRowSeparator(.hidden)
                     }
                     .listStyle(PlainListStyle())
                     .refreshable {
