@@ -95,7 +95,7 @@ class AuthService {
                 if stanfordGroup == nil {
                     let _ = try await GroupService.createGroup(groupName: "Stanford University", handle: "stanford")
                 } else {
-                    try await GroupService.joinGroup(uid: user.uid, groupId: stanfordGroup!.id)
+                    try await GroupService.joinGroup(uid: user.uid, groupId: stanfordGroup!.id, enableNotifications: false)
                 }
             }
             

@@ -73,7 +73,7 @@ class GroupService {
     }
     
     @MainActor
-    static func joinGroup(uid: String, groupId: String) async throws {
+    static func joinGroup(uid: String, groupId: String, enableNotifications: Bool = true) async throws {
         do {
             // Fetch the group details to ensure the group exists
             let group = try await GroupService.fetchGroup(groupId: groupId)
@@ -85,7 +85,7 @@ class GroupService {
                 // Create a GroupMember object with notificationsEnabled set to true
                 let newMember = GroupMember(
                     permissions: "Member",
-                    notificationsEnabled: true // Default to true
+                    notificationsEnabled: enableNotifications
                 )
                 
                 // Add user to group's members list using the GroupMember object
@@ -426,7 +426,7 @@ class GroupService {
         do {
             let document = try await groupMembersRef.getDocument()
             
-            guard var groupMember = try? document.data(as: GroupMember.self) else {
+            guard let groupMember = try? document.data(as: GroupMember.self) else {
                 throw AppError.groupMemberNotFound
             }
             
