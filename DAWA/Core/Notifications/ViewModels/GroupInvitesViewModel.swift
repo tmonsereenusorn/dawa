@@ -15,6 +15,10 @@ class GroupInvitesViewModel: ObservableObject {
     @Published var didCompleteInitialLoad = false
     @Published var hasInvites = false
     
+    var pendingInvitesCount: Int {
+        return groupInvites.count
+    }
+    
     init() {
         setupSubscribers()
         InviteService.shared.observeGroupInvites()

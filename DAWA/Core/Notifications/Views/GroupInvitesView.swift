@@ -2,7 +2,7 @@ import SwiftUI
 
 struct GroupInvitesView: View {
     @Environment(\.presentationMode) var mode
-    @StateObject var viewModel = GroupInvitesViewModel()
+    @ObservedObject var viewModel: GroupInvitesViewModel
     
     var body: some View {
         VStack {
