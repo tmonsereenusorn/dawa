@@ -31,6 +31,7 @@ struct GroupRowView: View {
                 Text(group.name)
                     .lineLimit(1)
                     .truncationMode(.tail)
+                    .foregroundColor(Color.theme.primaryText)
                 
                 Spacer()
                 
@@ -45,7 +46,16 @@ struct GroupRowView: View {
                 }
             }
             .padding()
-            .background(isExpanded ? Color.theme.background : Color.clear )
+            .background {
+                if (groupsViewModel.currSelectedGroup?.id == group.id) {
+                    Color.theme.secondaryText
+                }
+                else if (isExpanded) {
+                    Color.theme.background
+                } else {
+                    Color.clear
+                }
+            }
             
             if isExpanded {
                 VStack(alignment: .leading, spacing: 10) {
