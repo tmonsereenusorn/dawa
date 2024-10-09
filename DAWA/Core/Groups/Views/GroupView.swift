@@ -12,20 +12,19 @@ struct GroupView: View {
         self._viewModel = StateObject(wrappedValue: GroupViewModel(group: group.wrappedValue))
     }
     
-    // Extract logic for the current user from the contentViewModel
     private var currentUserGroupMember: GroupMember? {
         guard let currentUser = contentViewModel.currentUser else { return nil }
         return group.memberList?.first(where: { $0.user?.id == currentUser.id })
     }
 
-    // Determine if the current user is an admin
     private var isCurrentUserAdmin: Bool {
         return currentUserGroupMember?.isAdmin ?? false
     }
 
     var body: some View {
         VStack(alignment: .leading) {
-            HStack(alignment: .top) {
+            // Navigation bar and notifications toggle
+            HStack {
                 Button {
                     mode.wrappedValue.dismiss()
                 } label: {
@@ -33,12 +32,10 @@ struct GroupView: View {
                         .resizable()
                         .frame(width: 20, height: 16)
                         .foregroundColor(Color.theme.primaryText)
-                        .offset(x: 16, y: 12)
                 }
                 
                 Spacer()
-                
-                // Notifications Toggle
+
                 if let groupMember = currentUserGroupMember {
                     Button {
                         Task {
@@ -50,37 +47,11 @@ struct GroupView: View {
                             .frame(width: 24, height: 24)
                             .foregroundColor(Color.theme.primaryText)
                     }
-                    .padding()
-                }
-                
-                if isCurrentUserAdmin {
-                    HStack(spacing: 16) {
-                        Button {
-                            viewModel.editingGroup.toggle()
-                        } label: {
-                            Text("Edit Group")
-                                .font(.subheadline).bold()
-                                .frame(width: 120, height: 32)
-                                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 0.75))
-                                .foregroundColor(Color.theme.primaryText)
-                        }
-
-                        Button {
-                            viewModel.showMemberRequests.toggle()
-                        } label: {
-                            Image(systemName: "person.3.fill")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(Color.theme.primaryText)
-                                .padding()
-                                .background(Color.theme.secondaryBackground)
-                                .clipShape(Circle())
-                                .shadow(radius: 2)
-                        }
-                    }
                 }
             }
+            .padding(.bottom, 20)
             
+            // Group Information
             HStack {
                 Spacer()
                 VStack(alignment: .center, spacing: 8) {
@@ -112,13 +83,47 @@ struct GroupView: View {
                 }
                 Spacer()
             }
-            
+            .padding(.bottom, 20)
+
+            // Admin Action Bar with consistent buttons
+            if isCurrentUserAdmin {
+                HStack(spacing: 16) {
+                    Button(action: {
+                        viewModel.editingGroup.toggle()
+                    }) {
+                        Text("Edit Group")
+                            .font(.subheadline).bold()
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical)
+                            .background(Color.theme.secondaryBackground)
+                            .cornerRadius(10)
+                            .foregroundColor(Color.theme.primaryText)
+                            .shadow(radius: 2)
+                    }
+                    
+                    Button(action: {
+                        viewModel.showMemberRequests.toggle()
+                    }) {
+                        Text("Member Requests")
+                            .font(.subheadline).bold()
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical)
+                            .background(Color.theme.secondaryBackground)
+                            .cornerRadius(10)
+                            .foregroundColor(Color.theme.primaryText)
+                            .shadow(radius: 2)
+                    }
+                }
+                .frame(maxWidth: .infinity)  // Ensure buttons span the entire width
+                .padding(.horizontal, 16)    // Padding on sides
+                .padding(.vertical, 10)
+            }
+
             Spacer()
             
         }
         .padding()
         .navigationBarHidden(true)
-        .background(Color.theme.background)
         .popover(isPresented: $viewModel.editingGroup) {
             EditGroupView(group: $group)
         }
@@ -126,7 +131,6 @@ struct GroupView: View {
             MemberRequestsView(group: $group)
         }
         .onAppear {
-            // Initialize the notificationsEnabled state based on the current user's settings
             if let groupMember = currentUserGroupMember {
                 viewModel.notificationsEnabled = groupMember.notificationsEnabled ?? false
             }

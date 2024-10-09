@@ -1,10 +1,3 @@
-//
-//  EditGroupView.swift
-//  DAWA
-//
-//  Created by Tee Monsereenusorn on 10/21/23.
-//
-
 import SwiftUI
 import PhotosUI
 
@@ -25,16 +18,19 @@ struct EditGroupView: View {
             
             Spacer()
         }
+        .padding(.horizontal, 16)
         .onAppear {
             self.name = group.name
             self.handle = group.handle
         }
+        .background(Color.theme.background)
     }
 }
 
-extension EditGroupView{
+extension EditGroupView {
+    // Header with Cancel and Save buttons
     var headerView: some View {
-        HStack(alignment: .bottom) {
+        HStack {
             Button {
                 mode.wrappedValue.dismiss()
             } label: {
@@ -69,85 +65,72 @@ extension EditGroupView{
                 mode.wrappedValue.dismiss()
             }
         }
-        .padding(10)
+        .padding(.vertical, 10)
     }
     
+    // Group image picker using PhotosPicker
     var groupImageInput: some View {
-        HStack {
-            PhotosPicker(selection: $viewModel.selectedItem) {
-                ZStack(alignment: .bottomTrailing) {
-                    if let image = viewModel.groupImage {
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: ProfileImageSize.xLarge.dimension, height: ProfileImageSize.xLarge.dimension)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                    } else {
-                        SquareGroupImageView(group: group, size: .xLarge)
-                    }
+        PhotosPicker(selection: $viewModel.selectedItem) {
+            ZStack(alignment: .bottomTrailing) {
+                if let image = viewModel.groupImage {
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 150, height: 150)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                } else {
+                    SquareGroupImageView(group: group, size: .xLarge)
+                }
+                
+                ZStack {
+                    Circle()
+                        .fill(Color.theme.background)
+                        .frame(width: 24, height: 24)
                     
-                    ZStack {
-                        Circle()
-                            .fill(Color.theme.background)
-                            .frame(width: 24, height: 24)
-                        
-                        Image(systemName: "camera.circle.fill")
-                            .foregroundColor(Color.theme.primaryText)
-                            .frame(width: 18, height: 18)
-                    }
+                    Image(systemName: "camera.circle.fill")
+                        .foregroundColor(Color.theme.primaryText)
+                        .frame(width: 18, height: 18)
                 }
             }
         }
+        .padding(.vertical, 16)
     }
     
+    // Group name and handle input fields
     var groupNameInput: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Group name")
-                .foregroundColor(Color.theme.primaryText)
-                .fontWeight(.semibold)
-                .font(.footnote)
-            
-            VStack(alignment: .leading, spacing: 0) {
-                TextField("Enter a new group name", text: $name)
-                    .font(.system(size: 20))
+        VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Group name")
                     .foregroundColor(Color.theme.primaryText)
+                    .fontWeight(.semibold)
+                    .font(.footnote)
                 
-                Divider()
-                    .background(Color.theme.secondaryText)
+                TextField("Enter a new group name", text: $name)
+                    .modifier(TextFieldModifier())
             }
             
-            Text("Group handle")
-                .foregroundColor(Color.theme.primaryText)
-                .fontWeight(.semibold)
-                .font(.footnote)
-            
-            HStack(spacing: 0) {
-                Text("@")
-                    .font(.system(size: 20))
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Group handle")
                     .foregroundColor(Color.theme.primaryText)
+                    .fontWeight(.semibold)
+                    .font(.footnote)
                 
-                VStack(alignment: .leading, spacing: 0) {
-                    TextField("Enter a new group handle", text: $handle)
+                HStack {
+                    Text("@")
                         .font(.system(size: 20))
                         .foregroundColor(Color.theme.primaryText)
                     
-                    Divider()
-                        .background(Color.theme.secondaryText)
+                    TextField("Enter a new group handle", text: $handle)
+                        .modifier(TextFieldModifier())
+                }
+                
+                if viewModel.showGroupHandleErrorMessage {
+                    Text("Group handle already exists. Please choose a different one.")
+                        .foregroundColor(.red)
+                        .font(.caption)
                 }
             }
-            
-            if viewModel.showGroupHandleErrorMessage {
-                Text("Group handle already exists. Please choose a different one")
-                    .foregroundColor(.red)
-                    .font(.caption)
-            }
-            
         }
-        .padding()
-        .autocapitalization(.none)
+        .padding(.horizontal, 16)
     }
 }
-
-//#Preview {
-//    EditGroupView()
-//}

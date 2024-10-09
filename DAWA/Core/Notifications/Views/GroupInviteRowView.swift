@@ -24,8 +24,8 @@ struct GroupInviteRowView: View {
                 
                 Spacer()
                 
-                // Buttons placed side by side
-                HStack(spacing: 10) {
+                // Stack buttons vertically with equal widths
+                VStack(spacing: 10) {
                     Button {
                         Task {
                             groupsViewModel.fetchedGroups = false
@@ -35,8 +35,8 @@ struct GroupInviteRowView: View {
                     } label: {
                         Text("Confirm")
                             .bold()
-                            .padding(.vertical, 4)
-                            .padding(.horizontal, 8) // Add some horizontal padding for better button size
+                            .padding(.vertical, 6)
+                            .frame(maxWidth: .infinity)  // Make button take full available width
                             .background(Color.theme.appTheme)
                             .foregroundColor(.white)
                             .cornerRadius(8)
@@ -50,14 +50,15 @@ struct GroupInviteRowView: View {
                     } label: {
                         Text("Delete")
                             .bold()
-                            .padding(.vertical, 4)
-                            .padding(.horizontal, 8) // Add some horizontal padding for better button size
+                            .padding(.vertical, 6)
+                            .frame(maxWidth: .infinity)  // Make button take full available width
                             .background(Color.theme.secondaryBackground)
                             .foregroundColor(Color.theme.primaryText)
                             .cornerRadius(8)
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
+                .frame(width: 100) // Set a fixed width for both buttons
             }
             .padding()
             .background(Color.theme.background)
