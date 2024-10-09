@@ -1,10 +1,3 @@
-//
-//  GroupInviteRowView.swift
-//  DAWA
-//
-//  Created by Tee Monsereenusorn on 11/16/23.
-//
-
 import SwiftUI
 
 struct GroupInviteRowView: View {
@@ -14,40 +7,63 @@ struct GroupInviteRowView: View {
     
     var body: some View {
         if let group = groupInvite.group {
-            HStack {
+            HStack(spacing: 15) {
+                // Group Image
                 SquareGroupImageView(group: group, size: .medium)
                 
-                Text("\(group.name)")
-                    .foregroundColor(Color.theme.primaryText)
+                // Group Details
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(group.name)
+                        .font(.headline)
+                        .foregroundColor(Color.theme.primaryText)
+                    
+                    Text("@\(group.handle)")  // Group handle
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                }
                 
                 Spacer()
                 
-                Button("Confirm") {
-                    Task {
-                        groupsViewModel.fetchedGroups = false
-                        try await viewModel.acceptGroupInvitation(groupInvite: groupInvite)
-                        await groupsViewModel.fetchUserGroups()
+                // Buttons placed side by side
+                HStack(spacing: 10) {
+                    Button {
+                        Task {
+                            groupsViewModel.fetchedGroups = false
+                            try await viewModel.acceptGroupInvitation(groupInvite: groupInvite)
+                            await groupsViewModel.fetchUserGroups()
+                        }
+                    } label: {
+                        Text("Confirm")
+                            .bold()
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 8) // Add some horizontal padding for better button size
+                            .background(Color.theme.appTheme)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
                     }
-                }
-                .padding()
-                .foregroundColor(.white) // Text color
-                .background(Color.blue) // System blue background
-                .cornerRadius(10) // Rounded corners
-                
-                Button("Delete") {
-                    Task {
-                        try await viewModel.deleteGroupInvitation(groupInvite: groupInvite)
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    Button {
+                        Task {
+                            try await viewModel.deleteGroupInvitation(groupInvite: groupInvite)
+                        }
+                    } label: {
+                        Text("Delete")
+                            .bold()
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 8) // Add some horizontal padding for better button size
+                            .background(Color.theme.secondaryBackground)
+                            .foregroundColor(Color.theme.primaryText)
+                            .cornerRadius(8)
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
-                .padding()
-                .foregroundColor(.white) // Text color
-                .background(Color.theme.secondaryBackground) // System blue background
-                .cornerRadius(10) // Rounded corners
             }
+            .padding()
+            .background(Color.theme.background)
+            .cornerRadius(12)
+            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
+            .contentShape(Rectangle())
         }
     }
 }
-
-//#Preview {
-//    GroupInviteRowView()
-//}
