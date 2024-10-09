@@ -132,6 +132,8 @@
 		85CB69882A7A6FAF008BCE7E /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CB69872A7A6FAF008BCE7E /* EditProfileView.swift */; };
 		85CD14D42A4C25F200E74434 /* VerifyEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CD14D32A4C25F200E74434 /* VerifyEmailView.swift */; };
 		85D394D82CB5FECF0092AE86 /* GroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D394D72CB5FECF0092AE86 /* GroupViewModel.swift */; };
+		85D394DA2CB6970D0092AE86 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D394D92CB6970D0092AE86 /* ForgotPasswordView.swift */; };
+		85D394DC2CB697240092AE86 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D394DB2CB697240092AE86 /* ForgotPasswordViewModel.swift */; };
 		85D5DD8B2A42E4C000D61F12 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8A2A42E4C000D61F12 /* LoginView.swift */; };
 		85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8F2A42EAC500D61F12 /* InputView.swift */; };
 		85D778242A45F6160052D5F9 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D778232A45F6160052D5F9 /* ProfileView.swift */; };
@@ -239,6 +241,8 @@
 		85CB69872A7A6FAF008BCE7E /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		85CD14D32A4C25F200E74434 /* VerifyEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailView.swift; sourceTree = "<group>"; };
 		85D394D72CB5FECF0092AE86 /* GroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewModel.swift; sourceTree = "<group>"; };
+		85D394D92CB6970D0092AE86 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		85D394DB2CB697240092AE86 /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		85D5DD8A2A42E4C000D61F12 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		85D5DD8F2A42EAC500D61F12 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		85D778232A45F6160052D5F9 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -623,6 +627,7 @@
 				85C854D32A418F290057F55F /* SignUpView.swift */,
 				85D5DD8A2A42E4C000D61F12 /* LoginView.swift */,
 				85CD14D32A4C25F200E74434 /* VerifyEmailView.swift */,
+				85D394D92CB6970D0092AE86 /* ForgotPasswordView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -633,6 +638,7 @@
 				85B3CCAA2A826EAA0082B561 /* SignUpViewModel.swift */,
 				85B3CCA52A826E120082B561 /* LoginViewModel.swift */,
 				85B3CCAC2A8273160082B561 /* VerifyEmailViewModel.swift */,
+				85D394DB2CB697240092AE86 /* ForgotPasswordViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -852,6 +858,7 @@
 				85B241BB2A866174001EAA59 /* ChatMessageCell.swift in Sources */,
 				8542D2352B1430E400A28172 /* GroupSearchView.swift in Sources */,
 				85C09D7F2A865EC800D51576 /* ChatView.swift in Sources */,
+				85D394DA2CB6970D0092AE86 /* ForgotPasswordView.swift in Sources */,
 				85301E542AE495D0004052C2 /* EditGroupView.swift in Sources */,
 				856758022AE0E5EB0006F843 /* SquareGroupImageView.swift in Sources */,
 				85B3CCA22A826CC80082B561 /* ContentViewModel.swift in Sources */,
@@ -873,6 +880,7 @@
 				85AF06512A58297400599107 /* RightSideMenuView.swift in Sources */,
 				850B074C2B06DA2A00A4FAF5 /* GroupInvitesView.swift in Sources */,
 				850B07482B06D3B100A4FAF5 /* NotificationsViewModel.swift in Sources */,
+				85D394DC2CB697240092AE86 /* ForgotPasswordViewModel.swift in Sources */,
 				85967A7D2B46F7A2009777AD /* GroupRowViewModel.swift in Sources */,
 				8542049E2CABD3B200291609 /* MemberRequestsView.swift in Sources */,
 				854204A02CABD3DB00291609 /* MemberRequestsViewModel.swift in Sources */,

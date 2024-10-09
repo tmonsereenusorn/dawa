@@ -105,6 +105,17 @@ class AuthService {
         }
     }
     
+    @MainActor
+    func sendPasswordReset(toEmail email: String) async throws {
+        do {
+            try await Auth.auth().sendPasswordReset(withEmail: email)
+            print("DEBUG: Password reset email sent to \(email)")
+        } catch {
+            print("DEBUG: Failed to send password reset email with error \(error.localizedDescription)")
+            throw error
+        }
+    }
+    
     // Private functions
     
     @MainActor

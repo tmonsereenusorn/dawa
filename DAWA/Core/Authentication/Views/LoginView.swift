@@ -33,8 +33,8 @@ struct LoginView: View {
                         .modifier(TextFieldModifier())
                         .padding(.horizontal, 24)
                     
-                    Button {
-                        print("Show forgot password")
+                    NavigationLink {
+                        ForgotPasswordView()
                     } label: {
                         Text("Forgot Password?")
                             .font(.footnote)
