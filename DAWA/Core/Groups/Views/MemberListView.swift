@@ -17,7 +17,7 @@ struct MemberListView: View {
     
     private var isCurrentUserAdmin: Bool {
         guard let currentUser = contentViewModel.currentUser else { return false }
-        return group.memberList?.contains(where: { $0.id == currentUser.id && ($0.groupPermissions == "Admin" || $0.groupPermissions == "Owner") }) ?? false
+        return group.memberList?.contains(where: { $0.id == currentUser.id && ($0.permissions == "Admin" || $0.permissions == "Owner") }) ?? false
     }
     
     var body: some View {
@@ -65,14 +65,14 @@ struct MemberListView: View {
                 ForEach(group.memberList ?? [], id: \.id) { member in
                     Menu {
                         NavigationLink {
-                            ProfileView(user: member)
+                            ProfileView(user: member.user!)
                         } label: {
                             Text("View profile")
                         }
                         
                         if isCurrentUserAdmin {
                             Menu("Change permissions") {
-                                if member.groupPermissions == "Admin" {
+                                if member.permissions == "Admin" {
                                     Button {
                                         Task {
                                             if try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Member") {
@@ -90,7 +90,7 @@ struct MemberListView: View {
                                     }
                                 }
                                 
-                                if member.groupPermissions == "Member"{
+                                if member.permissions == "Member"{
                                     Button {
                                         Task {
                                             if try await GroupService.changeGroupPermissions(groupId: group.id, forUserId: member.id, toPermission: "Admin") {
@@ -109,7 +109,7 @@ struct MemberListView: View {
                                 }
                             }
                             
-                            if member.groupPermissions != "Owner" {
+                            if member.permissions != "Owner" {
                                 Button(role: .destructive) {
                                     Task {
                                         if try await GroupService.leaveGroup(uid: member.id, groupId: group.id) {
@@ -129,12 +129,12 @@ struct MemberListView: View {
                         }
                     } label: {
                         HStack {
-                            CircularProfileImageView(user: member, size: .small)
-                            Text(member.username)
+                            CircularProfileImageView(user: member.user!, size: .small)
+                            Text(member.user?.username ?? "Username not found")
                                 .foregroundColor(Color.theme.primaryText)
                                 .font(.system(size: 16))
                             Spacer()
-                            Text(member.groupPermissions ?? "")
+                            Text(member.permissions)
                                 .foregroundColor(Color.theme.secondaryText)
                                 .font(.system(size: 12))
                         }

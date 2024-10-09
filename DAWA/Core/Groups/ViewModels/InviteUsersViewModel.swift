@@ -14,9 +14,9 @@ class InviteUsersViewModel: ObservableObject {
     @Published var users = [User]()
     @Published var searchText = ""
     
-    var groupMembers: [User]
+    var groupMembers: [GroupMember]
     
-    init(groupMembers: [User]) {
+    init(groupMembers: [GroupMember]) {
         self.groupMembers = groupMembers
     }
     

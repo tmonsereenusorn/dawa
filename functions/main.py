@@ -1,6 +1,6 @@
 import firebase_admin
 from firebase_admin import firestore, messaging
-from firebase_admin.messaging import APNSConfig, APNSPayload, Aps, Message, Notification  # Add this line
+from firebase_admin.messaging import APNSConfig, APNSPayload, Aps, Message, MulticastMessage, Notification
 from firebase_functions import firestore_fn
 from google.cloud.firestore_v1.base_query import FieldFilter
 
@@ -108,6 +108,92 @@ def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore
     if invalid_tokens:
         user_ref.update({'fcmTokens': firestore.ArrayRemove(invalid_tokens)})
         print(f"Removed invalid tokens: {invalid_tokens}")
+
+@firestore_fn.on_document_created(document="activities/{activityId}")
+def send_group_activity_notification(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> None:
+    db = get_firestore_client()
+    
+    activity_data = event.data.to_dict()
+    if not activity_data:
+        print(f"No activity data found.")
+        return
+    
+    group_id = activity_data.get('groupId')
+    activity_title = activity_data.get('title', 'Activity')
+    creator_user_id = activity_data.get('userId')  # Assuming the creator's userId is stored here
+    if not group_id:
+        print(f"Activity does not have a groupId field.")
+        return
+
+    group_doc = db.collection('groups').document(group_id).get()
+    if not group_doc.exists:
+        print(f"Group document not found for groupId: {group_id}")
+        return
+
+    group_data = group_doc.to_dict()
+    group_name = group_data.get('name', 'Group')
+
+    group_members_ref = db.collection('groups').document(group_id).collection('members')
+    members_with_notifications_enabled = group_members_ref.where('notificationsEnabled', '==', True).stream()
+
+    tokens_to_notify = []
+    invalid_tokens = []
+    for member_doc in members_with_notifications_enabled:
+        user_id = member_doc.id
+
+        # Skip sending notification to the creator of the activity
+        if user_id == creator_user_id:
+            continue
+
+        user_ref = db.collection('users').document(user_id)
+        user_doc = user_ref.get()
+        if user_doc.exists:
+            user_data = user_doc.to_dict()
+            fcm_tokens = user_data.get('fcmTokens', [])
+            
+            for token_info in fcm_tokens:
+                if not isinstance(token_info, dict) or 'token' not in token_info or 'deviceId' not in token_info:
+                    print(f"Invalid token format: {token_info}")
+                    invalid_tokens.append(token_info)
+                    continue
+
+                token = token_info['token']
+                tokens_to_notify.append(token)
+        else:
+            print(f"User document not found for user: {user_id}")
+
+    if not tokens_to_notify:
+        print("No FCM tokens found for users with notifications enabled.")
+        return
+
+    notification_title = group_name
+    notification_body = f"New activity posted: {activity_title}"
+
+    apns_config = get_apns_config(thread_id=group_id)
+
+    multicast_message = messaging.MulticastMessage(
+        notification=messaging.Notification(
+            title=notification_title,
+            body=notification_body,
+        ),
+        apns=apns_config,
+        tokens=tokens_to_notify
+    )
+
+    try:
+        response = messaging.send_each_for_multicast(multicast_message)
+        print(f"Successfully sent {response.success_count} messages. Failed {response.failure_count} messages.")
+        
+        # If there are invalid tokens, remove them from Firestore
+        if invalid_tokens:
+            for member_doc in members_with_notifications_enabled:
+                user_ref = db.collection('users').document(member_doc.id)
+                user_ref.update({'fcmTokens': firestore.ArrayRemove(invalid_tokens)})
+            print(f"Removed invalid tokens: {invalid_tokens}")
+
+    except Exception as e:
+        print(f"Error sending notifications: {str(e)}")
+
 
 # @firestore_fn.on_document_created(document="activities/{activityId}/participants/{participantId}")
 # def send_participant_joined_notification(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> None:

@@ -20,9 +20,5 @@ struct Groups: Identifiable, Codable, Hashable {
         return uid ?? NSUUID().uuidString
     }
     
-    var memberList: [User]?
-}
-
-extension Groups {
-    static var MOCK_GROUP = Groups(name: "Stanford University", handle: "stanforduniversity", numMembers: 44)
+    var memberList: [GroupMember]? = []
 }

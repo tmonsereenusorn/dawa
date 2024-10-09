@@ -79,19 +79,28 @@ class GroupService {
             let group = try await GroupService.fetchGroup(groupId: groupId)
             
             // Check if the user is already a member of the group
-            let isCurrentUserAMember = group.memberList?.contains { $0.id == uid } ?? true
+            let isCurrentUserAMember = group.memberList?.contains { $0.user?.id == uid } ?? false
             
             if !isCurrentUserAMember {
-                // Add user to group's user member list
+                // Create a GroupMember object with notificationsEnabled set to true
+                let newMember = GroupMember(
+                    permissions: "Member",
+                    notificationsEnabled: true // Default to true
+                )
+                
+                // Add user to group's members list using the GroupMember object
                 let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
-                try await groupMembersRef.document(uid).setData(["permissions": "Member"])
+                let encodedMember = try Firestore.Encoder().encode(newMember)
+                try await groupMembersRef.document(uid).setData(encodedMember)
                 
                 // Add group to user's groups list
                 let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
                 try await groupsRef.document(groupId).setData([:])
                 
                 // Update the group's number of members
-                try await FirestoreConstants.GroupsCollection.document(groupId).updateData(["numMembers": FieldValue.increment(Int64(1))])
+                try await FirestoreConstants.GroupsCollection.document(groupId).updateData([
+                    "numMembers": FieldValue.increment(Int64(1))
+                ])
                 
                 // Check if a pending member request exists and delete it
                 let memberRequestRef = FirestoreConstants.GroupsCollection.document(groupId).collection("member-requests").whereField("fromUserId", isEqualTo: uid)
@@ -220,7 +229,7 @@ class GroupService {
     static func fetchGroup(groupId: String) async throws -> Groups {
         let snapshot = try await FirestoreConstants.GroupsCollection.document(groupId).getDocument()
         var group = try snapshot.data(as: Groups.self)
-        let members = await fetchGroupMembers(groupId: group.id)
+        let members = try await fetchGroupMembers(groupId: group.id)
         group.memberList = members
         return group
     }
@@ -241,31 +250,34 @@ class GroupService {
     }
     
     @MainActor
-    static func fetchGroupMembers(groupId: String) async -> [User] {
-        var users: [User] = []
-        
-        guard let groupMembersSnapshot = try? await FirestoreConstants.GroupsCollection.document(groupId).collection("members").getDocuments() else { return users }
-        
-        // Create a task group to fetch user data in parallel
-        await withTaskGroup(of: User?.self) { group in
+    static func fetchGroupMembers(groupId: String) async throws -> [GroupMember] {
+        var groupMembers: [GroupMember] = []
+
+        let groupMembersSnapshot = try await FirestoreConstants.GroupsCollection.document(groupId).collection("members").getDocuments()
+
+        await withTaskGroup(of: GroupMember?.self) { group in
             for doc in groupMembersSnapshot.documents {
-                let uid = doc.documentID
                 group.addTask {
-                    guard let userSnapshot = try? await FirestoreConstants.UserCollection.document(uid).getDocument(),
-                          var user = try? userSnapshot.data(as: User.self) else { return nil }
-                    user.groupPermissions = doc.get("permissions") as? String
-                    return user
+                    if var groupMember = try? doc.data(as: GroupMember.self) {
+                        // Fetch the corresponding User object in parallel
+                        let userSnapshot = try? await FirestoreConstants.UserCollection.document(groupMember.id).getDocument()
+                        if let user = try? userSnapshot?.data(as: User.self) {
+                            groupMember.user = user // Attach the User object to GroupMember
+                        }
+                        return groupMember
+                    }
+                    return nil
                 }
             }
 
-            for await user in group {
-                if let user = user {
-                    users.append(user)
+            for await member in group {
+                if let member = member {
+                    groupMembers.append(member)
                 }
             }
         }
-        
-        return users
+
+        return groupMembers
     }
     
     @MainActor
@@ -327,7 +339,7 @@ class GroupService {
             
             if let document = querySnapshot.documents.first {
                 var group = try document.data(as: Groups.self)
-                let members = await fetchGroupMembers(groupId: group.id)
+                let members = try await fetchGroupMembers(groupId: group.id)
                 group.memberList = members
                 return group
             } else {
@@ -403,6 +415,28 @@ class GroupService {
             print("Member request rejected successfully")
         } catch {
             print("Error rejecting member request: \(error)")
+            throw error
+        }
+    }
+    
+    @MainActor
+    static func toggleNotifications(for uid: String, groupId: String) async throws {
+        let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members").document(uid)
+        
+        do {
+            let document = try await groupMembersRef.getDocument()
+            
+            guard var groupMember = try? document.data(as: GroupMember.self) else {
+                throw AppError.groupMemberNotFound
+            }
+            
+            // Toggle the notificationsEnabled field
+            let newNotificationsEnabled = !(groupMember.notificationsEnabled ?? false)
+            
+            // Update the group member with the new notificationsEnabled value
+            try await groupMembersRef.updateData(["notificationsEnabled": newNotificationsEnabled])
+        } catch {
+            print("Error toggling notifications for user \(uid) in group \(groupId): \(error.localizedDescription)")
             throw error
         }
     }

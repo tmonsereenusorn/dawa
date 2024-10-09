@@ -14,9 +14,7 @@ struct User: Identifiable, Codable, Hashable {
     }
     
     var isCurrentUser: Bool { return Auth.auth().currentUser?.uid == id }
-    
-    var groupPermissions: String?
-    
+
 //    var initials: String {
 //        let formatter = PersonNameComponentsFormatter()
 //        if let components = formatter.personNameComponents(from: fullname) {

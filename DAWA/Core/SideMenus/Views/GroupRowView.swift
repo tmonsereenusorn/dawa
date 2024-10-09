@@ -20,7 +20,7 @@ struct GroupRowView: View {
     
     private var isCurrentUserOwner: Bool {
         guard let currentUser = contentViewModel.currentUser else { return false }
-        return group.memberList?.contains(where: { $0.id == currentUser.id && ($0.groupPermissions == "Owner") }) ?? false
+        return group.memberList?.contains(where: { $0.id == currentUser.id && ($0.permissions == "Owner") }) ?? false
     }
     
     var body: some View {

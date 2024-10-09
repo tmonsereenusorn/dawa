@@ -1,24 +1,28 @@
-//
-//  GroupView.swift
-//  DAWA
-//
-//  Created by Tee Monsereenusorn on 10/18/23.
-//
-
 import SwiftUI
 
 struct GroupView: View {
     @EnvironmentObject var contentViewModel: ContentViewModel
     @Environment(\.presentationMode) var mode
     @Binding var group: Groups
-    @State private var editingGroup: Bool = false
-    @State private var showMemberRequests: Bool = false
     
-    private var isCurrentUserAdmin: Bool {
-        guard let currentUser = contentViewModel.currentUser else { return false }
-        return group.memberList?.contains(where: { $0.id == currentUser.id && ($0.groupPermissions == "Admin" || $0.groupPermissions == "Owner") }) ?? false
+    @StateObject private var viewModel: GroupViewModel
+    
+    init(group: Binding<Groups>) {
+        self._group = group
+        self._viewModel = StateObject(wrappedValue: GroupViewModel(group: group.wrappedValue))
     }
     
+    // Extract logic for the current user from the contentViewModel
+    private var currentUserGroupMember: GroupMember? {
+        guard let currentUser = contentViewModel.currentUser else { return nil }
+        return group.memberList?.first(where: { $0.user?.id == currentUser.id })
+    }
+
+    // Determine if the current user is an admin
+    private var isCurrentUserAdmin: Bool {
+        return currentUserGroupMember?.isAdmin ?? false
+    }
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
@@ -34,10 +38,25 @@ struct GroupView: View {
                 
                 Spacer()
                 
+                // Notifications Toggle
+                if let groupMember = currentUserGroupMember {
+                    Button {
+                        Task {
+                            await viewModel.toggleNotifications(for: groupMember)
+                        }
+                    } label: {
+                        Image(systemName: viewModel.notificationsEnabled ? "bell.fill" : "bell.slash.fill")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(Color.theme.primaryText)
+                    }
+                    .padding()
+                }
+                
                 if isCurrentUserAdmin {
                     HStack(spacing: 16) {
                         Button {
-                            editingGroup.toggle()
+                            viewModel.editingGroup.toggle()
                         } label: {
                             Text("Edit Group")
                                 .font(.subheadline).bold()
@@ -47,7 +66,7 @@ struct GroupView: View {
                         }
 
                         Button {
-                            showMemberRequests.toggle()
+                            viewModel.showMemberRequests.toggle()
                         } label: {
                             Image(systemName: "person.3.fill")
                                 .resizable()
@@ -100,15 +119,17 @@ struct GroupView: View {
         .padding()
         .navigationBarHidden(true)
         .background(Color.theme.background)
-        .popover(isPresented: $editingGroup) {
+        .popover(isPresented: $viewModel.editingGroup) {
             EditGroupView(group: $group)
         }
-        .sheet(isPresented: $showMemberRequests) {
+        .sheet(isPresented: $viewModel.showMemberRequests) {
             MemberRequestsView(group: $group)
+        }
+        .onAppear {
+            // Initialize the notificationsEnabled state based on the current user's settings
+            if let groupMember = currentUserGroupMember {
+                viewModel.notificationsEnabled = groupMember.notificationsEnabled ?? false
+            }
         }
     }
 }
-
-//#Preview {
-//    GroupView(group: Groups.MOCK_GROUP)
-//}
