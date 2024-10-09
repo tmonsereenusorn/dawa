@@ -6,6 +6,7 @@ struct GroupView: View {
     @Binding var group: Groups
     
     @StateObject private var viewModel: GroupViewModel
+    @State private var inviteMembers = false
     
     init(group: Binding<Groups>) {
         self._group = group
@@ -87,31 +88,55 @@ struct GroupView: View {
 
             // Admin Action Bar with consistent buttons
             if isCurrentUserAdmin {
-                HStack(spacing: 16) {
-                    Button(action: {
-                        viewModel.editingGroup.toggle()
-                    }) {
-                        Text("Edit Group")
-                            .font(.subheadline).bold()
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical)
-                            .background(Color.theme.secondaryBackground)
-                            .cornerRadius(10)
-                            .foregroundColor(Color.theme.primaryText)
-                            .shadow(radius: 2)
+                VStack(spacing: 16) {
+                    HStack(spacing: 16) {
+                        Button(action: {
+                            viewModel.editingGroup.toggle()
+                        }) {
+                            Text("Edit Group")
+                                .font(.subheadline).bold()
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical)
+                                .background(Color.theme.secondaryBackground)
+                                .cornerRadius(10)
+                                .foregroundColor(Color.theme.primaryText)
+                                .shadow(radius: 2)
+                        }
+                        
+                        Button(action: {
+                            viewModel.showMemberRequests.toggle()
+                        }) {
+                            Text("Member Requests")
+                                .font(.subheadline).bold()
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical)
+                                .background(Color.theme.secondaryBackground)
+                                .cornerRadius(10)
+                                .foregroundColor(Color.theme.primaryText)
+                                .shadow(radius: 2)
+                        }
                     }
                     
-                    Button(action: {
-                        viewModel.showMemberRequests.toggle()
-                    }) {
-                        Text("Member Requests")
-                            .font(.subheadline).bold()
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical)
-                            .background(Color.theme.secondaryBackground)
-                            .cornerRadius(10)
-                            .foregroundColor(Color.theme.primaryText)
-                            .shadow(radius: 2)
+                    // Invite Users Button
+                    Button {
+                        inviteMembers.toggle()
+                    } label: {
+                        HStack {
+                            Image(systemName: "person.badge.plus")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                            Text("Invite Users")
+                                .font(.subheadline).bold()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical)
+                        .background(Color.theme.secondaryBackground)
+                        .cornerRadius(10)
+                        .foregroundColor(Color.theme.primaryText)
+                        .shadow(radius: 2)
+                    }
+                    .popover(isPresented: $inviteMembers) {
+                        InviteUsersView(group: $group)
                     }
                 }
                 .frame(maxWidth: .infinity)  // Ensure buttons span the entire width
