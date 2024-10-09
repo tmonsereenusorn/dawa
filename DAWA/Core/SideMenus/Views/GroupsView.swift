@@ -38,8 +38,6 @@ struct GroupsView: View {
                 }
             }
             
-            Divider()
-            
             // Groups List
             if viewModel.fetchedGroups {
                 ScrollView {
@@ -95,10 +93,6 @@ struct GroupsView: View {
         .padding(10)
         .frame(width: getRect().width - 90)
         .frame(maxHeight: .infinity)
-        .background(
-            Color.theme.background
-                .ignoresSafeArea(.container, edges: .vertical)
-        )
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

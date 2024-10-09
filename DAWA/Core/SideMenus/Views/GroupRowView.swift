@@ -45,7 +45,7 @@ struct GroupRowView: View {
                 }
             }
             .padding()
-            .background(groupsViewModel.currSelectedGroup?.id == group.id ? Color.theme.secondaryText : Color.theme.background)
+            .background(isExpanded ? Color.theme.background : Color.clear )
             
             if isExpanded {
                 VStack(alignment: .leading, spacing: 10) {
@@ -94,7 +94,7 @@ struct GroupRowView: View {
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .background(Color.theme.background)
+        .background(groupsViewModel.currSelectedGroup?.id == group.id ? Color.theme.secondaryText : Color.clear )
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
         .animation(.easeInOut, value: isExpanded)
