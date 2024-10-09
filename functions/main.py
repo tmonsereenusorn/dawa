@@ -194,6 +194,96 @@ def send_group_activity_notification(event: firestore_fn.Event[firestore_fn.Docu
     except Exception as e:
         print(f"Error sending notifications: {str(e)}")
 
+@firestore_fn.on_document_created(document="users/{userId}/group-invites/{inviteId}")
+def send_group_invitation_notification(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> None:
+    db = get_firestore_client()
+
+    invite_data = event.data.to_dict()
+    if not invite_data:
+        print(f"No invite data found.")
+        return
+
+    to_user_id = invite_data.get('toUserId')
+    from_user_id = invite_data.get('fromUserId')
+    for_group_id = invite_data.get('forGroupId')
+
+    if not to_user_id or not from_user_id or not for_group_id:
+        print(f"Invalid invite data: {invite_data}")
+        return
+
+    # Fetch the group document
+    group_ref = db.collection('groups').document(for_group_id)
+    group_doc = group_ref.get()
+
+    if not group_doc.exists:
+        print(f"Group document not found: {for_group_id}")
+        return
+
+    group_data = group_doc.to_dict()
+    group_name = group_data.get('name', 'Unknown Group')
+
+    # Fetch the receiver's user document
+    to_user_ref = db.collection('users').document(to_user_id)
+    to_user_doc = to_user_ref.get()
+
+    if not to_user_doc.exists:
+        print(f"User document not found for: {to_user_id}")
+        return
+
+    to_user_data = to_user_doc.to_dict()
+    fcm_tokens = to_user_data.get('fcmTokens', [])
+
+    if not fcm_tokens:
+        print(f"No FCM tokens for user: {to_user_id}")
+        return
+
+    # Fetch the sender's username
+    from_user_ref = db.collection('users').document(from_user_id)
+    from_user_doc = from_user_ref.get()
+
+    if not from_user_doc.exists:
+        print(f"Sender document not found for: {from_user_id}")
+        return
+
+    from_user_data = from_user_doc.to_dict()
+    sender_username = from_user_data.get('username', 'Unknown User')
+
+    notification_title = "Group Invitation"
+    notification_body = f"{sender_username} has invited you to join the group: {group_name}"
+
+    invalid_tokens = []
+    for token_info in fcm_tokens:
+        if not isinstance(token_info, dict) or 'token' not in token_info or 'deviceId' not in token_info:
+            print(f"Invalid token format: {token_info}")
+            invalid_tokens.append(token_info)
+            continue
+
+        token = token_info['token']
+        device_id = token_info['deviceId']
+
+        message = Message(
+            notification=Notification(
+                title=notification_title,
+                body=notification_body
+            ),
+            apns=get_apns_config(f'group-invitation'),
+            data={
+                'forGroupId': for_group_id,
+                'inviteId': event.params['inviteId']
+            },
+            token=token
+        )
+        try:
+            response = messaging.send(message)
+            print(f"Sent message to device {device_id} with token {token}: {response}")
+        except Exception as e:
+            print(f"Error sending to device {device_id} with token {token}: {str(e)}")
+            if isinstance(e, messaging.ApiCallError) and e.code == 'messaging/registration-token-not-registered':
+                invalid_tokens.append(token_info)
+
+    if invalid_tokens:
+        to_user_ref.update({'fcmTokens': firestore.ArrayRemove(invalid_tokens)})
+        print(f"Removed invalid tokens: {invalid_tokens}")
 
 # @firestore_fn.on_document_created(document="activities/{activityId}/participants/{participantId}")
 # def send_participant_joined_notification(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> None:
