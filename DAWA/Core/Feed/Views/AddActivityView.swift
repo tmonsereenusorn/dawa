@@ -23,7 +23,7 @@ struct AddActivityView: View {
         ZStack {
             Color.theme.background
                 .onTapGesture {
-                    UIApplication.shared.dismissKeyboard() // Dismiss keyboard when tapping outside
+                    UIApplication.shared.dismissKeyboard()
                 }
 
             VStack {
@@ -115,11 +115,8 @@ struct AddActivityView: View {
                                 .foregroundColor(.gray)
                         }
 
-                        // Toggle for Unlimited Participants
-                        HStack {
-                            Toggle("Unlimited Participants", isOn: $unlimitedParticipants)
-                                .toggleStyle(SwitchToggleStyle(tint: Color.theme.appTheme))
-                        }
+                        Toggle("Unlimited Participants", isOn: $unlimitedParticipants)
+                            .toggleStyle(SwitchToggleStyle(tint: Color.theme.appTheme))
                     }
                     
                     // Notes field
@@ -145,26 +142,23 @@ struct AddActivityView: View {
                             .fontWeight(.bold)
                             .foregroundColor(Color.theme.primaryText)
                         ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
+                            HStack(spacing: 8) {
                                 ForEach(ActivityFilters.allCases, id: \.rawValue) { option in
-                                    Button {
-                                        if selectedTag != option.label {
-                                            selectedTag = option.label
-                                        } else {
-                                            selectedTag = ""
+                                    Text(option.label)
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal, 12)
+                                        .foregroundColor(Color.theme.primaryText)
+                                        .background(option.color)
+                                        .opacity(selectedTag == option.label ? 1 : 0.5)
+                                        .cornerRadius(15)
+                                        .font(.caption).bold()
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            selectedTag = (selectedTag == option.label) ? "" : option.label
                                         }
-                                    } label: {
-                                        Text(option.label)
-                                            .padding(.vertical, 8)
-                                            .padding(.horizontal, 12)
-                                            .foregroundColor(Color.theme.primaryText)
-                                            .background(option.color)
-                                            .opacity(self.selectedTag == option.label ? 1 : 0.5)
-                                            .cornerRadius(15)
-                                            .font(.caption).bold()
-                                    }
                                 }
                             }
+                            .padding(.vertical, 4)
                         }
                     }
                     
