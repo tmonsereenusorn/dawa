@@ -25,9 +25,6 @@ struct ChatView: View {
             
             MessageInputView(messageText: $messageText, viewModel: viewModel)
         }
-        .onDisappear {
-            viewModel.removeChatListener()
-        }
         .navigationTitle(activity.title)
         .navigationBarBackButtonHidden(true)
         .navigationBarTitleDisplayMode(.inline)
@@ -43,6 +40,9 @@ struct ChatView: View {
             ActivityView(activity: activity)
         }
         .tint(Color.theme.primaryText)
+        .onDisappear {
+            viewModel.removeChatListener()
+        }
     }
 }
 
@@ -50,30 +50,38 @@ struct ChatContent: View {
     @ObservedObject var viewModel: ChatViewModel
     
     var body: some View {
-        if viewModel.messages.isEmpty {
-            EmptyMessagesView()
-        } else {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVStack {
-                        ForEach(viewModel.messages.indices, id: \.self) { index in
-                            MessageCell(message: viewModel.messages[index],
-                                        nextMessage: viewModel.nextMessage(forIndex: index),
-                                        prevMessage: viewModel.prevMessage(forIndex: index))
+        ScrollViewReader { proxy in
+            ScrollView {
+                if viewModel.messages.isEmpty {
+                    VStack {
+                        EmptyMessagesView()
+                    }
+                    .frame(minHeight: UIScreen.main.bounds.height - 200)
+                } else {
+                    VStack {
+                        ForEach(viewModel.messages) { message in
+                            MessageCell(message: message,
+                                        nextMessage: viewModel.nextMessage(forIndex: viewModel.messages.firstIndex(of: message) ?? 0),
+                                        prevMessage: viewModel.prevMessage(forIndex: viewModel.messages.firstIndex(of: message) ?? 0))
                         }
                     }
                     .padding(.vertical)
                 }
-                .onAppear { scrollToBottom(proxy: proxy) }
-                .onChange(of: viewModel.messages) { _ in scrollToBottom(proxy: proxy) }
+                Color.clear.frame(height: 1).id("bottomAnchor")
+            }
+            .onChange(of: viewModel.messages) { _ in
+                scrollToBottom(proxy: proxy)
+            }
+            .onAppear {
+                scrollToBottom(proxy: proxy)
             }
         }
     }
     
     private func scrollToBottom(proxy: ScrollViewProxy) {
-        if let lastMessage = viewModel.messages.last {
-            withAnimation(.spring()) {
-                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation {
+                proxy.scrollTo("bottomAnchor", anchor: .bottom)
             }
         }
     }
