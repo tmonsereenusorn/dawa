@@ -67,30 +67,50 @@ class ChatService {
     private static func uploadMessage(toActivityId activityId: String, messageText: String, type: MessageType, imageUrl: String? = nil) async throws {
         let currentUid = Auth.auth().currentUser?.uid ?? "UNKNOWN"
         
-        let messageRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("messages").document()
-        let message = Message(fromUserId: currentUid,
-                              toActivityId: activityId,
-                              messageText: messageText,
-                              timestamp: Timestamp(),
-                              imageUrl: imageUrl,
-                              messageType: type)
+        // Fetch participants outside the transaction
+        let participantsSnapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId)
+            .collection("participants")
+            .getDocuments()
         
-        guard let messageData = try? Firestore.Encoder().encode(message) else {
-            throw NSError(domain: "ChatService", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to encode message"])
-        }
-        try await messageRef.setData(messageData)
-        
-        let messageId = messageRef.documentID
-        try await FirestoreConstants.ActivitiesCollection.document(activityId).setData(["recentMessageId": messageId], merge: true)
-        
-        let activityParticipantsSnapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants").getDocuments()
-        for doc in activityParticipantsSnapshot.documents {
-            let participantId = doc.documentID
-            try await FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId).setData(
-                ["recentMessageId": messageId, "timestamp": Timestamp(), "hasRead": false], merge: true)
-        }
+        // Start Firestore Transaction for atomicity
+        try await Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
+            // Step 1: Create the message document
+            let messageRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("messages").document()
+            let message = Message(fromUserId: currentUid,
+                                  toActivityId: activityId,
+                                  messageText: messageText,
+                                  timestamp: Timestamp(),
+                                  imageUrl: imageUrl,
+                                  messageType: type)
+            
+            guard let messageData = try? Firestore.Encoder().encode(message) else {
+                errorPointer?.pointee = NSError(domain: "ChatService", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to encode message"])
+                return nil
+            }
+            
+            // Set the message document atomically
+            transaction.setData(messageData, forDocument: messageRef)
+            
+            let messageId = messageRef.documentID
+            
+            // Step 2: Update the recentMessageId field in the activity document
+            let activityRef = FirestoreConstants.ActivitiesCollection.document(activityId)
+            transaction.updateData(["recentMessageId": messageId], forDocument: activityRef)
+            
+            // Step 3: Update the recentMessageId and set hasRead = false for all participants except the sender
+            for document in participantsSnapshot.documents {
+                let participantId = document.documentID
+                if participantId != currentUid {
+                    let participantActivityRef = FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId)
+                    transaction.updateData(["recentMessageId": messageId, "timestamp": Timestamp(), "hasRead": false], forDocument: participantActivityRef)
+                }
+            }
+            
+            return nil
+        })
     }
-    
+
+
     static func markAsRead(activityId: String) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let docRef = Firestore.firestore().collection("users").document(uid).collection("user-activities").document(activityId)

@@ -61,7 +61,7 @@ struct InboxView: View {
                 .navigationDestination(for: UserActivity.self, destination: { userActivity in
                     if let activity = userActivity.activity {
                         ChatView(activity: activity)
-                            .onDisappear {
+                            .onAppear {
                                 if let activityId = userActivity.activity?.id {
                                     viewModel.markAsRead(activityId: activityId)
                                 }

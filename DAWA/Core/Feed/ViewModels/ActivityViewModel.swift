@@ -83,4 +83,8 @@ class ActivityViewModel: ObservableObject {
             print("DEBUG: Failed to close activity with error \(error.localizedDescription)")
         }
     }
+    
+    func markActivityAsRead() {
+        ChatService.markAsRead(activityId: activity.id)
+    }
 }

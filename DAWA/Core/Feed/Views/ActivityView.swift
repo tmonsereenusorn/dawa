@@ -1,10 +1,3 @@
-//
-//  ActivityView.swift
-//  DAWA
-//
-//  Created by Tee Monsereenusorn on 8/9/23.
-//
-
 import SwiftUI
 
 struct ActivityView: View {
@@ -18,6 +11,7 @@ struct ActivityView: View {
     @State private var showJoinConfirmation: Bool = false
     @State private var showLeaveConfirmation: Bool = false
     @State private var showCloseConfirmation: Bool = false
+    @State private var navigateToChat: Bool = false // State for navigating to ChatView
     
     init(activity: Activity) {
         self.viewModel = ActivityViewModel(activity: activity)
@@ -115,10 +109,14 @@ struct ActivityView: View {
             }
             Button("Cancel", role: .cancel) {}
         }
+        .navigationDestination(isPresented: $navigateToChat) {
+            ChatView(activity: viewModel.activity) // Navigate to ChatView
+        }
     }
     
     private var header: some View {
         HStack {
+            // Back Button
             Button {
                 mode.wrappedValue.dismiss()
             } label: {
@@ -130,6 +128,20 @@ struct ActivityView: View {
             
             Spacer()
             
+            // Chat Icon Button
+            if viewModel.activity.didJoin ?? false {
+                Button {
+                    viewModel.markActivityAsRead()
+                    navigateToChat = true
+                } label: {
+                    Image(systemName: "message.fill")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .foregroundColor(Color.theme.primaryText)
+                }
+            }
+            
+            // Refresh Button
             Button {
                 Task {
                     try? await viewModel.refreshActivity()
@@ -248,10 +260,3 @@ struct ActivityView: View {
         }
     }
 }
-
-//
-//struct ActivityView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ActivityView()
-//    }
-//}

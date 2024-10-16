@@ -14,8 +14,10 @@ class ChatViewModel: ObservableObject {
     
     private let service: ChatService
     private var uiImage: UIImage?
+    private let activity: Activity
     
     init(activity: Activity) {
+        self.activity = activity
         self.service = ChatService(activity: activity)
         observeChatMessages()
     }
@@ -24,6 +26,7 @@ class ChatViewModel: ObservableObject {
         Task {
             for await newMessages in service.messagesStream {
                 self.messages.append(contentsOf: newMessages)
+                ChatService.markAsRead(activityId: activity.id)
             }
         }
     }
