@@ -134,6 +134,7 @@
 		85D394D82CB5FECF0092AE86 /* GroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D394D72CB5FECF0092AE86 /* GroupViewModel.swift */; };
 		85D394DA2CB6970D0092AE86 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D394D92CB6970D0092AE86 /* ForgotPasswordView.swift */; };
 		85D394DC2CB697240092AE86 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D394DB2CB697240092AE86 /* ForgotPasswordViewModel.swift */; };
+		85D394DE2CBFD44C0092AE86 /* UIApplicationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D394DD2CBFD44C0092AE86 /* UIApplicationExtensions.swift */; };
 		85D5DD8B2A42E4C000D61F12 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8A2A42E4C000D61F12 /* LoginView.swift */; };
 		85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8F2A42EAC500D61F12 /* InputView.swift */; };
 		85D778242A45F6160052D5F9 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D778232A45F6160052D5F9 /* ProfileView.swift */; };
@@ -243,6 +244,7 @@
 		85D394D72CB5FECF0092AE86 /* GroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewModel.swift; sourceTree = "<group>"; };
 		85D394D92CB6970D0092AE86 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		85D394DB2CB697240092AE86 /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
+		85D394DD2CBFD44C0092AE86 /* UIApplicationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensions.swift; sourceTree = "<group>"; };
 		85D5DD8A2A42E4C000D61F12 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		85D5DD8F2A42EAC500D61F12 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		85D778232A45F6160052D5F9 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -707,6 +709,7 @@
 				85D9BAF22A3AC2F100E11652 /* DateExtension.swift */,
 				856FE1542A9D026400E9224B /* Color.swift */,
 				850B07542B0B176700A4FAF5 /* AppError.swift */,
+				85D394DD2CBFD44C0092AE86 /* UIApplicationExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -882,6 +885,7 @@
 				850B07482B06D3B100A4FAF5 /* NotificationsViewModel.swift in Sources */,
 				85D394DC2CB697240092AE86 /* ForgotPasswordViewModel.swift in Sources */,
 				85967A7D2B46F7A2009777AD /* GroupRowViewModel.swift in Sources */,
+				85D394DE2CBFD44C0092AE86 /* UIApplicationExtensions.swift in Sources */,
 				8542049E2CABD3B200291609 /* MemberRequestsView.swift in Sources */,
 				854204A02CABD3DB00291609 /* MemberRequestsViewModel.swift in Sources */,
 				85B3CCB02A8278FA0082B561 /* RightSideMenuViewModel.swift in Sources */,

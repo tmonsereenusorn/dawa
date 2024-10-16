@@ -20,7 +20,7 @@ struct SquareGroupImageView: View {
                 .frame(width: size.dimension, height: size.dimension)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
         } else {
-            Image(systemName: "person.crop.square.fill")
+            Image(systemName: "person.2.square.stack.fill")
                 .resizable()
                 .frame(width: size.dimension, height: size.dimension)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
