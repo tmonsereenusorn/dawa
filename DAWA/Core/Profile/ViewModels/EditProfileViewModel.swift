@@ -18,6 +18,7 @@ class EditProfileViewModel: ObservableObject {
     private var profileUIImage: UIImage?
     
     @Published var didEditProfile = false
+    @Published var errorMessage: String?
     
     @MainActor
     func loadImage() async throws {
@@ -33,8 +34,11 @@ class EditProfileViewModel: ObservableObject {
         do {
             try await UserService.shared.editUser(withUid: uid, username: username, bio: bio, uiImage: profileUIImage ?? nil)
             self.didEditProfile = true
+        } catch let error as AppError {
+            self.errorMessage = error.localizedDescription
+            self.didEditProfile = false
         } catch {
-            print("DEBUG: Failed to edit user with error \(error.localizedDescription)")
+            self.errorMessage = "An unexpected error occurred. Please try again."
             self.didEditProfile = false
         }
     }

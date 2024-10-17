@@ -9,47 +9,43 @@ struct EditProfileView: View {
     @StateObject var viewModel = EditProfileViewModel()
     @EnvironmentObject var contentViewModel: ContentViewModel
     
+    @State private var usernameError: String?
+    @State private var bioError: String?
+    
     var body: some View {
-        VStack(spacing: 20) {
-            headerView
+        ZStack {
+            VStack(spacing: 20) {
+                headerView
+                profileImageInput
+                usernameInput
+                bioInput
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .onAppear {
+                self.username = user.username
+                self.bio = user.bio
+            }
+            .background(Color.theme.background)
             
-            profileImageInput
-            
-            usernameInput
-            
-            bioInput
-            
-            Spacer()
+            // Error view overlay if there is an error message
+            if let errorMessage = viewModel.errorMessage {
+                ErrorView(errorMessage: errorMessage) {
+                    viewModel.errorMessage = nil // Dismiss error message
+                }
+                .zIndex(1) // Ensure the error message is shown above other content
+            }
         }
-        .padding(.horizontal, 16)
-        .onAppear {
-            self.username = user.username
-            self.bio = user.bio
-        }
-        .background(Color.theme.background)
     }
 }
 
 extension EditProfileView {
-    // Header with cancel and save buttons
     var headerView: some View {
         HStack {
-            Button {
-                mode.wrappedValue.dismiss()
-            } label: {
-                Text("Cancel")
-                    .font(.caption)
-                    .foregroundColor(Color.theme.secondaryText)
-            }
-            
+            Button { mode.wrappedValue.dismiss() } label: { Text("Cancel").font(.caption).foregroundColor(Color.theme.secondaryText) }
             Spacer()
-            
-            Text("Edit Profile")
-                .foregroundColor(Color.theme.primaryText)
-                .font(.headline)
-            
+            Text("Edit Profile").foregroundColor(Color.theme.primaryText).font(.headline)
             Spacer()
-            
             Button {
                 Task {
                     try await viewModel.editUser(withUid: self.user.id, username: username, bio: bio)
@@ -57,47 +53,30 @@ extension EditProfileView {
                         self.user = updatedUser
                     }
                 }
-            } label: {
-                Text("Save")
-                    .font(.caption)
-                    .foregroundColor(Color.theme.secondaryText)
-            }
+            } label: { Text("Save").font(.caption).foregroundColor(Color.theme.secondaryText) }
         }
         .padding(.vertical, 10)
-        .onReceive(viewModel.$didEditProfile) { success in
-            if success {
-                mode.wrappedValue.dismiss()
-            }
-        }
+        .onReceive(viewModel.$didEditProfile) { success in if success { mode.wrappedValue.dismiss() } }
     }
-    
-    // Profile image picker with PhotosPicker
+
     var profileImageInput: some View {
         PhotosPicker(selection: $viewModel.selectedItem) {
             ZStack(alignment: .bottomTrailing) {
                 if let image = viewModel.profileImage {
-                    image
-                        .resizable()
-                        .modifier(ProfileImageModifier())
+                    image.resizable().modifier(ProfileImageModifier())
                 } else {
                     CircularProfileImageView(user: user, size: .xLarge)
                 }
                 
                 ZStack {
-                    Circle()
-                        .fill(Color.theme.background)
-                        .frame(width: 24, height: 24)
-                    
-                    Image(systemName: "camera.circle.fill")
-                        .foregroundColor(Color.theme.primaryText)
-                        .frame(width: 18, height: 18)
+                    Circle().fill(Color.theme.background).frame(width: 24, height: 24)
+                    Image(systemName: "camera.circle.fill").foregroundColor(Color.theme.primaryText).frame(width: 18, height: 18)
                 }
             }
         }
         .padding(.vertical)
     }
-    
-    // Username input field
+
     var usernameInput: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Username")
@@ -106,19 +85,31 @@ extension EditProfileView {
                 .font(.footnote)
             
             HStack {
-                Text("@")
-                    .font(.system(size: 20))
-                    .foregroundColor(Color.theme.primaryText)
+                Text("@").font(.system(size: 20)).foregroundColor(Color.theme.primaryText)
                 
                 TextField("Enter a new username", text: $username)
                     .modifier(TextFieldModifier())
                     .autocapitalization(.none)
+                    .onChange(of: username) { newValue in
+                        self.username = newValue.filter { !$0.isWhitespace } // Remove all whitespace characters
+                        if newValue.count <= ProfileConstants.maxUsernameLength {
+                            self.usernameError = nil // Clear the error if the input is valid
+                        } else {
+                            self.usernameError = "Username cannot exceed \(ProfileConstants.maxUsernameLength) characters."
+                        }
+                    }
+            }
+            
+            // Show error message if username is too long
+            if let usernameError = usernameError {
+                Text(usernameError)
+                    .foregroundColor(.red)
+                    .font(.caption)
             }
         }
         .padding(.horizontal, 16)
     }
-    
-    // Bio input field
+
     var bioInput: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Bio")
@@ -130,6 +121,20 @@ extension EditProfileView {
                 .frame(minHeight: 80, maxHeight: 150, alignment: .top)
                 .modifier(TextFieldModifier())
                 .multilineTextAlignment(.leading)
+                .onChange(of: bio) { newValue in
+                    if newValue.count <= ProfileConstants.maxBioLength {
+                        self.bioError = nil // Clear the error if the input is valid
+                    } else {
+                        self.bioError = "Bio cannot exceed \(ProfileConstants.maxBioLength) characters."
+                    }
+                }
+
+            // Show error message if bio is too long
+            if let bioError = bioError {
+                Text(bioError)
+                    .foregroundColor(.red)
+                    .font(.caption)
+            }
         }
         .padding(.horizontal, 16)
     }

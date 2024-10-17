@@ -15,3 +15,8 @@ struct FirestoreConstants {
     static let GroupsCollection = Firestore.firestore().collection("groups")
     
 }
+
+struct ProfileConstants {
+    static let maxUsernameLength = 15
+    static let maxBioLength = 150
+}
