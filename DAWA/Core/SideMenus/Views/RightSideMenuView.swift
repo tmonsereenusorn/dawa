@@ -1,23 +1,20 @@
-//
-//  RightSideMenuView.swift
-//  DAWA
-//
-//  Created by Tee Monsereenusorn on 7/7/23.
-//
-
 import SwiftUI
 
 struct RightSideMenuView: View {
     @EnvironmentObject var contentViewModel: ContentViewModel
     @StateObject var viewModel = RightSideMenuViewModel()
-    
+
+    // State variables for confirmation dialogs
+    @State private var showLogoutConfirmation = false
+    @State private var showDeleteConfirmation = false
+
     var body: some View {
         if let user = contentViewModel.currentUser {
-            VStack (alignment: .leading) {
+            VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
                     CircularProfileImageView(user: user, size: .medium)
                         .frame(width: 48, height: 48)
-                    
+
                     VStack(alignment: .leading, spacing: 4) {
                         Text("@\(user.username)")
                             .font(.caption)
@@ -25,7 +22,7 @@ struct RightSideMenuView: View {
                     }
                 }
                 .padding()
-                
+
                 ForEach(RightSideMenuRow.allCases, id: \.rawValue) { option in
                     if option == .profile {
                         NavigationLink {
@@ -35,23 +32,19 @@ struct RightSideMenuView: View {
                         }
                     } else if option == .logout {
                         Button {
-                            viewModel.signOut()
+                            showLogoutConfirmation = true
                         } label: {
                             RightSideMenuRowView(option: option, color: .red)
                         }
                     } else if option == .delete {
                         Button {
-                            Task {
-                                try await viewModel.deleteAccount()
-                            }
+                            showDeleteConfirmation = true
                         } label: {
                             RightSideMenuRowView(option: option, color: .red)
                         }
-                    } else {
-                        
                     }
                 }
-                
+
                 Spacer()
             }
             .frame(width: getRect().width - 90)
@@ -62,13 +55,22 @@ struct RightSideMenuView: View {
                     .ignoresSafeArea(.container, edges: .vertical)
             )
             .frame(maxWidth: .infinity, alignment: .leading)
+            // Logout confirmation dialog
+            .confirmationDialog("Are you sure you want to log out?", isPresented: $showLogoutConfirmation) {
+                Button("Log Out", role: .destructive) {
+                    viewModel.signOut()
+                }
+                Button("Cancel", role: .cancel) {}
+            }
+            // Delete account confirmation dialog
+            .confirmationDialog("Are you sure you want to delete your account? This action is irreversible.", isPresented: $showDeleteConfirmation) {
+                Button("Delete Account", role: .destructive) {
+                    Task {
+                        try await viewModel.deleteAccount()
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            }
         }
     }
 }
-
-//
-//struct RightSideMenuView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RightSideMenuView()
-//    }
-//}
