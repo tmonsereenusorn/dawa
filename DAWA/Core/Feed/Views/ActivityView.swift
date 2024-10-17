@@ -48,7 +48,6 @@ struct ActivityView: View {
                     .padding(.bottom, 100)
                 }
                 .navigationBarHidden(true)
-                .background(Color.theme.background)
                 .blur(radius: viewModel.isLoading ? 3.0 : 0)
                 .disabled(viewModel.isLoading)
                 .onAppear {
@@ -59,6 +58,27 @@ struct ActivityView: View {
                 
                 VStack {
                     Spacer()
+                    
+                    if viewModel.activity.didJoin ?? false {
+                        Button(action: {
+                            viewModel.markActivityAsRead()
+                            navigateToChat = true
+                        }) {
+                            HStack {
+                                Image(systemName: "message.fill")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                Text("Go to Chat").font(.headline)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(Color.theme.primaryText)
+                            .background(Color.theme.appTheme).cornerRadius(10)
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                    }
+                    
                     actionButton(for: hostUser)
                         .padding(.horizontal)
                     
@@ -127,19 +147,6 @@ struct ActivityView: View {
             }
             
             Spacer()
-            
-            // Chat Icon Button
-            if viewModel.activity.didJoin ?? false {
-                Button {
-                    viewModel.markActivityAsRead()
-                    navigateToChat = true
-                } label: {
-                    Image(systemName: "message.fill")
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                        .foregroundColor(Color.theme.primaryText)
-                }
-            }
             
             // Refresh Button
             Button {
