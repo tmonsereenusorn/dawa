@@ -97,13 +97,11 @@ class ChatService {
             let activityRef = FirestoreConstants.ActivitiesCollection.document(activityId)
             transaction.updateData(["recentMessageId": messageId], forDocument: activityRef)
             
-            // Step 3: Update the recentMessageId and set hasRead = false for all participants except the sender
+            // Step 3: Update the recentMessageId and set hasRead = false for all participants
             for document in participantsSnapshot.documents {
                 let participantId = document.documentID
-                if participantId != currentUid {
-                    let participantActivityRef = FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId)
-                    transaction.updateData(["recentMessageId": messageId, "timestamp": Timestamp(), "hasRead": false], forDocument: participantActivityRef)
-                }
+                let participantActivityRef = FirestoreConstants.UserCollection.document(participantId).collection("user-activities").document(activityId)
+                transaction.updateData(["recentMessageId": messageId, "timestamp": Timestamp(), "hasRead": false], forDocument: participantActivityRef)
             }
             
             return nil

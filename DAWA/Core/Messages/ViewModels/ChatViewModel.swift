@@ -33,7 +33,7 @@ class ChatViewModel: ObservableObject {
     
     func sendMessage(_ messageText: String) async throws {
         if let image = uiImage {
-            try await service.sendMessage(messageText: messageText, type: .image, image: image)
+            try await service.sendMessage(messageText: "Sent an image", type: .image, image: image)
             messageImage = nil
             uiImage = nil
         } else {
