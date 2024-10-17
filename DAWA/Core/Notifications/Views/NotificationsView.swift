@@ -47,25 +47,37 @@ struct NotificationsView: View {
                     .navigationBarBackButtonHidden()
             } label: {
                 HStack {
+                    Image(systemName: "envelope.badge") // Leading icon for consistency
+                        .foregroundColor(Color.theme.appTheme)
+                        .font(.title2)
+                    
                     Text("Group Invitations")
                         .foregroundColor(Color.theme.primaryText)
-
+                        .font(.body)
+                        .fontWeight(.medium)
+                    
+                    Spacer()
+                    
                     // Badge for pending invites
                     if groupInvitesViewModel.pendingInvitesCount > 0 {
                         Text("\(groupInvitesViewModel.pendingInvitesCount)")
-                            .font(.caption)
+                            .font(.caption2)
                             .foregroundColor(.white)
-                            .frame(width: 20, height: 20)
-                            .background(Circle().fill(Color.theme.appTheme))
+                            .frame(width: 24, height: 24)
+                            .background(Circle().fill(Color.red)) // More noticeable badge
+                            .padding(.trailing, 5)
                     }
-
-                    Spacer()
-
+                    
                     Image(systemName: "chevron.right")
                         .foregroundColor(Color.theme.secondaryText)
                 }
                 .padding()
+                .background(Color(.systemGray6)) // Card-style background
+                .cornerRadius(10) // Rounded corners for a modern look
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2) // Subtle shadow
             }
+            .padding(.horizontal)
+            .padding(.vertical, 5) // Adjust the spacing around the element
 
             Divider()
 
