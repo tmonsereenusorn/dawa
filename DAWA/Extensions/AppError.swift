@@ -19,6 +19,7 @@ enum AppError: Error {
     case groupHandleTooShort
     case groupNameTooLong
     case groupNameTooShort
+    case groupImageRequired
     
     var localizedDescription: String {
         switch self {
@@ -44,6 +45,8 @@ enum AppError: Error {
             return "This group name is too long. Group names cannot exceed \(GroupConstants.maxNameLength) characters."
         case .groupNameTooShort:
             return "This group name is too short. Group names must contain at least \(GroupConstants.minNameLength) characters."
+        case .groupImageRequired:
+            return "A group image is required. Please upload an image to create the group. You can always modify the image later."
         }
     }
 }

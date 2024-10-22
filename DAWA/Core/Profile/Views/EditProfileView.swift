@@ -27,6 +27,8 @@ struct EditProfileView: View {
                 self.bio = user.bio
             }
             .background(Color.theme.background)
+            .blur(radius: viewModel.errorMessage != nil ? 5 : 0)
+            .disabled(viewModel.errorMessage != nil)
             
             // Error view overlay if there is an error message
             if let errorMessage = viewModel.errorMessage {

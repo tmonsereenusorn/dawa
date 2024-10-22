@@ -18,6 +18,7 @@ class CreateGroupViewModel: ObservableObject {
     @Published var didCreateGroup = false
     @Published var showGroupHandleErrorMessage = false
     @Published var errorMessage: String?
+    @Published var isLoading = false
     
     // Properties for handling image selection
     @Published var selectedItem: PhotosPickerItem? {
@@ -40,6 +41,9 @@ class CreateGroupViewModel: ObservableObject {
     
     @MainActor
     func createGroup(name: String, handle: String) async throws {
+        isLoading = true
+        defer { isLoading = false }
+        
         do {
             self.groupId = try await GroupService.createGroup(groupName: name, handle: handle.lowercased(), uiImage: groupUIImage)
             self.didCreateGroup = true

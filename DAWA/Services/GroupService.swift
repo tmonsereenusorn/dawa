@@ -214,34 +214,40 @@ class GroupService {
     
     @MainActor
     static func editGroup(withGroupId groupId: String, name: String, handle: String, uiImage: UIImage?) async throws {
-        do {
-            // Check if group handle already exists
-            let querySnapshot = try await FirestoreConstants.GroupsCollection
-                .whereField("handle", isEqualTo: handle)
-                .getDocuments()
-            
-            if querySnapshot.documents.first(where: { $0.documentID != groupId }) != nil {
-                // A different group with the same handle exists
-                throw AppError.groupHandleAlreadyExists
-            }
-            
-            // Upload new profile image if provided
-            if let image = uiImage {
-                if let imageUrl = try? await ImageUploader.uploadImage(image: image, type: .group) {
-                    try await FirestoreConstants.GroupsCollection.document(groupId).setData(["name": name, "handle": handle, "groupImageUrl": imageUrl], merge: true)
-                } else {
-                    print("DEBUG: Failed to upload profile image")
-                    return
-                }
-            } else {
-                try await FirestoreConstants.GroupsCollection.document(groupId).setData(["name": name, "handle": handle], merge: true)
-            }
-        } catch let error as AppError {
-            print(error.localizedDescription)
-            throw error
-        } catch {
-            print("DEBUG: Failed to create group with error \(error.localizedDescription)")
+        // Validate group name length
+        if name.count > GroupConstants.maxNameLength {
+            throw AppError.groupNameTooLong
+        } else if name.count < GroupConstants.minNameLength {
+            throw AppError.groupNameTooShort
         }
+
+        // Validate group handle length
+        if handle.count > GroupConstants.maxHandleLength {
+            throw AppError.groupHandleTooLong
+        } else if handle.count < GroupConstants.minHandleLength {
+            throw AppError.groupHandleTooShort
+        }
+
+        // Fetch current group data
+        let snapshot = try await FirestoreConstants.GroupsCollection.document(groupId).getDocument()
+        guard let oldGroup = try? snapshot.data(as: Groups.self) else { return }
+
+        // Check if handle is changed and already exists
+        if handle.lowercased() != oldGroup.handle.lowercased() {
+            let query = try await FirestoreConstants.GroupsCollection
+                .whereField("handle", isEqualTo: handle.lowercased())
+                .getDocuments()
+            if !query.documents.isEmpty { throw AppError.groupHandleAlreadyExists }
+        }
+
+        // Prepare update data
+        var updateData: [String: Any] = ["name": name, "handle": handle.lowercased()]
+        if let image = uiImage, let imageUrl = try? await ImageUploader.uploadImage(image: image, type: .group) {
+            updateData["groupImageUrl"] = imageUrl
+        }
+
+        // Update group in Firestore
+        try await FirestoreConstants.GroupsCollection.document(groupId).setData(updateData, merge: true)
     }
     
     @MainActor

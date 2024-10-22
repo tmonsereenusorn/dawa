@@ -8,22 +8,38 @@ struct EditGroupView: View {
     @Binding var group: Groups
     @Environment(\.presentationMode) var mode
     
+    // Error state variables
+    @State private var groupNameError: String?
+    @State private var handleError: String?
+    
     var body: some View {
-        VStack {
-            headerView
+        ZStack {
+            VStack {
+                headerView
+                
+                groupImageInput
+                
+                groupNameInput
+                
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .onAppear {
+                self.name = group.name
+                self.handle = group.handle
+            }
+            .background(Color.theme.background)
+            .blur(radius: viewModel.errorMessage != nil ? 5 : 0)
+            .disabled(viewModel.errorMessage != nil)
             
-            groupImageInput
-            
-            groupNameInput
-            
-            Spacer()
+            // Error view overlay if there is an error message
+            if let errorMessage = viewModel.errorMessage {
+                ErrorView(errorMessage: errorMessage) {
+                    viewModel.errorMessage = nil // Dismiss error message
+                }
+                .zIndex(1) // Ensure the error message is shown above other content
+            }
         }
-        .padding(.horizontal, 16)
-        .onAppear {
-            self.name = group.name
-            self.handle = group.handle
-        }
-        .background(Color.theme.background)
     }
 }
 
@@ -96,7 +112,7 @@ extension EditGroupView {
         .padding(.vertical, 16)
     }
     
-    // Group name and handle input fields
+    // Group name and handle input fields with validation
     var groupNameInput: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
@@ -107,6 +123,15 @@ extension EditGroupView {
                 
                 TextField("Enter a new group name", text: $name)
                     .modifier(TextFieldModifier())
+                    .onChange(of: name) { newValue in
+                        validateGroupName(newValue)
+                    }
+                
+                if let groupNameError = groupNameError {
+                    Text(groupNameError)
+                        .foregroundColor(.red)
+                        .font(.caption)
+                }
             }
             
             VStack(alignment: .leading, spacing: 6) {
@@ -122,15 +147,46 @@ extension EditGroupView {
                     
                     TextField("Enter a new group handle", text: $handle)
                         .modifier(TextFieldModifier())
+                        .onChange(of: handle) { newValue in
+                            validateGroupHandle(newValue)
+                        }
                 }
                 
-                if viewModel.showGroupHandleErrorMessage {
-                    Text("Group handle already exists. Please choose a different one.")
+                if let handleError = handleError {
+                    Text(handleError)
                         .foregroundColor(.red)
                         .font(.caption)
                 }
             }
         }
         .padding(.horizontal, 16)
+    }
+    
+    // Validation functions
+    private func validateGroupName(_ name: String) {
+        if name.count > GroupConstants.maxNameLength {
+            groupNameError = "Group name cannot exceed \(GroupConstants.maxNameLength) characters."
+        } else if name.count < GroupConstants.minNameLength {
+            groupNameError = "Group name must contain at least \(GroupConstants.minNameLength) characters."
+        } else {
+            groupNameError = nil
+        }
+    }
+    
+    private func validateGroupHandle(_ handle: String) {
+        if handle.count > GroupConstants.maxHandleLength {
+            handleError = "Group handle cannot exceed \(GroupConstants.maxHandleLength) characters."
+        } else if handle.count < GroupConstants.minHandleLength {
+            handleError = "Group handle must contain at least \(GroupConstants.minHandleLength) characters."
+        } else {
+            handleError = nil
+        }
+    }
+    
+    // Form validation
+    private func validateForm() -> Bool {
+        validateGroupName(name)
+        validateGroupHandle(handle)
+        return groupNameError == nil && handleError == nil
     }
 }

@@ -33,7 +33,7 @@ struct CreateGroupView: View {
                 Spacer()
                 
                 VStack {
-                    groupImageInput // Add the photo picker here
+                    groupImageInput
                     
                     groupNameInput
                     
@@ -63,8 +63,8 @@ struct CreateGroupView: View {
                             .cornerRadius(10)
                             .font(.headline).bold()
                     }
-                    .disabled(!formIsValid)
-                    .opacity(formIsValid ? 1.0 : 0.5)
+                    .disabled(!formIsValid || viewModel.isLoading)  // Disable button when loading
+                    .opacity(formIsValid && !viewModel.isLoading ? 1.0 : 0.5)  // Change opacity when loading
                     
                     Button(action: {
                         presentationMode.wrappedValue.dismiss()
@@ -78,6 +78,8 @@ struct CreateGroupView: View {
                     .padding(.bottom, 20)
                 }
             }
+            .blur(radius: viewModel.isLoading ? 3.0 : 0)  // Blur when loading
+            .disabled(viewModel.isLoading)  // Disable interaction when loading
             .onReceive(viewModel.$didCreateGroup) { success in
                 if success {
                     presentationMode.wrappedValue.dismiss()
@@ -86,10 +88,15 @@ struct CreateGroupView: View {
             .padding(.horizontal)
             .padding(.top, 12)
             
+            if viewModel.isLoading {
+                ProgressView()
+                    .scaleEffect(1.5)
+            }
+            
             // Error view overlay if there is an error message
             if let errorMessage = viewModel.errorMessage {
                 ErrorView(errorMessage: errorMessage) {
-                    viewModel.errorMessage = nil // Dismiss error message
+                    viewModel.errorMessage = nil
                 }
                 .zIndex(1) // Ensure the error message is shown above other content
             }
@@ -141,7 +148,7 @@ struct CreateGroupView: View {
                     } else if newValue.count < GroupConstants.minNameLength {
                         self.groupNameError = "Group name must contain at least \(GroupConstants.minNameLength) characters."
                     } else {
-                        self.groupNameError = nil // Clear the error if the input is valid
+                        self.groupNameError = nil
                     }
                 }
             
@@ -168,13 +175,13 @@ struct CreateGroupView: View {
                     .modifier(TextFieldModifier())
                     .autocapitalization(.none)
                     .onChange(of: handle) { newValue in
-                        self.handle = newValue.filter { !$0.isWhitespace } // Remove all whitespace characters
+                        self.handle = newValue.filter { !$0.isWhitespace }
                         if newValue.count > GroupConstants.maxHandleLength {
                             self.handleError = "Group handle cannot exceed \(ProfileConstants.maxUsernameLength) characters."
                         } else if newValue.count < GroupConstants.minHandleLength {
                             self.handleError = "Group handle must contain at least \(ProfileConstants.minUsernameLength) characters."
                         } else {
-                            self.handleError = nil // Clear the error if the input is valid
+                            self.handleError = nil
                         }
                     }
             }
