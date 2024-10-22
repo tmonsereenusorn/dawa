@@ -59,8 +59,3 @@ firebase-debug.log
 # IDE specific
 .idea/
 .vscode/
-
-# Ignore Firebase Functions specific files
-# But keep the directory
-functions/*
-!functions/.gitignore
