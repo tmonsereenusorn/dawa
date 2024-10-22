@@ -315,7 +315,7 @@ class GroupService {
         let query = FirestoreConstants.GroupsCollection
             .whereField("handle", isGreaterThanOrEqualTo: startString)
             .whereField("handle", isLessThan: startString + "\u{f8ff}")
-            .limit(to: 100)
+            .limit(to: 20)
         
         let snapshot = try await query.getDocuments()
         return mapGroups(fromSnapshot: snapshot)
