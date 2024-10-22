@@ -13,6 +13,7 @@ struct GroupRowView: View {
     @StateObject var viewModel = GroupRowViewModel()
     @State var group: Groups
     @State private var isExpanded = false
+    @State private var showDeleteConfirmation: Bool = false
     
     init(group: Groups) {
         self._group = State(initialValue: group)
@@ -72,11 +73,7 @@ struct GroupRowView: View {
                     
                     if isCurrentUserOwner {
                         Button {
-                            Task {
-                                if try await GroupService.deleteGroup(groupId: group.id) {
-                                    await groupsViewModel.fetchUserGroups()
-                                }
-                            }
+                            showDeleteConfirmation = true
                         } label: {
                             Text("Delete group")
                                 .foregroundColor(.red)
@@ -108,6 +105,16 @@ struct GroupRowView: View {
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
         .animation(.easeInOut, value: isExpanded)
+        .confirmationDialog("Are you sure you want to delete this group? This will also remove the group for all its members.", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("Delete Group", role: .destructive) {
+                Task {
+                    if try await GroupService.deleteGroup(groupId: group.id) {
+                        await groupsViewModel.fetchUserGroups()
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
     }
 }
 
