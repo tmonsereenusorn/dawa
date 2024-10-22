@@ -27,6 +27,6 @@ class VerifyEmailViewModel: ObservableObject {
     
     @MainActor
     func signOut() {
-        AuthService.shared.signOut()
+        try? AuthService.shared.signOut()
     }
 }

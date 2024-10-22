@@ -377,7 +377,6 @@
 				85B3F7F32A5DF1CF004734E8 /* Activity.swift */,
 				85C8BDCF2A7251730059932C /* Groups.swift */,
 				85B2B23D2A81252400986708 /* ProfileImageSize.swift */,
-				85B3CCA72A826E680082B561 /* AuthError.swift */,
 				85B241BE2A87BCA1001EAA59 /* Message.swift */,
 				8501F2472A8AC689000CC58B /* UserActivity.swift */,
 				85465CA02AFB49FB0052568C /* GroupInvite.swift */,
@@ -713,6 +712,7 @@
 				856FE1542A9D026400E9224B /* Color.swift */,
 				850B07542B0B176700A4FAF5 /* AppError.swift */,
 				85D394DD2CBFD44C0092AE86 /* UIApplicationExtensions.swift */,
+				85B3CCA72A826E680082B561 /* AuthError.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";

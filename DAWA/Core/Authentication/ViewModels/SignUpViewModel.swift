@@ -1,39 +1,25 @@
-//
-//  SignUpViewModel.swift
-//  DAWA
-//
-//  Created by Tee Monsereenusorn on 8/8/23.
-//
-
 import Foundation
 import FirebaseAuth
 
 class SignUpViewModel: ObservableObject {
-    @Published var email = ""
-    @Published var password = ""
-    @Published var username = ""
-    @Published var confirmPassword = ""
-    @Published var showAlert = false
-    @Published var authError: AuthError?
+    @Published var isLoading = false
+    @Published var errorMessage: String?
     
     @MainActor
-    func createUser() async throws {
+    func createUser(email: String, password: String, username: String) async throws {
+        isLoading = true
+        defer { isLoading = false }
+        
         do {
             try await AuthService.shared.createUser(withEmail: email, password: password, username: username)
+        } catch let error as AppError {
+            self.errorMessage = error.localizedDescription
+        } catch let error as NSError {
+            let authErrorCode = AuthErrorCode.Code(rawValue: error.code)
+            let authError = AuthError(authErrorCode: authErrorCode ?? .userNotFound) // Convert to custom AuthError
+            self.errorMessage = authError.description
         } catch {
-            let authError = AuthErrorCode.Code(rawValue: (error as NSError).code)
-            self.showAlert = true
-            self.authError = AuthError(authErrorCode: authError ?? .userNotFound)
+            self.errorMessage = "An unknown error occurred. Please try again."
         }
-    }
-}
-
-extension SignUpViewModel: AuthenticationFormProtocol {
-    var formIsValid: Bool {
-        return !email.isEmpty
-        && email.contains("@")
-        && !password.isEmpty
-        && password.count > 5
-        && confirmPassword == password
     }
 }

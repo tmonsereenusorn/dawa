@@ -10,7 +10,6 @@ import FirebaseAuth
 class LoginViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
-    @Published var showAlert = false
     @Published var authError: AuthError?
     
     @MainActor
@@ -19,7 +18,6 @@ class LoginViewModel: ObservableObject {
             try await AuthService.shared.login(withEmail: email, password: password)
         } catch {
             let authError = AuthErrorCode.Code(rawValue: (error as NSError).code)
-            self.showAlert = true
             self.authError = AuthError(authErrorCode: authError ?? .userNotFound)
         }
     }
