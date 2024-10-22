@@ -1,33 +1,24 @@
-//
-//  LoginViewModel.swift
-//  DAWA
-//
-//  Created by Tee Monsereenusorn on 8/8/23.
-//
-
 import FirebaseAuth
 
 class LoginViewModel: ObservableObject {
-    @Published var email = ""
-    @Published var password = ""
-    @Published var authError: AuthError?
+    @Published var isLoading = false
+    @Published var errorMessage: String?
     
     @MainActor
-    func login() async throws {
+    func login(withEmail email: String, password: String) async throws {
+        isLoading = true
+        defer { isLoading = false }
+        
         do {
             try await AuthService.shared.login(withEmail: email, password: password)
+        } catch let error as AppError {
+            self.errorMessage = error.localizedDescription
+        } catch let error as NSError {
+            let authErrorCode = AuthErrorCode.Code(rawValue: error.code)
+            let authError = AuthError(authErrorCode: authErrorCode ?? .userNotFound) // Convert to custom AuthError
+            self.errorMessage = authError.description
         } catch {
-            let authError = AuthErrorCode.Code(rawValue: (error as NSError).code)
-            self.authError = AuthError(authErrorCode: authError ?? .userNotFound)
+            self.errorMessage = "An unknown error occurred. Please try again."
         }
-    }
-}
-
-extension LoginViewModel: AuthenticationFormProtocol {
-    var formIsValid: Bool {
-        return !email.isEmpty
-        && email.contains("@")
-        && !password.isEmpty
-        && password.count > 5
     }
 }
