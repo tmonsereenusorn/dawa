@@ -208,7 +208,7 @@ class GroupService {
             }
         }
         
-        return groups
+        return groups.sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
 
     
