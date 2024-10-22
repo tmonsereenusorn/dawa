@@ -92,10 +92,12 @@ extension EditProfileView {
                     .autocapitalization(.none)
                     .onChange(of: username) { newValue in
                         self.username = newValue.filter { !$0.isWhitespace } // Remove all whitespace characters
-                        if newValue.count <= ProfileConstants.maxUsernameLength {
-                            self.usernameError = nil // Clear the error if the input is valid
-                        } else {
+                        if newValue.count > ProfileConstants.maxUsernameLength {
                             self.usernameError = "Username cannot exceed \(ProfileConstants.maxUsernameLength) characters."
+                        } else if newValue.count < ProfileConstants.minUsernameLength {
+                            self.usernameError = "Username must contain at least \(ProfileConstants.minUsernameLength) characters."
+                        } else {
+                            self.usernameError = nil // Clear the error if the input is valid
                         }
                     }
             }

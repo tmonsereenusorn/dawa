@@ -11,7 +11,7 @@ struct ActivityView: View {
     @State private var showJoinConfirmation: Bool = false
     @State private var showLeaveConfirmation: Bool = false
     @State private var showCloseConfirmation: Bool = false
-    @State private var navigateToChat: Bool = false // State for navigating to ChatView
+    @State private var navigateToChat: Bool = false
     
     init(activity: Activity) {
         self.viewModel = ActivityViewModel(activity: activity)
@@ -101,7 +101,7 @@ struct ActivityView: View {
             }
         }
         // Confirmation modals
-        .confirmationDialog("Are you sure?", isPresented: $showCloseConfirmation, titleVisibility: .visible) {
+        .confirmationDialog("Are you sure? Closing the activity will prevent more users from joining.", isPresented: $showCloseConfirmation, titleVisibility: .visible) {
             Button("Close Activity", role: .destructive) {
                 Task {
                     try await viewModel.closeActivity()

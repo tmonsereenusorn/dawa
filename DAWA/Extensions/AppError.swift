@@ -13,7 +13,12 @@ enum AppError: Error {
     case groupMemberNotFound
     case usernameAlreadyExists
     case usernameTooLong
+    case usernameTooShort
     case bioTooLong
+    case groupHandleTooLong
+    case groupHandleTooShort
+    case groupNameTooLong
+    case groupNameTooShort
     
     var localizedDescription: String {
         switch self {
@@ -26,9 +31,19 @@ enum AppError: Error {
         case .usernameAlreadyExists:
             return "This username is already taken. Please choose a different one."
         case .usernameTooLong:
-            return "This username is too long. Usernames cannot exceed \(ProfileConstants.maxUsernameLength) characters"
+            return "This username is too long. Usernames cannot exceed \(ProfileConstants.maxUsernameLength) characters."
         case .bioTooLong:
-            return "Your bio is too long. Bios cannot exceed \(ProfileConstants.maxBioLength) characters"
+            return "Your bio is too long. Bios cannot exceed \(ProfileConstants.maxBioLength) characters."
+        case .usernameTooShort:
+            return "This username is too short. Usernames must contain at least \(ProfileConstants.minUsernameLength) characters."
+        case .groupHandleTooLong:
+            return "This group handle is too long. Group handles cannot exceed \(GroupConstants.maxHandleLength) characters."
+        case .groupHandleTooShort:
+            return "This group handle is too short. Group handles must contain at least \(GroupConstants.minHandleLength) characters."
+        case .groupNameTooLong:
+            return "This group name is too long. Group names cannot exceed \(GroupConstants.maxNameLength) characters."
+        case .groupNameTooShort:
+            return "This group name is too short. Group names must contain at least \(GroupConstants.minNameLength) characters."
         }
     }
 }

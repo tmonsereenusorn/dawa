@@ -26,6 +26,7 @@ struct InboxView: View {
                     Spacer()
                     
                     Text("Inbox")
+                        .font(.headline)
                     
                     Spacer()
                     

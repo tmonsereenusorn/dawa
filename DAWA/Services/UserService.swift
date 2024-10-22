@@ -56,15 +56,13 @@ class UserService {
     @MainActor
     func editUser(withUid uid: String, username: String, bio: String, uiImage: UIImage?) async throws {
         do {
-            if username.count > ProfileConstants.maxUsernameLength {
-                throw AppError.usernameTooLong
-            }
-            
-            if bio.count > ProfileConstants.maxBioLength {
-                throw AppError.bioTooLong
-            }
-            
             guard uid == Auth.auth().currentUser?.uid else { return } // Only current user can edit their information
+            
+            if username.count > ProfileConstants.maxUsernameLength { throw AppError.usernameTooLong }
+            
+            if username.count < ProfileConstants.minUsernameLength { throw AppError.usernameTooShort }
+            
+            if bio.count > ProfileConstants.maxBioLength { throw AppError.bioTooLong }
             
             guard let snapshot = try? await FirestoreConstants.UserCollection.document(uid).getDocument() else { return }
             guard let oldUserProfile = try? snapshot.data(as: User.self) else { return }
@@ -75,10 +73,7 @@ class UserService {
                     .whereField("username", isEqualTo: username.lowercased())
                     .getDocuments()
 
-                if !querySnapshot.documents.isEmpty {
-                    // Username exists, throw error
-                    throw AppError.usernameAlreadyExists
-                }
+                if !querySnapshot.documents.isEmpty { throw AppError.usernameAlreadyExists }
             }
 
             var newUserProfile = User(

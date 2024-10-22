@@ -93,7 +93,7 @@ class AuthService {
                 let stanfordGroup = try await GroupService.findGroupByHandle("stanford")
                 
                 if stanfordGroup == nil {
-                    let _ = try await GroupService.createGroup(groupName: "Stanford University", handle: "stanford")
+                    let _ = try await GroupService.createGroup(groupName: "Stanford University", handle: "stanford", uiImage: nil)
                 } else {
                     try await GroupService.joinGroup(uid: user.uid, groupId: stanfordGroup!.id, enableNotifications: false)
                 }

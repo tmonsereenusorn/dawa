@@ -11,8 +11,16 @@ import Firebase
 class GroupService {
     
     @MainActor
-    static func createGroup(groupName: String, handle: String) async throws -> String {
+    static func createGroup(groupName: String, handle: String, uiImage: UIImage?) async throws -> String {
         do {
+            // Validate the handle length
+            if handle.count > GroupConstants.maxHandleLength { throw AppError.groupHandleTooLong }
+            if handle.count < GroupConstants.minHandleLength { throw AppError.groupHandleTooShort }
+            
+            // Validate the group name length
+            if groupName.count > GroupConstants.maxNameLength { throw AppError.groupNameTooLong }
+            if groupName.count < GroupConstants.minNameLength { throw AppError.groupNameTooShort }
+            
             // Check if the group handle already exists
             let querySnapshot = try await FirestoreConstants.GroupsCollection
                 .whereField("handle", isEqualTo: handle)
@@ -22,23 +30,34 @@ class GroupService {
                 throw AppError.groupHandleAlreadyExists
             }
             
-            // Upload group to Firestore
+            // Ensure the user is authenticated
             guard let uid = Auth.auth().currentUser?.uid else { return "" }
-            let group = Groups(name: groupName,
-                               handle: handle,
-                               numMembers: 1)
-            let encodedGroup = try Firestore.Encoder().encode(group)
-            let groupRef = try await FirestoreConstants.GroupsCollection.addDocument(data: encodedGroup)
             
+            // Create the group object
+            let group = Groups(name: groupName, handle: handle, numMembers: 1)
+            let encodedGroup = try Firestore.Encoder().encode(group)
+            
+            // Add the group to Firestore
+            let groupRef = try await FirestoreConstants.GroupsCollection.addDocument(data: encodedGroup)
             let groupId = groupRef.documentID
             
-            // Add user to group's user member list
+            // Add the user as the owner in the group's members subcollection
             let groupMembersRef = FirestoreConstants.GroupsCollection.document(groupId).collection("members")
             try await groupMembersRef.document(uid).setData(["permissions": "Owner"])
             
-            // Add group to user's groups list
+            // Add the group to the user's groups list
             let groupsRef = FirestoreConstants.UserCollection.document(uid).collection("user-groups")
             try await groupsRef.document(groupId).setData([:])
+            
+            // If an image is provided, upload it and update the group with the image URL
+            if let image = uiImage {
+                if let imageUrl = try? await ImageUploader.uploadImage(image: image, type: .group) {
+                    // Update the group with the image URL
+                    try await FirestoreConstants.GroupsCollection.document(groupId).setData(["groupImageUrl": imageUrl], merge: true)
+                } else {
+                    print("DEBUG: Failed to upload group image")
+                }
+            }
             
             return groupId
         } catch let error as AppError {

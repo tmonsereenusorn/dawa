@@ -27,6 +27,7 @@ struct NotificationsView: View {
                     Spacer()
 
                     Text("Notifications")
+                        .font(.headline)
 
                     Spacer()
 
