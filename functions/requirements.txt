@@ -1,3 +1,0 @@
-firebase-functions
-google-cloud-firestore
-firebase-admin
