@@ -11,48 +11,49 @@ class ActivityService {
     
     @MainActor
     func uploadActivity(groupId: String, title: String, location: String, notes: String, numRequired: Int, category: String) async throws {
-        do {
-            // Upload activity to firestore
-            guard let uid = Auth.auth().currentUser?.uid else { return }
-            let activity = Activity(userId: uid,
-                                    groupId: groupId,
-                                    title: title,
-                                    notes: notes,
-                                    location: location,
-                                    numRequired: numRequired + 1,
-                                    category: category,
-                                    timestamp: Timestamp(date: Date()),
-                                    numCurrent: 1,
-                                    status: "Open")
-            let encodedActivity = try Firestore.Encoder().encode(activity)
-            let activityRef = try await FirestoreConstants.ActivitiesCollection.addDocument(data: encodedActivity)
-            
-            // Add activity to user's activity list
-            let activityId = activityRef.documentID
-            let userActivity = UserActivity(hasRead: false,
-                                            timestamp: Timestamp(date: Date()))
-            let encodedUserActivity = try Firestore.Encoder().encode(userActivity)
-            let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
-            try await userActivitiesRef.document(activityId).setData(encodedUserActivity)
-            
-            // Add user to activity's participants list
-            let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
-            try await activityParticipantsRef.document(uid).setData([:])
-            
-        } catch {
-            print("DEBUG: Failed to upload activity with error \(error.localizedDescription)")
-        }
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        // Validation checks for title, location, and participants
+        guard title.count >= ActivityConstants.minTitleLength else { throw AppError.titleTooShort }
+        guard title.count <= ActivityConstants.maxTitleLength else { throw AppError.titleTooLong }
+        guard location.count >= ActivityConstants.minLocationLength else { throw AppError.locationTooShort }
+        guard location.count <= ActivityConstants.maxLocationLength else { throw AppError.locationTooLong }
+        guard numRequired == -1 || numRequired >= ActivityConstants.minParticipants else { throw AppError.participantsTooFew }
+        guard numRequired <= ActivityConstants.maxParticipants else { throw AppError.participantsTooMany }
+        guard notes.count <= ActivityConstants.maxActivityDetails else { throw AppError.activityDetailsTooLong }
+        
+        let activity = Activity(userId: uid,
+                                groupId: groupId,
+                                title: title,
+                                notes: notes,
+                                location: location,
+                                numRequired: numRequired + 1,
+                                category: category,
+                                timestamp: Timestamp(date: Date()),
+                                numCurrent: 1,
+                                status: "Open")
+        
+        let encodedActivity = try Firestore.Encoder().encode(activity)
+        let activityRef = try await FirestoreConstants.ActivitiesCollection.addDocument(data: encodedActivity)
+        
+        // Add activity to user's activity list
+        let activityId = activityRef.documentID
+        let userActivity = UserActivity(hasRead: false,
+                                        timestamp: Timestamp(date: Date()))
+        let encodedUserActivity = try Firestore.Encoder().encode(userActivity)
+        let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
+        try await userActivitiesRef.document(activityId).setData(encodedUserActivity)
+        
+        // Add user to activity's participants list
+        let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
+        try await activityParticipantsRef.document(uid).setData([:])
     }
     
     static func closeActivity(activity: Activity) async throws {
-        do {
-            guard let uid = Auth.auth().currentUser?.uid else { return }
-            guard uid == activity.userId else { return } // Only host can close activity
-            let activityId = activity.id
-            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["status": "Closed"])
-        } catch {
-            print("DEBUG: Failed to close activity with error \(error.localizedDescription)")
-        }
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard uid == activity.userId else { return } // Only host can close activity
+        let activityId = activity.id
+        try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["status": "Closed"])
     }
     
     @MainActor
@@ -80,20 +81,6 @@ class ActivityService {
         activity.host = try await UserService.fetchUser(uid: activity.userId)
 
         return activity
-    }
-
-    
-    static func fetchActivity(withActivityId activityId: String, completion: @escaping(Activity) -> Void) {
-        FirestoreConstants.ActivitiesCollection.document(activityId).getDocument() { snapshot, _ in
-            guard var activity = try? snapshot?.data(as: Activity.self) else {
-                print("DEBUG: Failed to map activity")
-                return
-            }
-            GroupService.fetchGroup(withGroupId: activity.groupId) { group in
-                activity.group = group
-                completion(activity)
-            }
-        }
     }
     
     @MainActor

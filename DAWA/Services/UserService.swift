@@ -33,10 +33,7 @@ class UserService {
     
     static func fetchUser(withUid uid: String, completion: @escaping(User) -> Void) {
         FirestoreConstants.UserCollection.document(uid).getDocument { snapshot, _ in
-            guard let user = try? snapshot?.data(as: User.self) else {
-                print("DEBUG: Failed to map user")
-                return
-            }
+            guard let user = try? snapshot?.data(as: User.self) else { return }
             completion(user)
         }
     }
@@ -55,51 +52,44 @@ class UserService {
     
     @MainActor
     func editUser(withUid uid: String, username: String, bio: String, uiImage: UIImage?) async throws {
-        do {
-            guard uid == Auth.auth().currentUser?.uid else { return } // Only current user can edit their information
-            
-            if username.count > ProfileConstants.maxUsernameLength { throw AppError.usernameTooLong }
-            
-            if username.count < ProfileConstants.minUsernameLength { throw AppError.usernameTooShort }
-            
-            if bio.count > ProfileConstants.maxBioLength { throw AppError.bioTooLong }
-            
-            guard let snapshot = try? await FirestoreConstants.UserCollection.document(uid).getDocument() else { return }
-            guard let oldUserProfile = try? snapshot.data(as: User.self) else { return }
-            
-            // Check if the username already exists
-            if username.lowercased() != oldUserProfile.username.lowercased() {
-                let querySnapshot = try await FirestoreConstants.UserCollection
-                    .whereField("username", isEqualTo: username.lowercased())
-                    .getDocuments()
+        guard uid == Auth.auth().currentUser?.uid else { return } // Only current user can edit their information
+        
+        // Validate inputs
+        if username.count > ProfileConstants.maxUsernameLength { throw AppError.usernameTooLong }
+        if username.count < ProfileConstants.minUsernameLength { throw AppError.usernameTooShort }
+        if bio.count > ProfileConstants.maxBioLength { throw AppError.bioTooLong }
+        
+        guard let snapshot = try? await FirestoreConstants.UserCollection.document(uid).getDocument() else { return }
+        guard let oldUserProfile = try? snapshot.data(as: User.self) else { return }
+        
+        // Check if the username already exists
+        if username.lowercased() != oldUserProfile.username.lowercased() {
+            let querySnapshot = try await FirestoreConstants.UserCollection
+                .whereField("username", isEqualTo: username.lowercased())
+                .getDocuments()
 
-                if !querySnapshot.documents.isEmpty { throw AppError.usernameAlreadyExists }
-            }
-
-            var newUserProfile = User(
-                email: oldUserProfile.email,
-                username: username.lowercased(),
-                bio: bio,
-                profileImageUrl: oldUserProfile.profileImageUrl
-            )
-
-            // Upload new profile image if provided
-            if let image = uiImage {
-                if let imageUrl = try? await ImageUploader.uploadImage(image: image, type: .profile) {
-                    newUserProfile.profileImageUrl = imageUrl
-                } else {
-                    print("DEBUG: Failed to upload profile image")
-                    return
-                }
-            }
-
-            let encodedUser = try Firestore.Encoder().encode(newUserProfile)
-            try await FirestoreConstants.UserCollection.document(uid).setData(encodedUser, merge: true)
-            try await fetchCurrentUser()
-        } catch {
-            print("DEBUG: Failed to edit user with error \(error.localizedDescription)")
-            throw error // Re-throw the error so it can be handled appropriately
+            if !querySnapshot.documents.isEmpty { throw AppError.usernameAlreadyExists }
         }
+
+        var newUserProfile = User(
+            email: oldUserProfile.email,
+            username: username.lowercased(),
+            bio: bio,
+            profileImageUrl: oldUserProfile.profileImageUrl
+        )
+
+        // Upload new profile image if provided
+        if let image = uiImage {
+            if let imageUrl = try? await ImageUploader.uploadImage(image: image, type: .profile) {
+                newUserProfile.profileImageUrl = imageUrl
+            } else {
+                throw AppError.imageUploadFailed
+            }
+        }
+
+        let encodedUser = try Firestore.Encoder().encode(newUserProfile)
+        try await FirestoreConstants.UserCollection.document(uid).setData(encodedUser, merge: true)
+        try await fetchCurrentUser()
     }
     
     private static func mapUsers(fromSnapshot snapshot: QuerySnapshot, currentUid: String) -> [User] {

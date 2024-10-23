@@ -28,3 +28,13 @@ struct GroupConstants {
     static let maxNameLength = 30
     static let minNameLength = 3
 }
+
+struct ActivityConstants {
+    static let maxTitleLength = 30
+    static let minTitleLength = 1
+    static let maxLocationLength = 30
+    static let minLocationLength = 1
+    static let maxParticipants = 50
+    static let minParticipants = 1
+    static let maxActivityDetails = 50
+}
