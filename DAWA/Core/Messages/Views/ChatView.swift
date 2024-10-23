@@ -113,11 +113,39 @@ struct MessageCell: View {
     var prevMessage: Message?
     
     var body: some View {
-        if message.messageType == .system {
-            SystemMessageCell(message: message)
-        } else {
-            ChatMessageCell(message: message, nextMessage: nextMessage, prevMessage: prevMessage)
+        VStack(alignment: .leading, spacing: 4) {
+            if shouldShowTimestamp(for: message, comparedTo: prevMessage) {
+                // Display the formatted timestamp
+                Text(message.timestamp.dateValue().formattedDisplay())
+                    .font(.caption)
+                    .foregroundColor(Color.gray)
+                    .padding(.leading)
+                    .frame(maxWidth: .infinity)
+            }
+            
+            if message.messageType == .system {
+                SystemMessageCell(message: message)
+            } else {
+                ChatMessageCell(message: message, nextMessage: nextMessage, prevMessage: prevMessage)
+            }
         }
+    }
+    
+    private func shouldShowTimestamp(for message: Message, comparedTo prevMessage: Message?) -> Bool {
+        guard let prevMessage = prevMessage else {
+            // Show timestamp for the first message
+            return true
+        }
+        
+        // Convert Firestore Timestamp to Date
+        let messageDate = message.timestamp.dateValue()
+        let prevMessageDate = prevMessage.timestamp.dateValue()
+        
+        // Calculate time interval between messages (in seconds)
+        let timeInterval = messageDate.timeIntervalSince(prevMessageDate)
+        
+        // Show the timestamp if the time difference is greater than 20 minutes (1200 seconds)
+        return timeInterval > 20 * 60
     }
 }
 
