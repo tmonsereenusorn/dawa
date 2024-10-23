@@ -62,14 +62,22 @@ struct ChatContent: View {
                     }
                     .frame(minHeight: UIScreen.main.bounds.height - 200)
                 } else {
-                    VStack {
-                        ForEach(viewModel.messages) { message in
-                            MessageCell(message: message,
-                                        nextMessage: viewModel.nextMessage(forIndex: viewModel.messages.firstIndex(of: message) ?? 0),
-                                        prevMessage: viewModel.prevMessage(forIndex: viewModel.messages.firstIndex(of: message) ?? 0))
+                    ZStack {
+                        Color.theme.appBackground
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                UIApplication.shared.dismissKeyboard()
+                            }
+                        
+                        VStack {
+                            ForEach(viewModel.messages) { message in
+                                MessageCell(message: message,
+                                            nextMessage: viewModel.nextMessage(forIndex: viewModel.messages.firstIndex(of: message) ?? 0),
+                                            prevMessage: viewModel.prevMessage(forIndex: viewModel.messages.firstIndex(of: message) ?? 0))
+                            }
                         }
+                        .padding(.vertical)
                     }
-                    .padding(.vertical)
                 }
                 Color.clear.frame(height: 1).id("bottomAnchor")
             }
