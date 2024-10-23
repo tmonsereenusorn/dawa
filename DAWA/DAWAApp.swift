@@ -62,7 +62,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         // Handle the notification data
         PushNotificationHandler.shared.handleReceivedNotification(userInfo: userInfo)
         
-        // Don't present a visual notification when the app is in the foreground
+        if let notificationType = userInfo["notificationType"] as? String, notificationType == "message" {
+            if let activityId = userInfo["activityId"] as? String {
+                if PushNotificationHandler.shared.currentChatActivityId == activityId {
+                    completionHandler([])
+                }
+            }
+        }
+        
         completionHandler([.banner, .sound])
     }
 

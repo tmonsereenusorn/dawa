@@ -13,6 +13,7 @@ class PushNotificationHandler: ObservableObject {
     
     @Published var lastNotification: [String: Any]?
     @Published var tappedActivityId: String?
+    @Published var currentChatActivityId: String? = nil
     
     private init() {}
 

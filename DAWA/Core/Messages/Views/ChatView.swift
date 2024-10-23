@@ -40,7 +40,11 @@ struct ChatView: View {
             ActivityView(activity: activity)
         }
         .tint(Color.theme.primaryText)
+        .onAppear {
+            PushNotificationHandler.shared.currentChatActivityId = activity.id
+        }
         .onDisappear {
+            PushNotificationHandler.shared.currentChatActivityId = nil
             viewModel.removeChatListener()
         }
     }

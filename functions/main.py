@@ -93,7 +93,8 @@ def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore
             ),
             apns=get_apns_config(f'{activity_id}'),  # Grouping DM notifications separately
             data={
-                'activityId': activity_id
+                'activityId': activity_id,
+                'notificationType': "message"
             },
             token=token
         )
