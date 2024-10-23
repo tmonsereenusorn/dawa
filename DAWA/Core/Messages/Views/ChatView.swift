@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct ChatView: View {
     @Environment(\.presentationMode) var mode
     @State private var messageText = ""
     @State private var navigateToActivityView = false
+    @State private var isRemovedFromActivity = false
     @StateObject var viewModel: ChatViewModel
     private let activity: Activity
     
@@ -21,9 +23,24 @@ struct ChatView: View {
     
     var body: some View {
         VStack {
-            ChatContent(viewModel: viewModel)
-            
-            MessageInputView(messageText: $messageText, viewModel: viewModel)
+            if isRemovedFromActivity {
+                // Show a message when the user has been removed from the activity
+                VStack {
+                    Text("You have been removed from this activity and can no longer participate in the chat.")
+                        .foregroundColor(Color.red)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                    Button("Back to Activity Feed") {
+                        mode.wrappedValue.dismiss()
+                    }
+                    .padding()
+                }
+            } else {
+                // Normal chat UI
+                ChatContent(viewModel: viewModel)
+                MessageInputView(messageText: $messageText, viewModel: viewModel)
+                    .disabled(isRemovedFromActivity)  // Disable message input if removed
+            }
         }
         .navigationTitle(activity.title)
         .navigationBarBackButtonHidden(true)
@@ -42,10 +59,34 @@ struct ChatView: View {
         .tint(Color.theme.primaryText)
         .onAppear {
             PushNotificationHandler.shared.currentChatActivityId = activity.id
+            listenForParticipantChanges()  // Start listening for participant changes
         }
         .onDisappear {
             PushNotificationHandler.shared.currentChatActivityId = nil
             viewModel.removeChatListener()
+        }
+    }
+    
+    // Listen for participant changes
+    private func listenForParticipantChanges() {
+        Task {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            let participantsRef = FirestoreConstants.ActivitiesCollection.document(activity.id).collection("participants")
+            
+            // Set up a Firestore listener to detect participant removal in real-time
+            participantsRef.document(uid).addSnapshotListener { snapshot, error in
+                if let error = error {
+                    print("Error listening for participant changes: \(error)")
+                    return
+                }
+                
+                // If the document no longer exists, the user has been removed
+                if snapshot?.exists == false {
+                    DispatchQueue.main.async {
+                        self.isRemovedFromActivity = true  // User is no longer a participant
+                    }
+                }
+            }
         }
     }
 }

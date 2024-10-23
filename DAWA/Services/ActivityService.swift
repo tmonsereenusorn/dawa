@@ -124,7 +124,6 @@ class ActivityService {
     @MainActor
     static func leaveActivity(activity: Activity) async throws {
         do {
-            guard activity.numCurrent > 0 else { return }
             guard let uid = Auth.auth().currentUser?.uid else { return }
             guard uid != activity.userId else { return } // Host of activity cannot leave
             let activityId = activity.id
@@ -157,7 +156,46 @@ class ActivityService {
             print("DEBUG: Failed to leave activity with error \(error.localizedDescription)")
         }
     }
+    
+    @MainActor
+    static func removeUserFromActivity(activity: Activity, userId: String) async throws {
+        do {
+            guard let currentUid = Auth.auth().currentUser?.uid else { return } // Ensure current user is authenticated
+            guard userId != activity.userId else { return } // Host of activity cannot be removed
+            let activityId = activity.id
 
+            // Update activity by decrementing numCurrent
+            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": FieldValue.increment(Int64(-1))])
+
+            // Update the removed user's activities subcollection by removing activity ID
+            let userActivitiesRef = FirestoreConstants.UserCollection.document(userId).collection("user-activities")
+            try await userActivitiesRef.document(activityId).delete()
+
+            // Remove the user from the participants subcollection
+            let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
+            try await activityParticipantsRef.document(userId).delete()
+
+            // Fetch all remaining participants in the activity
+            let activityParticipantsSnapshot = try await activityParticipantsRef.getDocuments()
+            let participantIds = activityParticipantsSnapshot.documents.map { $0.documentID }
+
+            // Send notifications to all remaining participants about the removal
+            let removeNotification = ActivityRemoveNotification(activityId: activityId, removedByUserId: currentUid, removedUserId: userId)
+            try await NotificationService.shared.sendNotification(notification: removeNotification, to: participantIds)
+
+            // Fetch the user who was removed and the current user
+            let removedUser = try await UserService.fetchUser(uid: userId)
+            let currentUser = try await UserService.fetchUser(uid: currentUid)
+            
+            // Send a system message
+            let systemMessage = "\(currentUser.username) has removed \(removedUser.username) from the activity."
+            try await ChatService.sendSystemMessage(to: activityId, messageText: systemMessage)
+
+        } catch {
+            print("DEBUG: Failed to remove user from activity with error \(error.localizedDescription)")
+            throw error
+        }
+    }
     
     @MainActor
     static func checkIfUserJoinedActivity(activityId: String) async -> Bool {

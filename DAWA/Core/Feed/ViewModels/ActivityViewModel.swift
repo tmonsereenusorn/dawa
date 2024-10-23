@@ -89,6 +89,27 @@ class ActivityViewModel: ObservableObject {
         }
     }
     
+    @MainActor
+    func removeUserFromActivity(userId: String) async throws {
+        guard !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+        
+        do {
+            // Call the service to remove the user from the activity
+            try await ActivityService.removeUserFromActivity(activity: self.activity, userId: userId)
+            
+            // After removal, refresh activity and participants
+            try await refreshActivity()
+            
+        } catch let error as AppError {
+            self.errorMessage = error.localizedDescription
+        } catch {
+            // Catch any unknown or unexpected errors
+            self.errorMessage = "An unknown error occurred. Please try again."
+        }
+    }
+    
     func markActivityAsRead() {
         ChatService.markAsRead(activityId: activity.id)
     }

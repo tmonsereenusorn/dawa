@@ -11,7 +11,9 @@ struct ActivityView: View {
     @State private var showJoinConfirmation: Bool = false
     @State private var showLeaveConfirmation: Bool = false
     @State private var showCloseConfirmation: Bool = false
+    @State private var showRemoveConfirmation: Bool = false
     @State private var navigateToChat: Bool = false
+    @State private var userToRemove: User? = nil  // Holds the user to be removed
     
     init(activity: Activity) {
         self.viewModel = ActivityViewModel(activity: activity)
@@ -23,12 +25,10 @@ struct ActivityView: View {
                 VStack(spacing: 0) {
                     // Header and main content (Fixed)
                     VStack(spacing: 20) {
-                        // Header
                         header
                             .padding(.horizontal)
                             .padding(.top, 10)
                         
-                        // Main Activity Content
                         VStack(spacing: 10) {
                             Text(viewModel.activity.title)
                                 .foregroundColor(Color.theme.primaryText)
@@ -44,13 +44,12 @@ struct ActivityView: View {
                     
                     // Scrollable participants section
                     ScrollView {
-                        participantsSection
+                        participantsSection(for: hostUser)  // Pass the host user to determine control
                             .padding(.horizontal)
                     }
                     
                     Spacer()
                     
-                    // Footer with buttons
                     VStack {
                         if viewModel.activity.didJoin ?? false {
                             Button(action: {
@@ -110,7 +109,17 @@ struct ActivityView: View {
                 }
             }
         }
-        // Confirmation modals
+        .confirmationDialog("Are you sure you want to remove this user?", isPresented: $showRemoveConfirmation, titleVisibility: .visible) {
+            Button("Remove", role: .destructive) {
+                Task {
+                    if let user = userToRemove {
+                        try await viewModel.removeUserFromActivity(userId: user.id)
+                        try await viewModel.refreshActivity()
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
         .confirmationDialog("Are you sure? Closing the activity will prevent more users from joining.", isPresented: $showCloseConfirmation, titleVisibility: .visible) {
             Button("Close Activity", role: .destructive) {
                 Task {
@@ -144,9 +153,42 @@ struct ActivityView: View {
         }
     }
     
+    private func participantsSection(for hostUser: User) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            LazyVStack(spacing: 16) {
+                ForEach(viewModel.participants) { participant in
+                    HStack {
+                        CircularProfileImageView(user: participant, size: .small)
+                        Text(participant.username)
+                            .foregroundColor(Color.theme.primaryText)
+                            .font(.body)
+                        Spacer()
+                        if participant.id == viewModel.activity.userId {
+                            Text("Host")
+                                .foregroundColor(Color.theme.secondaryText)
+                                .font(.footnote)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.theme.secondaryBackground)
+                                .cornerRadius(10)
+                        } else if hostUser.isCurrentUser {
+                            Button(action: {
+                                userToRemove = participant // Set the participant to remove
+                                showRemoveConfirmation = true // Show confirmation dialog
+                            }) {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
+                                    .font(.title3)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     private var header: some View {
         HStack {
-            // Back Button
             Button {
                 mode.wrappedValue.dismiss()
             } label: {
@@ -155,10 +197,7 @@ struct ActivityView: View {
                     .frame(width: 20, height: 16)
                     .foregroundColor(Color.theme.primaryText)
             }
-            
             Spacer()
-            
-            // Refresh Button
             Button {
                 Task {
                     try? await viewModel.refreshActivity()
@@ -256,31 +295,5 @@ struct ActivityView: View {
             }
         }
     }
-    
-    private var participantsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            
-            
-            LazyVStack(spacing: 16) {
-                ForEach(viewModel.participants) { participant in
-                    HStack {
-                        CircularProfileImageView(user: participant, size: .small)
-                        Text(participant.username)
-                            .foregroundColor(Color.theme.primaryText)
-                            .font(.body)
-                        Spacer()
-                        if participant.id == viewModel.activity.userId {
-                            Text("Host")
-                                .foregroundColor(Color.theme.secondaryText)
-                                .font(.footnote)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color.theme.secondaryBackground)
-                                .cornerRadius(10)
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
+

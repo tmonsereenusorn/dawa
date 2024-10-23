@@ -80,3 +80,34 @@ struct ActivityLeaveNotification: NotificationBase {
         self.leftByUserId = leftByUserId
     }
 }
+
+struct ActivityRemoveNotification: NotificationBase {
+    @DocumentID var id: String?
+    var type: NotificationType
+    var timestamp: Timestamp
+    var activityId: String
+    var removedByUserId: String
+    var removedUserId: String
+    var hasRead: Bool = false
+    var user: User? // The user who was removed
+    var activity: Activity?
+    var remover: User? // The user who removed another participant
+
+    // Computed property to generate the message based on available data
+    var message: Text {
+        if let removerUsername = remover?.username, let removedUsername = user?.username, let activityTitle = activity?.title {
+            return Text("\(removerUsername) has removed \(removedUsername) from ") + Text(activityTitle).bold() + Text(".")
+        } else {
+            return Text("A user has been removed from your activity.")
+        }
+    }
+
+    // Initializer
+    init(activityId: String, removedByUserId: String, removedUserId: String) {
+        self.type = .activityLeave
+        self.timestamp = Timestamp()
+        self.activityId = activityId
+        self.removedByUserId = removedByUserId
+        self.removedUserId = removedUserId
+    }
+}
