@@ -138,6 +138,7 @@
 		85D394DE2CBFD44C0092AE86 /* UIApplicationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D394DD2CBFD44C0092AE86 /* UIApplicationExtensions.swift */; };
 		85D5DD8B2A42E4C000D61F12 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8A2A42E4C000D61F12 /* LoginView.swift */; };
 		85D5DD902A42EAC500D61F12 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DD8F2A42EAC500D61F12 /* InputView.swift */; };
+		85D5DDB52CC8EA8800415C5D /* FirestoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D5DDB42CC8EA8800415C5D /* FirestoreError.swift */; };
 		85D778242A45F6160052D5F9 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D778232A45F6160052D5F9 /* ProfileView.swift */; };
 		85D778262A45FE680052D5F9 /* SettingsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D778252A45FE680052D5F9 /* SettingsRowView.swift */; };
 		85D9BAEB2A3AC0A800E11652 /* ActivityRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D9BAE82A3AC0A700E11652 /* ActivityRowView.swift */; };
@@ -249,6 +250,7 @@
 		85D394DD2CBFD44C0092AE86 /* UIApplicationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensions.swift; sourceTree = "<group>"; };
 		85D5DD8A2A42E4C000D61F12 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		85D5DD8F2A42EAC500D61F12 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
+		85D5DDB42CC8EA8800415C5D /* FirestoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreError.swift; sourceTree = "<group>"; };
 		85D778232A45F6160052D5F9 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		85D778252A45FE680052D5F9 /* SettingsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRowView.swift; sourceTree = "<group>"; };
 		85D9BAE82A3AC0A700E11652 /* ActivityRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityRowView.swift; sourceTree = "<group>"; };
@@ -713,6 +715,7 @@
 				850B07542B0B176700A4FAF5 /* AppError.swift */,
 				85D394DD2CBFD44C0092AE86 /* UIApplicationExtensions.swift */,
 				85B3CCA72A826E680082B561 /* AuthError.swift */,
+				85D5DDB42CC8EA8800415C5D /* FirestoreError.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -883,6 +886,7 @@
 				85465CA12AFB49FB0052568C /* GroupInvite.swift in Sources */,
 				85D778262A45FE680052D5F9 /* SettingsRowView.swift in Sources */,
 				85B241BD2A866372001EAA59 /* ChatBubble.swift in Sources */,
+				85D5DDB52CC8EA8800415C5D /* FirestoreError.swift in Sources */,
 				85AF06512A58297400599107 /* RightSideMenuView.swift in Sources */,
 				850B074C2B06DA2A00A4FAF5 /* GroupInvitesView.swift in Sources */,
 				85698D732CC09BC4001FB06C /* ErrorView.swift in Sources */,

@@ -72,14 +72,13 @@ class InboxViewModel: ObservableObject {
         do {
             var userActivity = try change.document.data(as: UserActivity.self)
             
-            if let activity = try await ActivityService.fetchActivity(activityId: userActivity.id) {
-                userActivity.activity = activity
-                
-                if let messageId = activity.recentMessageId {
-                    if var message = try await MessageService.fetchMessage(withMessageId: messageId, activityId: activity.id) {
-                        message.user = try await UserService.fetchUser(uid: message.fromUserId)
-                        userActivity.recentMessage = message
-                    }
+            let activity = try await ActivityService.fetchActivity(activityId: userActivity.id)
+            userActivity.activity = activity
+            
+            if let messageId = activity.recentMessageId {
+                if var message = try await MessageService.fetchMessage(withMessageId: messageId, activityId: activity.id) {
+                    message.user = try await UserService.fetchUser(uid: message.fromUserId)
+                    userActivity.recentMessage = message
                 }
             }
             
@@ -120,14 +119,13 @@ class InboxViewModel: ObservableObject {
                     do {
                         var updatedActivity = await self.userActivities[i]
                         
-                        if let activity = try await ActivityService.fetchActivity(activityId: updatedActivity.id) {
-                            updatedActivity.activity = activity
-                            
-                            if let messageId = activity.recentMessageId {
-                                if var message = try await MessageService.fetchMessage(withMessageId: messageId, activityId: updatedActivity.id) {
-                                    message.user = try await UserService.fetchUser(uid: message.fromUserId)
-                                    updatedActivity.recentMessage = message
-                                }
+                        let activity = try await ActivityService.fetchActivity(activityId: updatedActivity.id)
+                        updatedActivity.activity = activity
+                        
+                        if let messageId = activity.recentMessageId {
+                            if var message = try await MessageService.fetchMessage(withMessageId: messageId, activityId: updatedActivity.id) {
+                                message.user = try await UserService.fetchUser(uid: message.fromUserId)
+                                updatedActivity.recentMessage = message
                             }
                         }
                         

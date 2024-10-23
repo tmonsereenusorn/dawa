@@ -48,8 +48,8 @@ struct ActivityView: View {
                     .padding(.bottom, 100)
                 }
                 .navigationBarHidden(true)
-                .blur(radius: viewModel.isLoading ? 3.0 : 0)
-                .disabled(viewModel.isLoading)
+                .blur(radius: (viewModel.isLoading || viewModel.errorMessage != nil) ? 5.0 : 0)
+                .disabled(viewModel.isLoading || viewModel.errorMessage != nil)
                 .onAppear {
                     Task {
                         try? await viewModel.refreshActivity()
@@ -98,6 +98,13 @@ struct ActivityView: View {
             if viewModel.isLoading {
                 ProgressView()
                     .scaleEffect(1.5)
+            }
+            
+            if let errorMessage = viewModel.errorMessage {
+                ErrorView(errorMessage: errorMessage) {
+                    viewModel.errorMessage = nil
+                }
+                .zIndex(1)
             }
         }
         // Confirmation modals

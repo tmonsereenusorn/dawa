@@ -23,6 +23,9 @@ enum AppError: Error {
     case groupNameTooLong
     case groupNameTooShort
     case groupImageRequired
+    case activityNotFound
+    case activityFull
+    case activityClosed
     
     var localizedDescription: String {
         switch self {
@@ -56,6 +59,12 @@ enum AppError: Error {
             return "This group name is too short. Group names must contain at least \(GroupConstants.minNameLength) characters."
         case .groupImageRequired:
             return "A group image is required. Please upload an image to create the group. You can always modify the image later."
+        case .activityNotFound:
+            return "Activity could not be fetched at this time."
+        case .activityFull:
+            return "This activity is already full. No more participants can join at this time."
+        case .activityClosed:
+            return "The host has closed this activity. New participants cannot join."
         }
     }
 }

@@ -68,17 +68,18 @@ class ActivityService {
     }
     
     @MainActor
-    static func fetchActivity(activityId: String) async throws -> Activity? {
-        do {
-            let snapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).getDocument()
-            var activity = try snapshot.data(as: Activity.self)
-            activity.group = try await GroupService.fetchGroup(groupId: activity.groupId)
-            activity.host = try await UserService.fetchUser(uid: activity.userId)
-            return activity
-        } catch {
-            print("DEBUG: Failed to fetch activity with error \(error.localizedDescription)")
-            return nil
-        }
+    static func fetchActivity(activityId: String) async throws -> Activity {
+        let snapshot = try await FirestoreConstants.ActivitiesCollection.document(activityId).getDocument()
+        guard snapshot.exists else { throw AppError.activityNotFound }
+        var activity = try snapshot.data(as: Activity.self)
+
+        // Fetch the group associated with the activity
+        activity.group = try await GroupService.fetchGroup(groupId: activity.groupId)
+
+        // Fetch the host (user) associated with the activity
+        activity.host = try await UserService.fetchUser(uid: activity.userId)
+
+        return activity
     }
 
     
@@ -97,41 +98,40 @@ class ActivityService {
     
     @MainActor
     static func joinActivity(activityId: String) async throws {
-        do {
-            guard let activity = try await ActivityService.fetchActivity(activityId: activityId) else { return }
-            guard activity.numRequired == 0 || activity.numCurrent < activity.numRequired else { return }
-            guard let uid = Auth.auth().currentUser?.uid else { return }
-            guard uid != activity.userId else { return } // Host of activity is already in activity
+        let activity = try await ActivityService.fetchActivity(activityId: activityId)
+        
+        // Check if activity is valid to join
+        guard activity.numRequired == 0 || activity.numCurrent < activity.numRequired else { throw AppError.activityFull }
+        guard activity.status != "Closed" else { throw AppError.activityClosed }
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard uid != activity.userId else { return } // Host of activity is already in activity
 
-            // Update activity by incrementing numCurrent
-            try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": FieldValue.increment(Int64(1))])
+        // Update activity by incrementing numCurrent
+        try await FirestoreConstants.ActivitiesCollection.document(activityId).updateData(["numCurrent": FieldValue.increment(Int64(1))])
 
-            // Update user's activities subcollection by adding activity ID to it
-            let userActivity = UserActivity(hasRead: false, timestamp: Timestamp(date: Date()))
-            let encodedUserActivity = try Firestore.Encoder().encode(userActivity)
-            let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
-            try await userActivitiesRef.document(activityId).setData(encodedUserActivity)
-            
-            // Fetch all current participants in the activity
-            let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
-            let activityParticipantsSnapshot = try await activityParticipantsRef.getDocuments()
-            let participantIds = activityParticipantsSnapshot.documents.map { $0.documentID }
-            
-            // Send notifications to all current participants
-            let joinNotification = ActivityJoinNotification(activityId: activityId, joinedByUserId: uid)
-            try await NotificationService.shared.sendNotification(notification: joinNotification, to: participantIds)
+        // Update user's activities subcollection by adding activity ID to it
+        let userActivity = UserActivity(hasRead: false, timestamp: Timestamp(date: Date()))
+        let encodedUserActivity = try Firestore.Encoder().encode(userActivity)
+        let userActivitiesRef = FirestoreConstants.UserCollection.document(uid).collection("user-activities")
+        try await userActivitiesRef.document(activityId).setData(encodedUserActivity)
+        
+        // Fetch all current participants in the activity
+        let activityParticipantsRef = FirestoreConstants.ActivitiesCollection.document(activityId).collection("participants")
+        let activityParticipantsSnapshot = try await activityParticipantsRef.getDocuments()
+        let participantIds = activityParticipantsSnapshot.documents.map { $0.documentID }
+        
+        // Send notifications to all current participants
+        let joinNotification = ActivityJoinNotification(activityId: activityId, joinedByUserId: uid)
+        try await NotificationService.shared.sendNotification(notification: joinNotification, to: participantIds)
 
-            // Add the new user to the participants subcollection
-            try await activityParticipantsRef.document(uid).setData([:])
-            
-            // Send a system message
-            let user = try await UserService.fetchUser(uid: uid)
-            let systemMessage = "\(user.username) has joined the activity."
-            try await ChatService.sendSystemMessage(to: activityId, messageText: systemMessage)
-
-        } catch {
-            print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
-        }
+        // Add the new user to the participants subcollection
+        try await activityParticipantsRef.document(uid).setData([:])
+        
+        // Send a system message
+        let user = try await UserService.fetchUser(uid: uid)
+        let systemMessage = "\(user.username) has joined the activity."
+        try await ChatService.sendSystemMessage(to: activityId, messageText: systemMessage)
     }
 
     @MainActor

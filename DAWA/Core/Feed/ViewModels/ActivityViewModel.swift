@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 class ActivityViewModel: ObservableObject {
     @Published var activity: Activity
     @Published var participants = [User]()
     @Published var isLoading = false
+    @Published var errorMessage: String?
     
     init(activity: Activity) {
         self.activity = activity
@@ -31,10 +33,9 @@ class ActivityViewModel: ObservableObject {
         do {
             isLoading = true
             let activityId = activity.id
-            if let newActivity = try await ActivityService.fetchActivity(activityId: activityId) {
-                activity.numCurrent = newActivity.numCurrent
-                activity.didJoin = await ActivityService.checkIfUserJoinedActivity(activityId: activityId)
-            }
+            let newActivity = try await ActivityService.fetchActivity(activityId: activityId)
+            activity.numCurrent = newActivity.numCurrent
+            activity.didJoin = await ActivityService.checkIfUserJoinedActivity(activityId: activityId)
             await fetchActivityParticipants()
             isLoading = false
         } catch {
@@ -52,10 +53,14 @@ class ActivityViewModel: ObservableObject {
         do {
             try await ActivityService.joinActivity(activityId: self.activity.id)
             try await refreshActivity()
+        } catch let error as AppError {
+            self.errorMessage = error.localizedDescription
         } catch {
-            print("DEBUG: Failed to join activity with error \(error.localizedDescription)")
+            // Catch any unknown or unexpected errors
+            self.errorMessage = "An unknown error occurred. Please try again."
         }
     }
+
     
     @MainActor
     func leaveActivity() async throws {

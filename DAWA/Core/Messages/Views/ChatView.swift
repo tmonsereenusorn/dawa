@@ -137,11 +137,8 @@ struct MessageCell: View {
             return true
         }
         
-        // Convert Firestore Timestamp to Date
         let messageDate = message.timestamp.dateValue()
         let prevMessageDate = prevMessage.timestamp.dateValue()
-        
-        // Calculate time interval between messages (in seconds)
         let timeInterval = messageDate.timeIntervalSince(prevMessageDate)
         
         // Show the timestamp if the time difference is greater than 20 minutes (1200 seconds)
