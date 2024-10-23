@@ -62,10 +62,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         // Handle the notification data
         PushNotificationHandler.shared.handleReceivedNotification(userInfo: userInfo)
         
-        if let notificationType = userInfo["notificationType"] as? String, notificationType == "message" {
-            if let activityId = userInfo["activityId"] as? String {
-                if PushNotificationHandler.shared.currentChatActivityId == activityId {
-                    completionHandler([])
+        if let notificationType = userInfo["notificationType"] as? String {
+            if notificationType == "message" {
+                if let activityId = userInfo["activityId"] as? String {
+                    if PushNotificationHandler.shared.currentChatActivityId == activityId {
+                        completionHandler([])
+                    }
                 }
             }
         }

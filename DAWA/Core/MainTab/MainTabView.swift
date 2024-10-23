@@ -1,16 +1,17 @@
 import Foundation
 import SwiftUI
+import Combine
 
-enum TabType {
-    case home
-    case activities
-    case notifications
+enum TabType: String, Hashable {
+    case home = "house"
+    case inbox = "message"
+    case notifications = "bell"
 }
 
 struct MainTabView: View {
     @State var showLeftMenu: Bool = false
     @State var showRightMenu: Bool = false
-    @State var currentTab = "house"
+    @State var currentTab: TabType = .home
     
     @State var offset: CGFloat = 0
     @State var lastStoredOffset: CGFloat = 0
@@ -18,6 +19,7 @@ struct MainTabView: View {
     @StateObject var feedViewModel = FeedViewModel()
     @StateObject var inboxViewModel = InboxViewModel()
     @StateObject var notificationsViewModel = NotificationsViewModel()
+    @State private var cancellables = Set<AnyCancellable>()
     
     init() {
         UITabBar.appearance().isHidden = true
@@ -34,27 +36,25 @@ struct MainTabView: View {
                         FeedView(showLeftMenu: $showLeftMenu, showRightMenu: $showRightMenu)
                             .navigationBarTitleDisplayMode(.inline)
                             .navigationBarHidden(true)
-                            .tag("house")
+                            .tag(TabType.home)
                         
                         InboxView(showLeftMenu: $showLeftMenu, showRightMenu: $showRightMenu)
                             .navigationBarTitleDisplayMode(.inline)
                             .navigationBarHidden(true)
-                            .tag("message")
+                            .tag(TabType.inbox)
                         
                         NotificationsView(showLeftMenu: $showLeftMenu, showRightMenu: $showRightMenu)
                             .navigationBarTitleDisplayMode(.inline)
                             .navigationBarHidden(true)
-                            .tag("bell")
+                            .tag(TabType.notifications)
                     }
                     
                     VStack(spacing: 0) {
                         Divider()
                         HStack(spacing: 0) {
-                            TabButton(image: "house")
-                            
-                            TabButton(image: "message", hasUnread: inboxViewModel.hasUnreadMessages)
-                            
-                            TabButton(image: "bell", hasUnread: notificationsViewModel.hasUnreadNotifications)
+                            TabButton(image: "house", tab: .home)
+                            TabButton(image: "message", tab: .inbox, hasUnread: inboxViewModel.hasUnreadMessages)
+                            TabButton(image: "bell", tab: .notifications, hasUnread: notificationsViewModel.hasUnreadNotifications)
                         }
                         .padding(.top, 15)
                     }
@@ -82,9 +82,8 @@ struct MainTabView: View {
             }
             .frame(width: getRect().width + 2 * sideBarWidth)
             .offset(x: offset)
-            .onChange(of: PushNotificationHandler.shared.tappedActivityId) { activityId in
-                currentTab = "message"
-                PushNotificationHandler.shared.tappedActivityId = nil
+            .onAppear {
+                setupNotificationHandlers()
             }
         }
         .animation(.easeOut, value: offset == 0)
@@ -117,9 +116,9 @@ struct MainTabView: View {
     }
     
     @ViewBuilder
-    func TabButton(image: String, hasUnread: Bool = false) -> some View {
+    func TabButton(image: String, tab: TabType, hasUnread: Bool = false) -> some View {
         Button {
-            withAnimation { currentTab = image }
+            withAnimation { currentTab = tab }
         } label: {
             ZStack {
                 Image(systemName: image)
@@ -127,7 +126,7 @@ struct MainTabView: View {
                     .renderingMode(.template)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 23, height: 23)
-                    .foregroundColor(currentTab == image ? Color.theme.primaryText : Color.theme.secondaryText)
+                    .foregroundColor(currentTab == tab ? Color.theme.primaryText : Color.theme.secondaryText)
                     .frame(maxWidth: .infinity)
                 
                 if hasUnread {
@@ -139,10 +138,34 @@ struct MainTabView: View {
             }
         }
     }
+    
+    // Function to handle notification-based tab switching
+    func setupNotificationHandlers() {
+        PushNotificationHandler.shared.$tappedActivityId.sink { activityId in
+            if let activityId = activityId, let groupId = PushNotificationHandler.shared.tappedGroupId {
+                currentTab = .home
+                
+                // Fetch the corresponding group based on groupId and update currSelectedGroup
+                Task {
+                    // Fetch the group asynchronously and update the current selected group
+                    try await groupsViewModel.fetchGroup(groupId: groupId)
+                    
+                    // Reset the tapped activity and group IDs after fetching
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        PushNotificationHandler.shared.tappedActivityId = nil
+                        PushNotificationHandler.shared.tappedGroupId = nil
+                    }
+                }
+            }
+        }.store(in: &cancellables)
+        
+        PushNotificationHandler.shared.$tappedChatActivityId.sink { activityId in
+            if activityId != nil {
+                currentTab = .inbox
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    PushNotificationHandler.shared.tappedChatActivityId = nil
+                }
+            }
+        }.store(in: &cancellables)
+    }
 }
-
-//struct MainTabView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MainTabView()
-//    }
-//}

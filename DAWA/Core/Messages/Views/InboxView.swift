@@ -70,7 +70,7 @@ struct InboxView: View {
         }
         .navigationTitle("Inbox")
         .navigationBarTitleDisplayMode(.inline)
-        .onReceive(PushNotificationHandler.shared.$tappedActivityId) { activityId in
+        .onReceive(PushNotificationHandler.shared.$tappedChatActivityId) { activityId in
             if let activityId = activityId {
                 if let userActivity = viewModel.userActivities.first(where: { $0.activity?.id == activityId }) {
                     selectedActivity = userActivity.activity

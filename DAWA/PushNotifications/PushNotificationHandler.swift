@@ -12,7 +12,9 @@ class PushNotificationHandler: ObservableObject {
     static let shared = PushNotificationHandler()
     
     @Published var lastNotification: [String: Any]?
+    @Published var tappedChatActivityId: String?
     @Published var tappedActivityId: String?
+    @Published var tappedGroupId: String?
     @Published var currentChatActivityId: String? = nil
     
     private init() {}
@@ -32,10 +34,19 @@ class PushNotificationHandler: ObservableObject {
     }
 
     func handleTappedNotification(userInfo: [AnyHashable: Any]) {
-        if let notificationType = userInfo["notificationType"] as? String, notificationType == "message" {
-            if let activityId = userInfo["activityId"] as? String {
-                DispatchQueue.main.async {
-                    self.tappedActivityId = activityId
+        if let notificationType = userInfo["notificationType"] as? String {
+            if notificationType == "message" {
+                if let activityId = userInfo["activityId"] as? String {
+                    DispatchQueue.main.async {
+                        self.tappedChatActivityId = activityId
+                    }
+                }
+            } else if notificationType == "newActivity" {
+                if let activityId = userInfo["activityId"] as? String, let groupId = userInfo["groupId"] as? String {
+                    DispatchQueue.main.async {
+                        self.tappedGroupId = groupId
+                        self.tappedActivityId = activityId
+                    }
                 }
             }
         }

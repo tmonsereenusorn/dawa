@@ -94,7 +94,7 @@ def send_dm_notification(event: firestore_fn.Event[firestore_fn.Change[firestore
             apns=get_apns_config(f'{activity_id}'),  # Grouping DM notifications separately
             data={
                 'activityId': activity_id,
-                'notificationType': "message"
+                'notificationType': 'message'
             },
             token=token
         )
@@ -177,6 +177,11 @@ def send_group_activity_notification(event: firestore_fn.Event[firestore_fn.Docu
             title=notification_title,
             body=notification_body,
         ),
+        data={
+            'activityId': event.params['activityId'],
+            'groupId': group_id,
+            'notificationType': 'newActivity'
+        },
         apns=apns_config,
         tokens=tokens_to_notify
     )

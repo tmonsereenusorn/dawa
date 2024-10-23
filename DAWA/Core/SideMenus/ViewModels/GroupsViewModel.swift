@@ -30,4 +30,9 @@ class GroupsViewModel: ObservableObject {
     func fetchCurrentGroup(handle: String) async throws {
         self.currSelectedGroup = try await GroupService.findGroupByHandle(handle)
     }
+    
+    @MainActor
+    func fetchGroup(groupId: String) async throws {
+        self.currSelectedGroup = try await GroupService.fetchGroup(groupId: groupId)
+    }
 }
