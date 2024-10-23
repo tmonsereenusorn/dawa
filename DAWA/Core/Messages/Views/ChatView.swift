@@ -26,15 +26,33 @@ struct ChatView: View {
             if isRemovedFromActivity {
                 // Show a message when the user has been removed from the activity
                 VStack {
-                    Text("You have been removed from this activity and can no longer participate in the chat.")
-                        .foregroundColor(Color.red)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                    Button("Back to Activity Feed") {
-                        mode.wrappedValue.dismiss()
+                    Spacer()
+                    
+                    HStack(spacing: 16) {
+                        Image(systemName: "person.fill.xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 60, height: 60)
+                            .foregroundColor(Color.red.opacity(0.7))
+                        
+                        Text("You've been removed from this activity.")
+                            .font(.system(size: 24, weight: .semibold))
+                            .foregroundColor(Color.red)
                     }
                     .padding()
+                    
+                    Button(action: {
+                        mode.wrappedValue.dismiss()
+                    }) {
+                        Text("Go back")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(Color.theme.secondaryText)
+                    }
+                    .padding(.horizontal)
+                    
+                    Spacer()
                 }
+                .background(Color.theme.appBackground.edgesIgnoringSafeArea(.all))
             } else {
                 // Normal chat UI
                 ChatContent(viewModel: viewModel)
