@@ -20,7 +20,8 @@ struct ActivityView: View {
     var body: some View {
         ZStack {
             if let hostUser = viewModel.activity.host {
-                ScrollView {
+                VStack(spacing: 0) {
+                    // Header and main content (Fixed)
                     VStack(spacing: 20) {
                         // Header
                         header
@@ -34,18 +35,58 @@ struct ActivityView: View {
                                 .font(.largeTitle)
                                 .fontWeight(.semibold)
                                 .multilineTextAlignment(.center)
+                                .padding(.bottom, 5)
                             
                             activityDetails
-                            
-                            Divider()
-                                .background(Color.theme.secondaryText)
-                            
-                            // Activity Participants
-                            participantsSection
                         }
                         .padding(.horizontal)
                     }
-                    .padding(.bottom, 100)
+                    
+                    // Scrollable participants section
+                    ScrollView {
+                        participantsSection
+                            .padding(.horizontal)
+                    }
+                    
+                    Spacer()
+                    
+                    // Footer with buttons
+                    VStack {
+                        if viewModel.activity.didJoin ?? false {
+                            Button(action: {
+                                viewModel.markActivityAsRead()
+                                navigateToChat = true
+                            }) {
+                                HStack {
+                                    Image(systemName: "message.fill")
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                    Text("Go to Chat").font(.headline)
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .foregroundColor(Color.theme.primaryText)
+                                .background(Color.theme.appTheme)
+                                .cornerRadius(10)
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 8)
+                        }
+                        
+                        actionButton(for: hostUser)
+                            .padding(.horizontal)
+                        
+                        Button(action: {
+                            mode.wrappedValue.dismiss()
+                        }) {
+                            Text("Go back to activity feed")
+                                .foregroundColor(Color.theme.secondaryText)
+                                .font(.footnote)
+                                .underline()
+                        }
+                        .padding(.top, 8)
+                        .padding(.bottom, 20)
+                    }
                 }
                 .navigationBarHidden(true)
                 .blur(radius: (viewModel.isLoading || viewModel.errorMessage != nil) ? 5.0 : 0)
@@ -56,55 +97,17 @@ struct ActivityView: View {
                     }
                 }
                 
-                VStack {
-                    Spacer()
-                    
-                    if viewModel.activity.didJoin ?? false {
-                        Button(action: {
-                            viewModel.markActivityAsRead()
-                            navigateToChat = true
-                        }) {
-                            HStack {
-                                Image(systemName: "message.fill")
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                Text("Go to Chat").font(.headline)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .foregroundColor(Color.theme.primaryText)
-                            .background(Color.theme.appTheme).cornerRadius(10)
-                        }
-                        .padding(.horizontal)
-                        .padding(.top, 8)
-                    }
-                    
-                    actionButton(for: hostUser)
-                        .padding(.horizontal)
-                    
-                    Button(action: {
-                        mode.wrappedValue.dismiss()
-                    }) {
-                        Text("Go back to activity feed")
-                            .foregroundColor(Color.theme.secondaryText)
-                            .font(.footnote)
-                            .underline()
-                    }
-                    .padding(.top, 8)
-                    .padding(.bottom, 20)
+                if viewModel.isLoading {
+                    ProgressView()
+                        .scaleEffect(1.5)
                 }
-            }
-            
-            if viewModel.isLoading {
-                ProgressView()
-                    .scaleEffect(1.5)
-            }
-            
-            if let errorMessage = viewModel.errorMessage {
-                ErrorView(errorMessage: errorMessage) {
-                    viewModel.errorMessage = nil
+                
+                if let errorMessage = viewModel.errorMessage {
+                    ErrorView(errorMessage: errorMessage) {
+                        viewModel.errorMessage = nil
+                    }
+                    .zIndex(1)
                 }
-                .zIndex(1)
             }
         }
         // Confirmation modals
@@ -235,20 +238,28 @@ struct ActivityView: View {
                     .font(.body)
                 Spacer()
             }
+            
+            Divider()
+                .background(Color.theme.secondaryText)
+                .padding(.vertical, 10)
+            
+            if viewModel.activity.numRequired == 0 {
+                Text("Participants (\(viewModel.activity.numCurrent) / ∞)")
+                    .foregroundColor(Color.theme.primaryText)
+                    .font(.headline)
+                    .padding(.bottom, 15)
+            } else {
+                Text("Participants (\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired))")
+                    .foregroundColor(Color.theme.primaryText)
+                    .font(.headline)
+                    .padding(.bottom, 15)
+            }
         }
     }
     
     private var participantsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if viewModel.activity.numRequired == 0 {
-                Text("Participants (\(viewModel.activity.numCurrent) / ∞)")
-                    .foregroundColor(Color.theme.primaryText)
-                    .font(.headline)
-            } else {
-                Text("Participants (\(viewModel.activity.numCurrent) / \(viewModel.activity.numRequired))")
-                    .foregroundColor(Color.theme.primaryText)
-                    .font(.headline)
-            }
+            
             
             LazyVStack(spacing: 16) {
                 ForEach(viewModel.participants) { participant in
@@ -270,7 +281,6 @@ struct ActivityView: View {
                     }
                 }
             }
-            .padding(.horizontal)
         }
     }
 }
