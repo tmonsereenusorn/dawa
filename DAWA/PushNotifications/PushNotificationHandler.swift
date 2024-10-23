@@ -16,6 +16,7 @@ class PushNotificationHandler: ObservableObject {
     @Published var tappedActivityId: String?
     @Published var tappedGroupId: String?
     @Published var currentChatActivityId: String? = nil
+    @Published var tappedGroupInviteId: String?
     
     private init() {}
 
@@ -46,6 +47,12 @@ class PushNotificationHandler: ObservableObject {
                     DispatchQueue.main.async {
                         self.tappedGroupId = groupId
                         self.tappedActivityId = activityId
+                    }
+                }
+            } else if notificationType == "groupInvite" {
+                if let inviteId = userInfo["inviteId"] as? String {
+                    DispatchQueue.main.async {
+                        self.tappedGroupInviteId = inviteId
                     }
                 }
             }

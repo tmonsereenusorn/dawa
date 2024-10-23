@@ -275,7 +275,8 @@ def send_group_invitation_notification(event: firestore_fn.Event[firestore_fn.Do
             apns=get_apns_config(f'group-invitation'),
             data={
                 'forGroupId': for_group_id,
-                'inviteId': event.params['inviteId']
+                'inviteId': event.params['inviteId'],
+                'notificationType': 'groupInvite'
             },
             token=token
         )

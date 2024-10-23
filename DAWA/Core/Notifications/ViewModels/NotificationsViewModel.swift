@@ -19,7 +19,7 @@ class NotificationsViewModel: ObservableObject {
         notifications.contains { !$0.hasRead }
     }
     
-    private var cancellables = Set<AnyCancellable>()
+    var cancellables = Set<AnyCancellable>()
     
     init() {
         setupSubscribers()

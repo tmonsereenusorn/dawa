@@ -167,5 +167,14 @@ struct MainTabView: View {
                 }
             }
         }.store(in: &cancellables)
+        
+        PushNotificationHandler.shared.$tappedGroupInviteId.sink { inviteId in
+            if inviteId != nil {
+                currentTab = .notifications
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    PushNotificationHandler.shared.tappedGroupInviteId = nil
+                }
+            }
+        }.store(in: &cancellables)
     }
 }
