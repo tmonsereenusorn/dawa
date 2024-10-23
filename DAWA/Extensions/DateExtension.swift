@@ -8,71 +8,37 @@
 import Foundation
 
 extension Date {
-    func timeAgoDisplay() -> String {
-        
+    func timeAgoDisplay(from _: Date = Date()) -> String {
+        let currTime = Date() // Always use the current date
         let calendar = Calendar.current
-        let minuteAgo = calendar.date(byAdding: .minute, value: -1, to: Date())!
-        let hourAgo = calendar.date(byAdding: .hour, value: -1, to: Date())!
-        let dayAgo = calendar.date(byAdding: .day, value: -1, to: Date())!
-        let weekAgo = calendar.date(byAdding: .day, value: -7, to: Date())!
+        let minuteAgo = calendar.date(byAdding: .minute, value: -1, to: currTime)!
+        let hourAgo = calendar.date(byAdding: .hour, value: -1, to: currTime)!
+        let dayAgo = calendar.date(byAdding: .day, value: -1, to: currTime)!
+        let weekAgo = calendar.date(byAdding: .day, value: -7, to: currTime)!
         
-        if minuteAgo < self {
-            let diff = Calendar.current.dateComponents([.second], from: self, to: Date()).second ?? 0
+        if self > minuteAgo {
+            let diff = calendar.dateComponents([.second], from: self, to: currTime).second ?? 0
             return "\(diff) sec ago"
-        } else if hourAgo < self {
-            let diff = Calendar.current.dateComponents([.minute], from: self, to: Date()).minute ?? 0
+        } else if self > hourAgo {
+            let diff = calendar.dateComponents([.minute], from: self, to: currTime).minute ?? 0
             return "\(diff) min ago"
-        } else if dayAgo < self {
-            let diff = Calendar.current.dateComponents([.hour], from: self, to: Date()).hour ?? 0
+        } else if self > dayAgo {
+            let diff = calendar.dateComponents([.hour], from: self, to: currTime).hour ?? 0
             return "\(diff) hrs ago"
-        } else if weekAgo < self {
-            let diff = Calendar.current.dateComponents([.day], from: self, to: Date()).day ?? 0
+        } else if self > weekAgo {
+            let diff = calendar.dateComponents([.day], from: self, to: currTime).day ?? 0
             if diff == 1 {
                 return "1 day ago"
             } else {
                 return "\(diff) days ago"
             }
         } else {
-            let diff = Calendar.current.dateComponents([.weekOfYear], from: self, to: Date()).weekOfYear ?? 0
+            let diff = calendar.dateComponents([.weekOfYear], from: self, to: currTime).weekOfYear ?? 0
             if diff == 1 {
                 return "1 week ago"
             } else {
                 return "\(diff) weeks ago"
             }
-        }
-    }
-    
-    private var timeFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .medium
-        formatter.dateFormat = "h:mm a"
-        formatter.amSymbol = "AM"
-        formatter.pmSymbol = "PM"
-        return formatter
-    }
-    
-    private  var dayFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .medium
-        formatter.dateFormat = "MM/dd/yy"
-        return formatter
-    }
-    
-    private func timeString() -> String {
-        return timeFormatter.string(from: self)
-    }
-    
-    private func dateString() -> String {
-        return dayFormatter.string(from: self)
-    }
-    
-    func timestampString() -> String {
-        if Calendar.current.isDateInToday(self) {
-            return timeString()
-        } else if Calendar.current.isDateInYesterday(self) {
-            return "Yesterday"
-        } else {
-            return dateString()
         }
     }
 }

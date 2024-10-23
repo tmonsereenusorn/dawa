@@ -51,7 +51,7 @@ struct InboxView: View {
                                         }
                                 }
                             }) {
-                                InboxRowView(userActivity: userActivity)
+                                InboxRowView(userActivity: userActivity, currTime: viewModel.currentTime)
                             }
                         }
                     }

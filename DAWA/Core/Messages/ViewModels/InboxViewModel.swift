@@ -13,6 +13,7 @@ class InboxViewModel: ObservableObject {
     @Published var user: User?
     @Published var userActivities = [UserActivity]()
     @Published var didCompleteInitialLoad = false
+    @Published var currentTime = Date()
     
     var hasUnreadMessages: Bool {
         userActivities.contains { !$0.hasRead }
@@ -21,6 +22,7 @@ class InboxViewModel: ObservableObject {
     init() {
         setupSubscribers()
         startListeningForChanges()
+        startUpdatingCurrentTime()
     }
     
     private func setupSubscribers() {
@@ -143,6 +145,14 @@ class InboxViewModel: ObservableObject {
                         self.userActivities[index] = updatedActivity
                     }
                 }
+            }
+        }
+    }
+    
+    private func startUpdatingCurrentTime() {
+        Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            Task { @MainActor in
+                self.currentTime = Date()
             }
         }
     }

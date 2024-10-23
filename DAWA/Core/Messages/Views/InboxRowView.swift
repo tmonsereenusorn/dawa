@@ -9,6 +9,7 @@ import SwiftUI
 
 struct InboxRowView: View {
     let userActivity: UserActivity
+    let currTime: Date
     
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -53,9 +54,9 @@ struct InboxRowView: View {
                 }
             }
             
-            // Timestamp and chevron icon
+            // Timestamp
             HStack {
-                Text(userActivity.recentMessage?.timestamp.dateValue().timeAgoDisplay() ?? "")
+                Text(userActivity.recentMessage?.timestamp.dateValue().timeAgoDisplay(from: currTime) ?? "")
                     .font(.footnote)
                     .fontWeight(userActivity.hasRead ? .regular : .bold)  // Bold if unread
                     .foregroundColor(.gray)
