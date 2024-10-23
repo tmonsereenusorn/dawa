@@ -84,7 +84,7 @@ struct AddActivityView: View {
                             .modifier(TextFieldModifier())
                             .padding(.horizontal, 0)
                             .onReceive(Just(location)) { newLocation in
-                                if newLocation.count > 15 {
+                                if newLocation.count > 30 {
                                     self.location = String(newLocation.prefix(15))
                                 }
                             }

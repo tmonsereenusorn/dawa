@@ -59,10 +59,6 @@ struct InboxRowView: View {
                     .font(.footnote)
                     .fontWeight(userActivity.hasRead ? .regular : .bold)  // Bold if unread
                     .foregroundColor(.gray)
-                
-                Image(systemName: "chevron.right")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
             }
         }
         .frame(height: 72)

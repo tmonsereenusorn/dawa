@@ -1,10 +1,3 @@
-//
-//  InboxView.swift
-//  DAWA
-//
-//  Created by Tee Monsereenusorn on 8/11/23.
-//
-
 import SwiftUI
 
 struct InboxView: View {
@@ -12,13 +5,15 @@ struct InboxView: View {
     @Binding var showLeftMenu: Bool
     @Binding var showRightMenu: Bool
     @EnvironmentObject var groupsViewModel: GroupsViewModel
+    @State private var navigateToChat = false
+    @State private var selectedActivity: Activity? = nil
     
     var body: some View {
         VStack {
             VStack(spacing: 0) {
                 HStack {
                     Button {
-                        withAnimation{ showLeftMenu.toggle() }
+                        withAnimation { showLeftMenu.toggle() }
                     } label: {
                         SquareGroupImageView(group: groupsViewModel.currSelectedGroup, size: .xSmall)
                     }
@@ -31,7 +26,7 @@ struct InboxView: View {
                     Spacer()
                     
                     Button {
-                        withAnimation{ showRightMenu.toggle() }
+                        withAnimation { showRightMenu.toggle() }
                     } label: {
                         CircularProfileImageView(user: viewModel.user, size: .xSmall)
                     }
@@ -46,44 +41,52 @@ struct InboxView: View {
                 List {
                     ForEach(viewModel.userActivities, id: \.self) { userActivity in
                         ZStack {
-                            NavigationLink(value: userActivity) {
-                                EmptyView()
+                            NavigationLink(destination: {
+                                if let activity = userActivity.activity {
+                                    ChatView(activity: activity)
+                                        .onAppear {
+                                            if let activityId = userActivity.activity?.id {
+                                                viewModel.markAsRead(activityId: activityId)
+                                            }
+                                        }
+                                }
+                            }) {
+                                InboxRowView(userActivity: userActivity)
                             }
-                            .opacity(0.0)
-                            
-                            InboxRowView(userActivity: userActivity)
                         }
                     }
+                    .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets())
                     .padding(.vertical)
                     .padding(.trailing, 8)
                     .padding(.leading, 20)
+                    
                 }
-                .navigationDestination(for: UserActivity.self, destination: { userActivity in
-                    if let activity = userActivity.activity {
-                        ChatView(activity: activity)
-                            .onAppear {
-                                if let activityId = userActivity.activity?.id {
-                                    viewModel.markAsRead(activityId: activityId)
-                                }
-                            }
-                    }
-                })
                 .listStyle(PlainListStyle())
             } else {
-                // This will make the progress view take up the entire space
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .navigationTitle("Inbox")
         .navigationBarTitleDisplayMode(.inline)
+        .onReceive(PushNotificationHandler.shared.$tappedActivityId) { activityId in
+            if let activityId = activityId {
+                if let userActivity = viewModel.userActivities.first(where: { $0.activity?.id == activityId }) {
+                    selectedActivity = userActivity.activity
+                    navigateToChat = true
+                }
+            }
+        }
+        .navigationDestination(isPresented: $navigateToChat) {
+            if let activity = selectedActivity {
+                ChatView(activity: activity)
+                    .onAppear {
+                        if let activityId = selectedActivity?.id {
+                            viewModel.markAsRead(activityId: activityId)
+                        }
+                    }
+            }
+        }
     }
 }
-
-//
-//struct InboxView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ActivityInboxView()
-//    }
-//}

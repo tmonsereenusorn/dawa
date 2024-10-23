@@ -32,9 +32,11 @@ class PushNotificationHandler: ObservableObject {
     }
 
     func handleTappedNotification(userInfo: [AnyHashable: Any]) {
-        if let activityId = userInfo["activityId"] as? String {
-            DispatchQueue.main.async {
-                self.tappedActivityId = activityId
+        if let notificationType = userInfo["notificationType"] as? String, notificationType == "message" {
+            if let activityId = userInfo["activityId"] as? String {
+                DispatchQueue.main.async {
+                    self.tappedActivityId = activityId
+                }
             }
         }
     }
